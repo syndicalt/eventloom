@@ -12,6 +12,7 @@ import { projectTasks } from "./task-projection.js";
 import { runSoftwareWorkDemo } from "./demo.js";
 import { createRuntime } from "./runtime.js";
 import { runHumanOpsRuntime, runResearchPipelineRuntime, runSoftwareWorkRuntime } from "./runners.js";
+import { formatAgentWorkflowTemplate, formatAgentWorkflowTemplates, getAgentWorkflowTemplate } from "./templates.js";
 
 async function main(argv: string[]): Promise<void> {
   const [command, path, extra, rest] = argv;
@@ -98,6 +99,17 @@ async function main(argv: string[]): Promise<void> {
     return;
   }
 
+  if (command === "templates") {
+    if (!path) {
+      console.log(formatAgentWorkflowTemplates());
+      return;
+    }
+    const template = getAgentWorkflowTemplate(path);
+    if (!template) throw new Error(`Unknown template ${path}`);
+    console.log(formatAgentWorkflowTemplate(template));
+    return;
+  }
+
   if (command !== "replay" || !path) {
     printUsage();
     process.exitCode = 1;
@@ -134,6 +146,7 @@ function printUsage(): void {
   console.error("       eventloom explain task <taskId> <events.jsonl>");
   console.error("       eventloom mailbox <actorId> <events.jsonl>");
   console.error("       eventloom handoff <events.jsonl>");
+  console.error("       eventloom templates [templateId]");
 }
 
 interface ExportOptions {

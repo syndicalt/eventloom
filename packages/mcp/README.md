@@ -28,5 +28,6 @@ Tools:
 - `eventloom_timeline`
 - `eventloom_explain_task`
 - `eventloom_mailbox`
+- `eventloom_summarize_handoff`
 - `eventloom_run_builtin`
 - `eventloom_export_pathlight`

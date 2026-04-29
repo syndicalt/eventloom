@@ -37,6 +37,7 @@ Run the installed CLI:
 ```bash
 npx eventloom run software-work /tmp/eventloom-software.jsonl
 npx eventloom replay /tmp/eventloom-software.jsonl
+npx eventloom templates coding-task
 ```
 
 Use the package from TypeScript:
