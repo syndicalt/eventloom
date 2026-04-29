@@ -29,3 +29,27 @@ export class ActorRegistry {
     return [...this.actors.values()];
   }
 }
+
+export function createSoftwareWorkRegistry(): ActorRegistry {
+  const actors = new ActorRegistry();
+  actors.register({
+    id: "planner",
+    role: "Break goals into tasks",
+    subscriptions: ["goal.created"],
+    intentions: ["task.propose"],
+  });
+  actors.register({
+    id: "worker",
+    role: "Claim and complete tasks",
+    subscriptions: ["task.proposed", "issue.reported"],
+    intentions: ["task.claim", "task.complete", "review.request"],
+  });
+  actors.register({
+    id: "reviewer",
+    role: "Approve or report issues",
+    subscriptions: ["review.requested"],
+    intentions: ["review.approve", "issue.report"],
+  });
+
+  return actors;
+}

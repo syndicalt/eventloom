@@ -5,6 +5,7 @@ export * from "./events.js";
 export * from "./inspect.js";
 export * from "./integrity.js";
 export * from "./intentions.js";
+export * from "./mailbox.js";
 export * from "./orchestrator.js";
 export * from "./projection.js";
 export * from "./causal.js";

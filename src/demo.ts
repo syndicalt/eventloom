@@ -1,5 +1,5 @@
 import { rm } from "node:fs/promises";
-import { ActorRegistry } from "./actors.js";
+import { createSoftwareWorkRegistry } from "./actors.js";
 import { JsonlEventStore } from "./event-store.js";
 import { createEvent } from "./events.js";
 import { Orchestrator } from "./orchestrator.js";
@@ -8,26 +8,7 @@ export async function runSoftwareWorkDemo(path: string): Promise<void> {
   await rm(path, { force: true });
 
   const store = new JsonlEventStore(path);
-  const actors = new ActorRegistry();
-  actors.register({
-    id: "planner",
-    role: "Break goals into tasks",
-    subscriptions: ["goal.created"],
-    intentions: ["task.propose"],
-  });
-  actors.register({
-    id: "worker",
-    role: "Claim and complete tasks",
-    subscriptions: ["task.proposed", "issue.reported"],
-    intentions: ["task.claim", "task.complete", "review.request"],
-  });
-  actors.register({
-    id: "reviewer",
-    role: "Approve or report issues",
-    subscriptions: ["review.requested"],
-    intentions: ["review.approve", "issue.report"],
-  });
-
+  const actors = createSoftwareWorkRegistry();
   const orchestrator = new Orchestrator(store, actors);
   const goal = await store.append(createEvent({
     id: "evt_demo_goal",

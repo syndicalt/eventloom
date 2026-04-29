@@ -25,6 +25,7 @@ npm run threadline -- replay fixtures/sample.jsonl  # Replay a sample event log
 npm run threadline -- demo software-work /tmp/threadline-demo.jsonl  # Generate a deterministic demo log
 npm run threadline -- timeline /tmp/threadline-demo.jsonl  # Show ordered event history
 npm run threadline -- explain task task_actor_intentions /tmp/threadline-demo.jsonl  # Explain task state
+npm run threadline -- mailbox worker /tmp/threadline-demo.jsonl  # Show rebuilt actor mailbox
 ```
 
 ## Coding Style & Naming Conventions

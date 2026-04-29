@@ -1,7 +1,9 @@
 #!/usr/bin/env node
+import { createSoftwareWorkRegistry } from "./actors.js";
 import { JsonlEventStore } from "./event-store.js";
-import { formatTaskExplanation, formatTimeline } from "./inspect.js";
+import { formatMailbox, formatTaskExplanation, formatTimeline } from "./inspect.js";
 import { verifyEventChain } from "./integrity.js";
+import { buildMailbox } from "./mailbox.js";
 import { eventTypeCounts, projectionHash } from "./projection.js";
 import { projectTasks } from "./task-projection.js";
 import { runSoftwareWorkDemo } from "./demo.js";
@@ -25,6 +27,13 @@ async function main(argv: string[]): Promise<void> {
   if (command === "explain" && path === "task" && extra && rest) {
     const store = new JsonlEventStore(rest);
     console.log(formatTaskExplanation(await store.readAll(), extra));
+    return;
+  }
+
+  if (command === "mailbox" && path && extra) {
+    const store = new JsonlEventStore(extra);
+    const registry = createSoftwareWorkRegistry();
+    console.log(formatMailbox(path, buildMailbox(registry, path, await store.readAll())));
     return;
   }
 
@@ -55,6 +64,7 @@ function printUsage(): void {
   console.error("       threadline demo software-work [events.jsonl]");
   console.error("       threadline timeline <events.jsonl>");
   console.error("       threadline explain task <taskId> <events.jsonl>");
+  console.error("       threadline mailbox <actorId> <events.jsonl>");
 }
 
 main(process.argv.slice(2)).catch((error) => {
