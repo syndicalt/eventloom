@@ -26,7 +26,7 @@ npm_config_cache=/tmp/eventloom-npm-cache npm pack
 mkdir -p /tmp/eventloom-consumer
 cd /tmp/eventloom-consumer
 npm init -y
-npm install /path/to/eventloom/eventloom-runtime-0.1.2.tgz
+npm install /path/to/eventloom/eventloom-runtime-0.1.3.tgz
 node --input-type=module -e "import { createRuntime } from '@eventloom/runtime'; console.log(typeof createRuntime)"
 npx eventloom replay /path/to/eventloom/fixtures/sample.jsonl
 ```

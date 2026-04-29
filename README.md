@@ -13,15 +13,54 @@ Instead of treating an agent run as a linear `system/user/assistant` transcript,
 
 Eventloom is currently a runtime prototype. It is designed for local development, deterministic replay, and integration experiments with Pathlight.
 
+## MVP Quickstart
+
+Use Eventloom as a local black box recorder for agent work:
+
+```bash
+mkdir -p .eventloom
+
+npx eventloom append .eventloom/agent-work.jsonl goal.created \
+  --actor user \
+  --payload '{"title":"Ship a scoped agent task"}'
+
+npx eventloom append .eventloom/agent-work.jsonl task.proposed \
+  --actor codex \
+  --payload '{"taskId":"task_demo","title":"Make a focused change"}'
+
+npx eventloom append .eventloom/agent-work.jsonl task.claimed \
+  --actor codex \
+  --payload '{"taskId":"task_demo"}'
+
+npx eventloom handoff .eventloom/agent-work.jsonl
+```
+
+Optional MCP server for editor and agent clients:
+
+```bash
+npx @eventloom/mcp --root .
+```
+
+Optional Pathlight export when a collector is running:
+
+```bash
+npx eventloom export pathlight .eventloom/agent-work.jsonl \
+  --base-url http://localhost:4100 \
+  --trace-name eventloom-agent-work
+```
+
 ## What It Does
 
 - Appends sealed events to a JSONL event log.
 - Verifies a tamper-evident hash chain.
+- Summarizes handoffs from goals, tasks, decisions, and verification events.
+- Provides starter templates for coding, review, release, and research tasks.
 - Runs deterministic actor workflows.
 - Validates actor intentions before accepting state changes.
 - Rebuilds task, research, and effect projections from the log.
 - Supports human-in-the-loop approval events.
 - Exports actor turns and runtime events to Pathlight traces.
+- Exports external agent journals to Pathlight task lifecycle spans.
 - Provides a package API for embedding Eventloom in TypeScript code.
 
 ## Quick Start
