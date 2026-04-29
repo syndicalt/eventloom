@@ -12,6 +12,7 @@ Eventloom is documented in two layers:
 - [Package API](package-api.md): use Eventloom as a TypeScript library.
 - [Agent Integration](agent-integration.md): use Eventloom as a replayable event journal for coding agents.
 - [MCP Package Design](mcp-package.md): `@eventloom/mcp` package scope, tool contracts, and safety model.
+- [MCP Setup](mcp-setup.md): configure Eventloom MCP in Codex, Claude Desktop, or the MCP inspector.
 - [Pathlight Integration](pathlight-integration.md): export Eventloom runs into Pathlight traces.
 
 ## Technical Documentation
@@ -33,6 +34,6 @@ Eventloom is documented in two layers:
 1. Start with the [User Guide](user-guide.md).
 2. Use the [CLI Reference](cli-reference.md) while running examples.
 3. Read [Architecture](architecture.md) and [Event Model](event-model.md) before changing runtime behavior.
-4. Read [Agent Integration](agent-integration.md) before wiring Eventloom into agent workflows.
+4. Read [Agent Integration](agent-integration.md) and [MCP Setup](mcp-setup.md) before wiring Eventloom into agent workflows.
 5. Use [Workflow Guide](workflows.md) before adding or modifying a workflow.
 6. Read [Contributor Guide](contributor-guide.md) before opening a PR.
