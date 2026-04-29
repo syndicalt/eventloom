@@ -1,6 +1,13 @@
 # Eventloom
 
+[![npm version](https://img.shields.io/npm/v/@eventloom/runtime.svg)](https://www.npmjs.com/package/@eventloom/runtime)
+[![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![node >=20](https://img.shields.io/badge/node-%3E%3D20-brightgreen.svg)](package.json)
+[![GitHub](https://img.shields.io/badge/github-syndicalt%2Feventloom-black.svg)](https://github.com/syndicalt/eventloom)
+
 Eventloom is a local-first TypeScript runtime for multi-agent systems built around an append-only event log.
+
+Package: [`@eventloom/runtime`](https://www.npmjs.com/package/@eventloom/runtime) | Repository: [`syndicalt/eventloom`](https://github.com/syndicalt/eventloom) | License: [MIT](LICENSE)
 
 Instead of treating an agent run as a linear `system/user/assistant` transcript, Eventloom models runtime state as typed events. Actors receive mailbox items, emit structured intentions, and an orchestrator validates those intentions before appending accepted events. Projections rebuild state from the log, so a run can be replayed and inspected after the fact.
 
