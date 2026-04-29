@@ -307,23 +307,31 @@ References:
 
 Use fixture-backed tests and avoid depending on a real MCP client for every assertion.
 
-Minimum tests:
+Current coverage:
 
 - `eventloom_append` creates a sealed event and preserves hash-chain integrity.
-- `eventloom_replay` matches the runtime replay result for `fixtures/sample.jsonl`.
+- `eventloom_replay` returns integrity and projection status for a local log.
 - `eventloom_timeline` returns ordered event summaries.
 - `eventloom_explain_task` returns the expected projected task state.
 - `eventloom_run_builtin` can create and resume a deterministic workflow log.
+- `eventloom_export_pathlight` maps a workflow log through the MCP adapter and mocked Pathlight fetch calls.
 - Path safety rejects paths outside the configured root.
+- MCP stdio smoke coverage verifies append and replay through the protocol.
 
-Add one end-to-end MCP stdio smoke test before publishing.
+Avoid real network listeners in package tests; sandboxed environments may reject loopback binds. Stub `fetch` for Pathlight export coverage unless the test is explicitly marked as an optional integration check.
 
 ## Release Criteria
 
-Publish `@eventloom/mcp` when:
+`@eventloom/mcp` is ready for local use when:
 
 - The package exposes the MVP tools over stdio.
 - Tool schemas and outputs are documented.
 - Fixture-backed tests pass.
 - A local MCP client can append an event, replay the log, and inspect a task.
 - The public site and README link to the MCP package docs.
+
+Remaining adoption work:
+
+- Codex-style local MCP configuration guide.
+- Claude Desktop local MCP configuration guide.
+- Direct MCP inspector smoke-test instructions.

@@ -136,3 +136,5 @@ The original prototype roadmap is implemented:
 - Human-in-the-loop effect approval workflow
 - Runtime provenance metadata
 - Public package API
+- Agent integration workflow and Codex skill
+- MCP stdio server package
