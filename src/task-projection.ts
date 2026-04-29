@@ -52,6 +52,15 @@ export function projectTasks(events: readonly EventEnvelope[]): TaskProjection {
   return replay(events, emptyTaskProjection(), applyTaskEvent);
 }
 
+export function validateTaskEvent(
+  events: readonly EventEnvelope[],
+  event: EventEnvelope,
+): ProjectionError | null {
+  const before = projectTasks(events);
+  const after = applyTaskEvent(before, event);
+  return after.errors.at(-1) ?? null;
+}
+
 export function emptyTaskProjection(): TaskProjection {
   return { tasks: {}, errors: [] };
 }

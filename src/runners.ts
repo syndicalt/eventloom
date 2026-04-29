@@ -19,6 +19,8 @@ export type ActorRunner = (context: ActorRunnerContext) => Intention[];
 export interface RuntimeLoopResult {
   iterations: number;
   appended: number;
+  skipped: number;
+  rejected: number;
   stoppedReason: "idle" | "max_iterations";
 }
 
@@ -35,6 +37,8 @@ export async function runRuntimeLoop(
   const maxIterations = options.maxIterations ?? 20;
   const submitted = new Set<string>();
   let appended = 0;
+  let skipped = 0;
+  let rejected = 0;
 
   for (let iteration = 1; iteration <= maxIterations; iteration++) {
     const events = await store.readAll();
@@ -49,23 +53,28 @@ export async function runRuntimeLoop(
       const intentions = runner({ actor, mailbox, events });
       for (const intention of intentions) {
         const key = canonicalJson(intention);
-        if (submitted.has(key)) continue;
+        if (submitted.has(key)) {
+          skipped += 1;
+          continue;
+        }
         submitted.add(key);
 
         const result = await orchestrator.submitIntention(intention);
         if (result.accepted) {
           appended += 1;
           appendedThisIteration += 1;
+        } else {
+          rejected += 1;
         }
       }
     }
 
     if (appendedThisIteration === 0) {
-      return { iterations: iteration, appended, stoppedReason: "idle" };
+      return { iterations: iteration, appended, skipped, rejected, stoppedReason: "idle" };
     }
   }
 
-  return { iterations: maxIterations, appended, stoppedReason: "max_iterations" };
+  return { iterations: maxIterations, appended, skipped, rejected, stoppedReason: "max_iterations" };
 }
 
 export function createSoftwareWorkRunners(): Record<string, ActorRunner> {

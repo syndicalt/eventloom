@@ -4,6 +4,7 @@ import type { JsonlEventStore } from "./event-store.js";
 import { createEvent, type EventEnvelope } from "./events.js";
 import { intentionEventTypeMap, validateIntention, type Intention } from "./intentions.js";
 import type { SealedEvent } from "./integrity.js";
+import { validateTaskEvent } from "./task-projection.js";
 
 export interface OrchestratorResult {
   accepted: boolean;
@@ -50,10 +51,23 @@ export class Orchestrator {
       payload: intention.payload,
     });
 
+    const rejectionReason = await this.validateEventBeforeAppend(event);
+    if (rejectionReason) {
+      return this.reject(intention.actorId, intention.parentEventId, intention.causedBy, "intention.rejected", {
+        reason: rejectionReason,
+        intention,
+      });
+    }
+
     return {
       accepted: true,
       event: await this.store.append(event),
     };
+  }
+
+  private async validateEventBeforeAppend(event: EventEnvelope): Promise<string | null> {
+    const error = validateTaskEvent(await this.store.readAll(), event);
+    return error?.message ?? null;
   }
 
   private async reject(

@@ -54,6 +54,23 @@ describe("Orchestrator", () => {
     expect((await store.verify()).ok).toBe(true);
   });
 
+  it("rejects state-machine-invalid intentions before accepting events", async () => {
+    const { store, orchestrator } = await setup();
+    const result = await orchestrator.submitIntention({
+      type: "task.claim",
+      actorId: "worker",
+      threadId: "thread_main",
+      parentEventId: null,
+      causedBy: [],
+      payload: { taskId: "missing" },
+    });
+
+    expect(result.accepted).toBe(false);
+    expect(result.event.type).toBe("intention.rejected");
+    expect(result.event.payload.reason).toBe("Task missing does not exist");
+    expect(projectTasks(await store.readAll()).errors).toEqual([]);
+  });
+
   it("rejects malformed intentions", async () => {
     const { store, orchestrator } = await setup();
 
@@ -77,6 +94,12 @@ async function setup() {
     role: "Plans tasks",
     subscriptions: ["goal.created"],
     intentions: ["task.propose"],
+  });
+  actors.register({
+    id: "worker",
+    role: "Works tasks",
+    subscriptions: ["task.proposed"],
+    intentions: ["task.claim"],
   });
 
   return {

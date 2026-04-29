@@ -18,6 +18,8 @@ describe("deterministic actor runners", () => {
 
     expect(result.stoppedReason).toBe("idle");
     expect(result.appended).toBe(5);
+    expect(result.rejected).toBe(0);
+    expect(result.skipped).toBeGreaterThan(0);
     expect((await store.verify()).ok).toBe(true);
     expect(projection.errors).toEqual([]);
     expect(projection.tasks.task_actor_runtime.status).toBe("approved");
