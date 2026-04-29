@@ -1,6 +1,6 @@
 {
   "name": "@eventloom/runtime",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "type": "module",
   "description": "Append-only event-log runtime for multi-agent AI systems",
   "main": "./dist/index.js",
