@@ -6,10 +6,10 @@ import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import type { Transport } from "@modelcontextprotocol/sdk/shared/transport.js";
 import type { JSONRPCMessage } from "@modelcontextprotocol/sdk/types.js";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { createServerConfig, resolveLogPath } from "../src/path-safety.js";
 import { createEventloomMcpServer } from "../src/server.js";
-import { appendEvent, explainTask, replayLog, runBuiltIn, timeline } from "../src/tools.js";
+import { appendEvent, explainTask, exportPathlight, replayLog, runBuiltIn, timeline } from "../src/tools.js";
 
 describe("Eventloom MCP tools", () => {
   it("appends and replays a local event log", async () => {
@@ -60,6 +60,51 @@ describe("Eventloom MCP tools", () => {
     expect(explanation.structuredContent?.task).toMatchObject({
       id: "task_actor_runtime",
     });
+  });
+
+  it("exports a workflow log to a Pathlight collector", async () => {
+    const root = await tempRoot();
+    const config = createServerConfig({ root });
+    await runBuiltIn(config, {
+      path: "workflow.jsonl",
+      workflow: "software-work",
+      resume: false,
+    });
+    const requests: Array<{ method: string; url: string; body: Record<string, unknown> }> = [];
+    let span = 0;
+    const fetch = vi.spyOn(globalThis, "fetch").mockImplementation(async (url, init) => {
+      requests.push({
+        method: init?.method ?? "GET",
+        url: String(url),
+        body: init?.body ? JSON.parse(String(init.body)) as Record<string, unknown> : {},
+      });
+      if (String(url).endsWith("/v1/traces")) return json({ id: "trace_mcp" });
+      if (String(url).endsWith("/v1/spans")) return json({ id: `span_mcp_${span += 1}` });
+      return json({ ok: true });
+    });
+
+    try {
+      const exported = await exportPathlight(config, {
+        path: "workflow.jsonl",
+        baseUrl: "http://pathlight.test",
+        traceName: "eventloom-mcp-test",
+      });
+
+      expect(exported.structuredContent).toMatchObject({
+        traceId: "trace_mcp",
+        spanCount: 5,
+      });
+      expect(requests.filter((request) => request.method === "POST" && request.url === "http://pathlight.test/v1/traces")).toHaveLength(1);
+      expect(requests.filter((request) => request.method === "POST" && request.url === "http://pathlight.test/v1/spans")).toHaveLength(5);
+      expect(requests.some((request) => request.method === "PATCH" && request.url === "http://pathlight.test/v1/traces/trace_mcp")).toBe(true);
+
+      const traceCreate = requests.find((request) => request.url === "http://pathlight.test/v1/traces");
+      expect(traceCreate?.body.name).toBe("eventloom-mcp-test");
+      expect((traceCreate?.body.metadata as Record<string, unknown>).source).toBe("eventloom");
+      expect(((traceCreate?.body.metadata as Record<string, unknown>).integrity as Record<string, unknown>).ok).toBe(true);
+    } finally {
+      fetch.mockRestore();
+    }
   });
 
   it("rejects paths outside the configured root", async () => {
@@ -116,6 +161,14 @@ describe("Eventloom MCP tools", () => {
 
 async function tempRoot(): Promise<string> {
   return mkdtemp(join(tmpdir(), "eventloom-mcp-"));
+}
+
+function json(body: unknown): Response {
+  return {
+    ok: true,
+    status: 200,
+    json: async () => body,
+  } as Response;
 }
 
 class StreamClientTransport implements Transport {
