@@ -4,9 +4,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Eventloom - event-sourced runtime for AI agents</title>
-  <meta name="description" content="Eventloom is a local-first TypeScript runtime for AI agents built around append-only event logs, validated actor intentions, deterministic replay, and Pathlight export." />
+  <meta name="description" content="Eventloom is a local-first TypeScript runtime for AI agents built around append-only event logs, validated actor intentions, deterministic replay, MCP tooling, and Pathlight export." />
   <meta property="og:title" content="Eventloom - event-sourced runtime for AI agents" />
-  <meta property="og:description" content="Append-only logs, validated actor intentions, deterministic replay, and Pathlight export for AI agent systems." />
+  <meta property="og:description" content="Append-only logs, validated actor intentions, deterministic replay, MCP tooling, and Pathlight export for AI agent systems." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://syndicalt.github.io/eventloom/" />
   <meta property="og:image" content="https://syndicalt.github.io/eventloom/assets/hero.png" />
@@ -14,7 +14,7 @@
   <meta property="og:image:height" content="1080" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Eventloom - event-sourced runtime for AI agents" />
-  <meta name="twitter:description" content="Append-only logs, validated actor intentions, deterministic replay, and Pathlight export for AI agent systems." />
+  <meta name="twitter:description" content="Append-only logs, validated actor intentions, deterministic replay, MCP tooling, and Pathlight export for AI agent systems." />
   <meta name="twitter:image" content="https://syndicalt.github.io/eventloom/assets/hero.png" />
   <link rel="canonical" href="https://syndicalt.github.io/eventloom/" />
   <link rel="preload" as="image" href="assets/hero.png" />
@@ -62,7 +62,7 @@
         <h1>Event-sourced runtime for AI agents.</h1>
         <p class="tagline">
           Eventloom turns agent execution into an append-only event log with validated actor intentions,
-          deterministic replay, tamper-evident integrity, and optional Pathlight export.
+          deterministic replay, tamper-evident integrity, MCP tooling, and optional Pathlight export.
         </p>
         <div class="cta-row">
           <a class="btn btn-primary" href="#install">Get started</a>
@@ -101,8 +101,8 @@
         <p class="eyebrow">Replay</p>
         <h2>Deterministic projections</h2>
         <p>
-          Task, research, and effect state rebuild from the log. A replay gives you event counts,
-          integrity status, projections, and a deterministic projection hash for comparison.
+          Task, research, effect, and actor mailbox state rebuild from the log. A replay gives you
+          event counts, integrity status, projections, and a deterministic projection hash for comparison.
         </p>
       </article>
     </section>
@@ -149,6 +149,14 @@ await runtime.runBuiltIn("research-pipeline");
 const replay = await runtime.replay();
 console.log(replay.integrity.ok);</code></pre>
         </article>
+        <article class="install-card">
+          <h3>MCP</h3>
+          <pre><code>npx @eventloom/mcp --root .
+
+# tools include append, replay,
+# timeline, task explanation,
+# mailbox, workflows, and Pathlight export</code></pre>
+        </article>
       </div>
     </section>
 
@@ -159,12 +167,14 @@ console.log(replay.integrity.ok);</code></pre>
         <p>
           Eventloom now includes a repo-local Codex skill for recording agent goals, task lifecycle
           events, handoffs, verification, and replay summaries into a local JSONL log.
-          The MCP package exposes the same local log operations to editors and agent clients over stdio.
+          The MCP package exposes the same local log operations to editors and agent clients over stdio,
+          including rebuilt actor mailboxes through <code>eventloom_mailbox</code>.
         </p>
       </div>
       <div class="agent-links">
         <a class="btn btn-primary" href="https://github.com/syndicalt/eventloom/tree/master/.agents/skills/eventloom">Codex skill</a>
         <a class="btn btn-secondary" href="https://github.com/syndicalt/eventloom/blob/master/docs/agent-integration.md">Agent guide</a>
+        <a class="btn btn-secondary" href="https://github.com/syndicalt/eventloom/blob/master/docs/mcp-setup.md">MCP setup</a>
         <a class="btn btn-secondary" href="https://github.com/syndicalt/eventloom/blob/master/docs/mcp-package.md">MCP package</a>
       </div>
     </section>
