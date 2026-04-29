@@ -138,18 +138,23 @@ export function createSoftwareWorkRunners(): Record<string, ActorRunner> {
   };
 }
 
-export async function runSoftwareWorkRuntime(path: string): Promise<RuntimeLoopResult> {
-  await rm(path, { force: true });
+export async function runSoftwareWorkRuntime(path: string, options: { resume?: boolean } = {}): Promise<RuntimeLoopResult> {
+  if (!options.resume) {
+    await rm(path, { force: true });
+  }
 
   const store = new JsonlEventStore(path);
-  await store.append(createEvent({
-    id: "evt_runtime_goal",
-    type: "goal.created",
-    actorId: "user",
-    threadId: "thread_main",
-    parentEventId: null,
-    payload: { title: "Build deterministic actor runners" },
-  }));
+  const existing = await store.readAll();
+  if (existing.length === 0) {
+    await store.append(createEvent({
+      id: "evt_runtime_goal",
+      type: "goal.created",
+      actorId: "user",
+      threadId: "thread_main",
+      parentEventId: null,
+      payload: { title: "Build deterministic actor runners" },
+    }));
+  }
 
   return runRuntimeLoop(
     store,

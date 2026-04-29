@@ -22,8 +22,9 @@ npm install                              # Install dependencies
 npm test                                 # Run the Vitest suite
 npm run build                           # Compile TypeScript to dist/
 npm run threadline -- replay fixtures/sample.jsonl  # Replay a sample event log
+npm run threadline -- append /tmp/threadline-demo.jsonl goal.created --actor user --payload '{"title":"External goal"}'  # Append a sealed external event
 npm run threadline -- demo software-work /tmp/threadline-demo.jsonl  # Generate a deterministic demo log
-npm run threadline -- run software-work /tmp/threadline-run.jsonl  # Run deterministic actor loop
+npm run threadline -- run software-work /tmp/threadline-run.jsonl --resume  # Resume deterministic actor loop from an existing log
 npm run threadline -- timeline /tmp/threadline-demo.jsonl  # Show ordered event history
 npm run threadline -- explain task task_actor_intentions /tmp/threadline-demo.jsonl  # Explain task state
 npm run threadline -- mailbox worker /tmp/threadline-demo.jsonl  # Show rebuilt actor mailbox

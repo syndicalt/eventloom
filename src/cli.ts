@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { createSoftwareWorkRegistry } from "./actors.js";
 import { JsonlEventStore } from "./event-store.js";
+import { appendExternalEvent, parseJsonPayload } from "./ingest.js";
 import { formatMailbox, formatTaskExplanation, formatTimeline } from "./inspect.js";
 import { verifyEventChain } from "./integrity.js";
 import { buildMailbox } from "./mailbox.js";
@@ -12,6 +13,25 @@ import { runSoftwareWorkRuntime } from "./runners.js";
 async function main(argv: string[]): Promise<void> {
   const [command, path, extra, rest] = argv;
 
+  if (command === "append" && path && extra) {
+    const options = parseAppendOptions(argv.slice(3));
+    const event = await appendExternalEvent({
+      path,
+      type: extra,
+      actorId: options.actorId,
+      threadId: options.threadId,
+      parentEventId: options.parentEventId,
+      causedBy: options.causedBy,
+      payload: parseJsonPayload(options.payload),
+    });
+    console.log(JSON.stringify({
+      id: event.id,
+      hash: event.integrity.hash,
+      previousHash: event.integrity.previousHash,
+    }, null, 2));
+    return;
+  }
+
   if (command === "demo" && path === "software-work") {
     const outPath = extra ?? ".threadline/events.jsonl";
     await runSoftwareWorkDemo(outPath);
@@ -21,7 +41,7 @@ async function main(argv: string[]): Promise<void> {
 
   if (command === "run" && path === "software-work") {
     const outPath = extra ?? ".threadline/events.jsonl";
-    const result = await runSoftwareWorkRuntime(outPath);
+    const result = await runSoftwareWorkRuntime(outPath, { resume: argv.includes("--resume") });
     console.log(JSON.stringify({ path: outPath, ...result }, null, 2));
     return;
   }
@@ -68,12 +88,47 @@ async function main(argv: string[]): Promise<void> {
 }
 
 function printUsage(): void {
-  console.error("Usage: threadline replay <events.jsonl>");
+  console.error("Usage: threadline append <events.jsonl> <event.type> --actor <actorId> --payload '<json>'");
+  console.error("       threadline replay <events.jsonl>");
   console.error("       threadline demo software-work [events.jsonl]");
-  console.error("       threadline run software-work [events.jsonl]");
+  console.error("       threadline run software-work [events.jsonl] [--resume]");
   console.error("       threadline timeline <events.jsonl>");
   console.error("       threadline explain task <taskId> <events.jsonl>");
   console.error("       threadline mailbox <actorId> <events.jsonl>");
+}
+
+interface AppendOptions {
+  actorId: string;
+  threadId: string;
+  parentEventId: string | null;
+  causedBy: string[];
+  payload: string;
+}
+
+function parseAppendOptions(args: string[]): AppendOptions {
+  const options: AppendOptions = {
+    actorId: "external",
+    threadId: "thread_main",
+    parentEventId: null,
+    causedBy: [],
+    payload: "{}",
+  };
+
+  for (let index = 0; index < args.length; index += 1) {
+    const flag = args[index];
+    const value = args[index + 1];
+    if (!value) throw new Error("Missing value for " + flag);
+
+    if (flag === "--actor") options.actorId = value;
+    else if (flag === "--thread") options.threadId = value;
+    else if (flag === "--parent") options.parentEventId = value;
+    else if (flag === "--caused-by") options.causedBy = value.split(",").filter(Boolean);
+    else if (flag === "--payload") options.payload = value;
+    else throw new Error("Unknown append option " + flag);
+    index += 1;
+  }
+
+  return options;
 }
 
 main(process.argv.slice(2)).catch((error) => {

@@ -2,6 +2,7 @@ export * from "./actors.js";
 export * from "./demo.js";
 export * from "./event-store.js";
 export * from "./events.js";
+export * from "./ingest.js";
 export * from "./inspect.js";
 export * from "./integrity.js";
 export * from "./intentions.js";
