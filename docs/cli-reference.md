@@ -207,6 +207,7 @@ The export creates:
 
 - one Pathlight trace
 - one agent span per `actor.started` / `actor.completed` turn
+- for external agent journals without actor turns, one task lifecycle span per projected task
 - span events for related Eventloom events
 
 Trace metadata includes integrity, projection hash, projection kinds, runtime package metadata, thread IDs, and git provenance when available.

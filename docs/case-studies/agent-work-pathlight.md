@@ -30,20 +30,20 @@ Observed local export:
 
 ```json
 {
-  "traceId": "H2Zeka78vYjw0yfp28toP",
-  "spanCount": 0,
-  "eventCount": 0
+  "traceId": "eKtn859nGRTbG79N_airG",
+  "spanCount": 16,
+  "eventCount": 47
 }
 ```
 
-The span count is zero because `.eventloom/agent-work.jsonl` is an external journal. It records agent work facts directly and does not contain runtime `actor.started` / `actor.completed` turns. Pathlight still receives a trace with Eventloom integrity, projection, thread, runtime, and git metadata.
+The log is an external agent journal, so it does not contain runtime `actor.started` / `actor.completed` turns. Eventloom exports projected task lifecycles as Pathlight spans in this case. Each task span contains its task status, actor, history event ids, and span events for the task lifecycle events.
 
 ## What This Proves
 
 - Eventloom agent journals can be exported without changing their local JSONL workflow.
-- Pathlight can act as the visual inspection surface for trace metadata and provenance.
-- Runtime workflow logs with actor turn events will produce spans and span events; external agent journals currently produce trace-level context.
+- Pathlight can act as the visual inspection surface for task lifecycle spans, trace metadata, and provenance.
+- Runtime workflow logs with actor turn events produce actor-turn spans; external agent journals produce task-lifecycle spans.
 
 ## Product Implication
 
-The next useful Pathlight improvement is not a new exporter. It is a better visual affordance for Eventloom journal traces that have rich metadata but no actor spans, especially agent handoff summaries, decisions, verification events, and active task state.
+The next useful Pathlight improvement is a journal-oriented view that groups Eventloom task spans with handoff summaries, decisions, verification events, and active task state.
