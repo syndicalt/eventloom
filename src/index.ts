@@ -4,6 +4,7 @@ export * from "./effect-projection.js";
 export * from "./event-store.js";
 export * from "./events.js";
 export * from "./export/pathlight.js";
+export * from "./handoff.js";
 export * from "./ingest.js";
 export * from "./inspect.js";
 export * from "./integrity.js";

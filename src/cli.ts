@@ -2,6 +2,7 @@
 import { JsonlEventStore } from "./event-store.js";
 import { projectEffects } from "./effect-projection.js";
 import { exportToPathlight } from "./export/pathlight.js";
+import { formatHandoffSummary, summarizeHandoff } from "./handoff.js";
 import { appendExternalEvent, parseJsonPayload } from "./ingest.js";
 import { formatMailbox, formatTaskExplanation, formatTimeline } from "./inspect.js";
 import { verifyEventChain } from "./integrity.js";
@@ -91,6 +92,12 @@ async function main(argv: string[]): Promise<void> {
     return;
   }
 
+  if (command === "handoff" && path) {
+    const store = new JsonlEventStore(path);
+    console.log(formatHandoffSummary(summarizeHandoff(await store.readAll())));
+    return;
+  }
+
   if (command !== "replay" || !path) {
     printUsage();
     process.exitCode = 1;
@@ -126,6 +133,7 @@ function printUsage(): void {
   console.error("       eventloom timeline <events.jsonl>");
   console.error("       eventloom explain task <taskId> <events.jsonl>");
   console.error("       eventloom mailbox <actorId> <events.jsonl>");
+  console.error("       eventloom handoff <events.jsonl>");
 }
 
 interface ExportOptions {
