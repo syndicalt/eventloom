@@ -1,6 +1,6 @@
 # Release Checklist
 
-Threadline publishes as `@syndicalt/threadline`.
+Eventloom runtime publishes as `@eventloom/runtime`.
 
 ## Preflight
 
@@ -26,8 +26,8 @@ npm_config_cache=/tmp/threadline-npm-cache npm pack
 mkdir -p /tmp/threadline-consumer
 cd /tmp/threadline-consumer
 npm init -y
-npm install /path/to/threadline/syndicalt-threadline-0.1.0.tgz
-node --input-type=module -e "import { createRuntime } from '@syndicalt/threadline'; console.log(typeof createRuntime)"
+npm install /path/to/threadline/eventloom-runtime-0.1.0.tgz
+node --input-type=module -e "import { createRuntime } from '@eventloom/runtime'; console.log(typeof createRuntime)"
 npx threadline replay /path/to/threadline/fixtures/sample.jsonl
 ```
 
@@ -50,6 +50,6 @@ git push origin master --tags
 ## Notes
 
 - `prepack` runs tests and build before packing or publishing.
-- Threadline is ESM-only.
+- `@eventloom/runtime` is ESM-only.
 - Node.js `>=20` is required.
 - Do not publish from a dirty worktree.

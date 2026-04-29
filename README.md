@@ -1,6 +1,6 @@
 # Threadline
 
-Threadline is a local-first TypeScript runtime for multi-agent systems built around an append-only event log.
+Threadline is the prototype name for the Eventloom runtime, a local-first TypeScript runtime for multi-agent systems built around an append-only event log.
 
 Instead of treating an agent run as a linear `system/user/assistant` transcript, Threadline models runtime state as typed events. Actors receive mailbox items, emit structured intentions, and an orchestrator validates those intentions before appending accepted events. Projections rebuild state from the log, so a run can be replayed and inspected after the fact.
 
@@ -50,7 +50,7 @@ npm run threadline -- run human-ops /tmp/threadline-human-ops.jsonl --resume
 ## Use as a Library
 
 ```ts
-import { createRuntime } from "@syndicalt/threadline";
+import { createRuntime } from "@eventloom/runtime";
 
 const runtime = createRuntime("/tmp/threadline.jsonl");
 await runtime.runBuiltIn("research-pipeline");
@@ -60,7 +60,7 @@ console.log(replay.integrity.ok);
 console.log(replay.projection.research);
 ```
 
-See [Package API](docs/package-api.md) for the full package-facing API.
+The npm package is published as `@eventloom/runtime`. See [Package API](docs/package-api.md) for the full package-facing API.
 
 ## Documentation
 

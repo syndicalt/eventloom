@@ -1,5 +1,5 @@
 {
-  "name": "@syndicalt/threadline",
+  "name": "@eventloom/runtime",
   "version": "0.1.0",
   "type": "module",
   "description": "Append-only event-log runtime for multi-agent AI systems",

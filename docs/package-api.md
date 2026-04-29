@@ -1,13 +1,13 @@
 # Package API
 
-Threadline can be used as a library without assembling the event store, orchestrator, runners, and projections manually.
+Threadline can be used as a library through the `@eventloom/runtime` package without assembling the event store, orchestrator, runners, and projections manually.
 
 The package API is local-first. It reads and writes JSONL event logs directly. Docker Compose is not required for Threadline itself; it is only useful when you want to run optional infrastructure such as the Pathlight collector and dashboard.
 
 ## Create a Runtime
 
 ```ts
-import { createRuntime } from "@syndicalt/threadline";
+import { createRuntime } from "@eventloom/runtime";
 
 const runtime = createRuntime("/tmp/threadline.jsonl");
 ```
@@ -82,7 +82,7 @@ interface RuntimeReplay {
 For custom actor registries, submit intentions through the runtime facade:
 
 ```ts
-import { ActorRegistry, createRuntime } from "@syndicalt/threadline";
+import { ActorRegistry, createRuntime } from "@eventloom/runtime";
 
 const actors = new ActorRegistry();
 actors.register({
