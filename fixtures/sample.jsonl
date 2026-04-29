@@ -1,0 +1,2 @@
+{"id":"evt_goal_created","type":"goal.created","actorId":"user","threadId":"thread_main","parentEventId":null,"causedBy":[],"timestamp":"2026-04-28T22:00:00.000Z","payload":{"title":"Build Threadline runtime MVP"}}
+{"id":"evt_task_proposed","type":"task.proposed","actorId":"planner","threadId":"thread_main","parentEventId":"evt_goal_created","causedBy":["evt_goal_created"],"timestamp":"2026-04-28T22:01:00.000Z","payload":{"taskId":"task_event_store","title":"Implement append-only JSONL event store"}}

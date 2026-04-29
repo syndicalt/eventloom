@@ -1,0 +1,26 @@
+{
+  "name": "threadline",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Append-only event-log runtime for multi-agent AI systems",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "threadline": "tsx src/cli.ts"
+  },
+  "bin": {
+    "threadline": "./dist/cli.js"
+  },
+  "dependencies": {
+    "nanoid": "^5.0.9",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  },
+  "license": "MIT"
+}
