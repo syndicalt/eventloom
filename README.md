@@ -96,7 +96,7 @@ console.log(replay.projection.research);
 
 The npm package is published as `@eventloom/runtime`. See [Package API](docs/package-api.md) for the full package-facing API.
 
-The MCP server package lives in `packages/mcp` as `@eventloom/mcp`. It exposes Eventloom log operations to local MCP clients over stdio. See [MCP Package Design](docs/mcp-package.md) for the tool contract and release criteria.
+The MCP server package lives in `packages/mcp` as `@eventloom/mcp`. It exposes Eventloom log operations to local MCP clients over stdio. See [MCP Setup](docs/mcp-setup.md) for editor setup and [MCP Package Design](docs/mcp-package.md) for the tool contract.
 
 ## Documentation
 
@@ -105,6 +105,7 @@ The MCP server package lives in `packages/mcp` as `@eventloom/mcp`. It exposes E
 - [CLI Reference](docs/cli-reference.md)
 - [Package API](docs/package-api.md)
 - [Agent Integration](docs/agent-integration.md)
+- [MCP Setup](docs/mcp-setup.md)
 - [MCP Package Design](docs/mcp-package.md)
 - [Architecture](docs/architecture.md)
 - [Event Model](docs/event-model.md)
@@ -136,3 +137,5 @@ The original prototype roadmap is implemented:
 - Human-in-the-loop effect approval workflow
 - Runtime provenance metadata
 - Public package API
+- Agent integration workflow and Codex skill
+- MCP stdio server package

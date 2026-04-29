@@ -1,16 +1,15 @@
 #!/usr/bin/env node
-import { createSoftwareWorkRegistry } from "./actors.js";
 import { JsonlEventStore } from "./event-store.js";
 import { projectEffects } from "./effect-projection.js";
 import { exportToPathlight } from "./export/pathlight.js";
 import { appendExternalEvent, parseJsonPayload } from "./ingest.js";
 import { formatMailbox, formatTaskExplanation, formatTimeline } from "./inspect.js";
 import { verifyEventChain } from "./integrity.js";
-import { buildMailbox } from "./mailbox.js";
 import { eventTypeCounts, projectionHash } from "./projection.js";
 import { projectResearch } from "./research-projection.js";
 import { projectTasks } from "./task-projection.js";
 import { runSoftwareWorkDemo } from "./demo.js";
+import { createRuntime } from "./runtime.js";
 import { runHumanOpsRuntime, runResearchPipelineRuntime, runSoftwareWorkRuntime } from "./runners.js";
 
 async function main(argv: string[]): Promise<void> {
@@ -87,9 +86,8 @@ async function main(argv: string[]): Promise<void> {
   }
 
   if (command === "mailbox" && path && extra) {
-    const store = new JsonlEventStore(extra);
-    const registry = createSoftwareWorkRegistry();
-    console.log(formatMailbox(path, buildMailbox(registry, path, await store.readAll())));
+    const runtime = createRuntime(extra);
+    console.log(formatMailbox(path, await runtime.mailbox("software-work", path)));
     return;
   }
 

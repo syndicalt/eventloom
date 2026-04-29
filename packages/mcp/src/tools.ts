@@ -1,11 +1,18 @@
 import {
   appendExternalEvent,
+  buildMailbox,
   createRuntime,
+  createHumanOpsRegistry,
+  createResearchPipelineRegistry,
+  createSoftwareWorkRegistry,
+  formatMailbox,
   formatTaskExplanation,
   formatTimeline,
   projectTasks,
+  type ActorRegistry,
   type BuiltInWorkflow,
   type EventEnvelope,
+  type MailboxItem,
   type RuntimeReplay,
 } from "@eventloom/runtime";
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
@@ -41,6 +48,12 @@ export const ExplainTaskInputSchema = z.object({
 
 export const BuiltInWorkflowSchema = z.enum(["software-work", "research-pipeline", "human-ops"]);
 
+export const MailboxInputSchema = z.object({
+  path: z.string().min(1),
+  workflow: BuiltInWorkflowSchema.default("software-work"),
+  actorId: z.string().min(1),
+});
+
 export const RunBuiltInInputSchema = z.object({
   path: z.string().min(1),
   workflow: BuiltInWorkflowSchema,
@@ -58,6 +71,7 @@ export type AppendInput = z.infer<typeof AppendInputSchema>;
 export type ReplayInput = z.infer<typeof ReplayInputSchema>;
 export type TimelineInput = z.infer<typeof TimelineInputSchema>;
 export type ExplainTaskInput = z.infer<typeof ExplainTaskInputSchema>;
+export type MailboxInput = z.infer<typeof MailboxInputSchema>;
 export type RunBuiltInInput = z.infer<typeof RunBuiltInInputSchema>;
 export type ExportPathlightInput = z.infer<typeof ExportPathlightInputSchema>;
 
@@ -106,6 +120,20 @@ export async function explainTask(config: ServerConfig, input: ExplainTaskInput)
   });
 }
 
+export async function mailbox(config: ServerConfig, input: MailboxInput): Promise<CallToolResult> {
+  const runtime = createRuntime(resolveLogPath(config, input.path));
+  const items = buildMailbox(registryForWorkflow(input.workflow as BuiltInWorkflow), input.actorId, await runtime.readAll());
+  return toolResult({
+    text: formatMailbox(input.actorId, items),
+    actorId: input.actorId,
+    workflow: input.workflow,
+    items: items.map((item: MailboxItem) => ({
+      event: eventSummary(item.event),
+      task: item.task ?? null,
+    })),
+  });
+}
+
 export async function runBuiltIn(config: ServerConfig, input: RunBuiltInInput): Promise<CallToolResult> {
   const path = resolveLogPath(config, input.path);
   const runtime = createRuntime(path);
@@ -130,6 +158,12 @@ function compactReplay(replay: RuntimeReplay): Record<string, unknown> {
     integrity: replay.integrity,
     projectionHash: replay.projectionHash,
   };
+}
+
+function registryForWorkflow(workflow: BuiltInWorkflow): ActorRegistry {
+  if (workflow === "software-work") return createSoftwareWorkRegistry();
+  if (workflow === "research-pipeline") return createResearchPipelineRegistry();
+  return createHumanOpsRegistry();
 }
 
 function eventSummary(event: EventEnvelope): Record<string, unknown> {

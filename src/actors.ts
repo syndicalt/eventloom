@@ -5,6 +5,8 @@ export interface ActorDefinition {
   intentions: string[];
 }
 
+export type BuiltInWorkflow = "software-work" | "research-pipeline" | "human-ops";
+
 export class ActorRegistry {
   private readonly actors = new Map<string, ActorDefinition>();
 
@@ -52,6 +54,12 @@ export function createSoftwareWorkRegistry(): ActorRegistry {
   });
 
   return actors;
+}
+
+export function createBuiltInRegistry(workflow: BuiltInWorkflow): ActorRegistry {
+  if (workflow === "software-work") return createSoftwareWorkRegistry();
+  if (workflow === "research-pipeline") return createResearchPipelineRegistry();
+  return createHumanOpsRegistry();
 }
 
 export function createResearchPipelineRegistry(): ActorRegistry {

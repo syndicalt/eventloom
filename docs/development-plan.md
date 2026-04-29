@@ -230,33 +230,35 @@ Sprints 0-6 are implemented for the local prototype:
 - Human-in-the-loop effect approvals with external approval ingestion and resume.
 - Git/project provenance and projection metadata in Pathlight exports.
 - Documented package API around runtime primitives.
+- Agent adoption docs and Codex skill workflow for local Eventloom journaling.
+- MCP package in `packages/mcp` with append, replay, timeline, task explanation, built-in workflow, and Pathlight export tools.
+- MCP package tests for tool adapters, path safety, stdio smoke coverage, and Pathlight export behavior.
+- Stable built-in workflow mailbox API and MCP `eventloom_mailbox` tool.
 
 ## Next Milestones
 
-### Phase 2: Agent Adoption Layer
+### Phase 4: Client Setup And Adoption
 
-Goal: make Eventloom useful to coding agents before adding a server protocol.
-
-Deliverables:
-
-- Codex skill in `.agents/skills/eventloom`.
-- Neutral agent integration guide in `docs/agent-integration.md`.
-- Dogfood workflow for recording Eventloom roadmap work into `.eventloom/agent-work.jsonl`.
-- Public docs and site updates once the workflow language stabilizes.
-
-Verification: an agent can create an Eventloom log, append projected task events, replay the log, inspect task state, and summarize the projection hash without bespoke setup.
-
-### Phase 3: MCP Package
-
-Goal: expose proven Eventloom operations to MCP clients and editors.
+Goal: make the shipped agent and MCP workflows easy to configure in real editors and agent clients.
 
 Deliverables:
 
-- Separate package: `@eventloom/mcp`.
-- Package design in [`docs/mcp-package.md`](mcp-package.md).
-- MCP tools for append, replay, timeline, task explanation, built-in workflow runs, and Pathlight export.
-- Fixture-backed tests that validate tool outputs against the CLI/runtime behavior.
-- Stdio smoke coverage for append and replay through the MCP protocol.
-- Client setup docs for Codex and Claude.
+- Codex MCP setup guide that points at `@eventloom/mcp` or a local checkout.
+- Claude Desktop MCP setup guide.
+- Direct MCP inspector smoke-test instructions.
+- Public docs and site updates for the MCP package and agent workflow.
 
-Verification: an MCP client can append events, replay a log, and inspect a task without shelling out manually.
+Verification: a fresh local client can append events, replay a log, inspect task state, and run the MCP stdio server using documented setup only.
+
+### Phase 5: Roadmap Selection
+
+Goal: choose the next runtime or integration milestone now that the local runtime, package API, Pathlight export, agent workflow, and MCP adapter are usable.
+
+Candidates:
+
+- Richer handoff summaries over `.eventloom/agent-work.jsonl`.
+- SQLite/libSQL store spike for indexed local queries.
+- Pathlight dashboard affordance if generic trace/span views are not enough.
+- Additional workflow families beyond software-work, research-pipeline, and human-ops.
+
+Verification: one candidate is selected with acceptance criteria, tests, and an updated decision note when the choice affects the Pathlight boundary or persistence model.

@@ -34,6 +34,22 @@ describe("public package API", () => {
     expect((await runtime.replay()).projection.tasks.tasks.task_actor_runtime.status).toBe("approved");
   });
 
+  it("rebuilds built-in actor mailboxes through the facade", async () => {
+    const path = await tempLog();
+    const runtime = createRuntime(path);
+    await runtime.append({
+      type: "goal.created",
+      actorId: "user",
+      threadId: "thread_main",
+      payload: { title: "Package API mailbox" },
+    });
+
+    const mailbox = await runtime.mailbox("software-work", "planner");
+
+    expect(mailbox).toHaveLength(1);
+    expect(mailbox[0].event.type).toBe("goal.created");
+  });
+
   it("appends external events and exports through injected fetch", async () => {
     const path = await tempLog();
     const runtime = createRuntime(path);
