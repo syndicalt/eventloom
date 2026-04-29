@@ -231,4 +231,30 @@ Sprints 0-6 are implemented for the local prototype:
 - Git/project provenance and projection metadata in Pathlight exports.
 - Documented package API around runtime primitives.
 
-Next, choose a new runtime milestone beyond the original roadmap.
+## Next Milestones
+
+### Phase 2: Agent Adoption Layer
+
+Goal: make Eventloom useful to coding agents before adding a server protocol.
+
+Deliverables:
+
+- Codex skill in `.agents/skills/eventloom`.
+- Neutral agent integration guide in `docs/agent-integration.md`.
+- Dogfood workflow for recording Eventloom roadmap work into `.eventloom/agent-work.jsonl`.
+- Public docs and site updates once the workflow language stabilizes.
+
+Verification: an agent can create an Eventloom log, append projected task events, replay the log, inspect task state, and summarize the projection hash without bespoke setup.
+
+### Phase 3: MCP Package
+
+Goal: expose proven Eventloom operations to MCP clients and editors.
+
+Deliverables:
+
+- Separate package: `@eventloom/mcp`.
+- MCP tools for append, replay, timeline, task explanation, mailbox inspection, and Pathlight export.
+- Fixture-backed tests that validate tool outputs against the CLI/runtime behavior.
+- Client setup docs after the tool surface is stable.
+
+Verification: an MCP client can append events, replay a log, and inspect a task without shelling out manually.

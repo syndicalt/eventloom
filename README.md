@@ -102,6 +102,7 @@ The npm package is published as `@eventloom/runtime`. See [Package API](docs/pac
 - [User Guide](docs/user-guide.md)
 - [CLI Reference](docs/cli-reference.md)
 - [Package API](docs/package-api.md)
+- [Agent Integration](docs/agent-integration.md)
 - [Architecture](docs/architecture.md)
 - [Event Model](docs/event-model.md)
 - [Workflow Guide](docs/workflows.md)

@@ -270,6 +270,7 @@ h3 {
 
 .diagram,
 .install,
+.agents,
 .pathlight {
   padding: 76px clamp(20px, 5vw, 72px);
 }
@@ -359,6 +360,7 @@ code {
   font-size: 0.9rem;
 }
 
+.agents,
 .pathlight {
   display: flex;
   align-items: center;
@@ -368,8 +370,19 @@ code {
   background: #fff;
 }
 
+.agents {
+  background: var(--soft);
+}
+
+.agents > div,
 .pathlight > div {
   max-width: 740px;
+}
+
+.agent-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
 footer {
@@ -418,6 +431,7 @@ footer span:last-child {
     text-align: center;
   }
 
+  .agents,
   .pathlight,
   footer {
     align-items: flex-start;

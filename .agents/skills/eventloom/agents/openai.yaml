@@ -1,0 +1,3 @@
+display_name: Eventloom
+short_description: Record and replay agent event logs.
+default_prompt: Use Eventloom to track this agent workflow with an append-only event log, replay it, and summarize the resulting state.
