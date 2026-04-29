@@ -26,6 +26,13 @@ describe("Pathlight export", () => {
       baseUrl: "http://pathlight.test",
       traceName: "threadline-test",
       fetchImpl: fetchImpl as typeof fetch,
+      provenance: {
+        packageName: "threadline",
+        packageVersion: "0.1.0",
+        gitCommit: "abc123",
+        gitBranch: "main",
+        gitDirty: true,
+      },
     });
 
     expect(result.traceId).toBe("trace_1");
@@ -39,6 +46,22 @@ describe("Pathlight export", () => {
     expect(traceCreate.metadata.source).toBe("threadline");
     expect(traceCreate.metadata.integrity.ok).toBe(true);
     expect(typeof traceCreate.metadata.projectionHash).toBe("string");
+    expect(traceCreate.metadata.projectionKinds).toEqual(["tasks"]);
+    expect(traceCreate.metadata.runtime).toEqual({ name: "threadline", version: "0.1.0" });
+    expect(traceCreate.gitCommit).toBe("abc123");
+    expect(traceCreate.gitBranch).toBe("main");
+    expect(traceCreate.gitDirty).toBe(true);
+
+    const spanPatches = calls.filter((call) => (
+      call.init.method === "PATCH" &&
+      call.url.startsWith("http://pathlight.test/v1/spans/span_")
+    ));
+    expect(spanPatches).toHaveLength(5);
+    for (const call of spanPatches) {
+      const body = JSON.parse(String(call.init.body));
+      expect(body.output.rejectedEvents).toBeUndefined();
+      expect(body.output.rejectionEventIds).toBeUndefined();
+    }
   });
 });
 

@@ -1,12 +1,17 @@
 import type { EventEnvelope } from "../events.js";
+import { projectEffects } from "../effect-projection.js";
 import { verifyEventChain } from "../integrity.js";
 import { projectionHash } from "../projection.js";
+import { collectRuntimeProvenance, type RuntimeProvenance } from "../provenance.js";
+import { projectResearch } from "../research-projection.js";
 import { projectTasks } from "../task-projection.js";
 
 export interface PathlightExportOptions {
   baseUrl: string;
   traceName?: string;
   fetchImpl?: typeof fetch;
+  provenance?: RuntimeProvenance;
+  provenanceImpl?: () => Promise<RuntimeProvenance>;
 }
 
 export interface PathlightExportResult {
@@ -25,7 +30,10 @@ export async function exportToPathlight(
 ): Promise<PathlightExportResult> {
   const fetcher = options.fetchImpl ?? fetch;
   const baseUrl = options.baseUrl.replace(/\/$/, "");
+  const provenance = options.provenance ?? await (options.provenanceImpl ?? collectRuntimeProvenance)();
+  const effects = projectEffects(events);
   const integrity = verifyEventChain(events);
+  const research = projectResearch(events);
   const tasks = projectTasks(events);
   const trace = await post<JsonResponse>(fetcher, `${baseUrl}/v1/traces`, {
     name: options.traceName ?? "threadline-runtime",
@@ -33,10 +41,18 @@ export async function exportToPathlight(
     metadata: {
       source: "threadline",
       integrity,
-      projectionHash: projectionHash({ eventTypes: eventTypeCounts(events), tasks }),
+      projectionHash: projectionHash({ effects, eventTypes: eventTypeCounts(events), research, tasks }),
+      projectionKinds: projectionKinds({ effects, research, tasks }),
+      runtime: {
+        name: provenance.packageName,
+        version: provenance.packageVersion,
+      },
       threadIds: [...new Set(events.map((event) => event.threadId))],
     },
     tags: ["threadline"],
+    gitCommit: provenance.gitCommit ?? undefined,
+    gitBranch: provenance.gitBranch ?? undefined,
+    gitDirty: provenance.gitDirty ?? undefined,
   });
 
   if (!trace.id) throw new Error("Pathlight trace create response did not include id");
@@ -83,7 +99,7 @@ export async function exportToPathlight(
 
     await patch(fetcher, `${baseUrl}/v1/spans/${span.id}`, {
       status: completed ? "completed" : "failed",
-      output: completed?.payload ?? null,
+      output: completed ? spanOutput(completed) : null,
       error: completed ? undefined : "Missing actor.completed event",
     });
   }
@@ -95,6 +111,22 @@ export async function exportToPathlight(
   });
 
   return { traceId: trace.id, spanCount, eventCount: pathlightEventCount };
+}
+
+function spanOutput(completed: EventEnvelope): Record<string, unknown> {
+  const rejected = asStringArray(completed.payload.rejectedEvents);
+  const output: Record<string, unknown> = {
+    turnId: completed.payload.turnId,
+    sourceEventId: completed.payload.sourceEventId,
+    intentions: completed.payload.intentions,
+    acceptedEvents: completed.payload.acceptedEvents,
+  };
+
+  if (rejected.length > 0) {
+    output.rejectionEventIds = rejected;
+  }
+
+  return output;
 }
 
 function relatedEventIds(started: EventEnvelope, completed?: EventEnvelope): string[] {
@@ -118,6 +150,18 @@ function eventTypeCounts(events: readonly EventEnvelope[]): Record<string, numbe
     counts[event.type] = (counts[event.type] ?? 0) + 1;
     return counts;
   }, {});
+}
+
+function projectionKinds(projections: {
+  effects: ReturnType<typeof projectEffects>;
+  research: ReturnType<typeof projectResearch>;
+  tasks: ReturnType<typeof projectTasks>;
+}): string[] {
+  const kinds = [];
+  if (Object.keys(projections.effects.effects).length > 0) kinds.push("effects");
+  if (Object.keys(projections.research.questions).length > 0) kinds.push("research");
+  if (Object.keys(projections.tasks.tasks).length > 0) kinds.push("tasks");
+  return kinds;
 }
 
 async function post<T>(fetcher: typeof fetch, url: string, body: unknown): Promise<T> {

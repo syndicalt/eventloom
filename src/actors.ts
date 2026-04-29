@@ -53,3 +53,63 @@ export function createSoftwareWorkRegistry(): ActorRegistry {
 
   return actors;
 }
+
+export function createResearchPipelineRegistry(): ActorRegistry {
+  const actors = new ActorRegistry();
+  actors.register({
+    id: "researcher",
+    role: "Find sources for research questions",
+    subscriptions: ["research.question.created"],
+    intentions: ["source.find"],
+  });
+  actors.register({
+    id: "analyst",
+    role: "Extract claims from sources",
+    subscriptions: ["source.found"],
+    intentions: ["claim.extract"],
+  });
+  actors.register({
+    id: "critic",
+    role: "Challenge extracted claims",
+    subscriptions: ["claim.extracted"],
+    intentions: ["claim.challenge"],
+  });
+  actors.register({
+    id: "writer",
+    role: "Draft report sections from reviewed claims",
+    subscriptions: ["claim.challenged"],
+    intentions: ["report.draftSection"],
+  });
+  actors.register({
+    id: "editor",
+    role: "Finalize research reports",
+    subscriptions: ["report.section.drafted"],
+    intentions: ["report.finalize"],
+  });
+
+  return actors;
+}
+
+export function createHumanOpsRegistry(): ActorRegistry {
+  const actors = new ActorRegistry();
+  actors.register({
+    id: "responder",
+    role: "Propose effects for external alerts",
+    subscriptions: ["external.alert.received"],
+    intentions: ["effect.request"],
+  });
+  actors.register({
+    id: "safety",
+    role: "Request human approval for proposed effects",
+    subscriptions: ["effect.requested"],
+    intentions: ["approval.request"],
+  });
+  actors.register({
+    id: "applier",
+    role: "Apply approved effects",
+    subscriptions: ["approval.granted"],
+    intentions: ["effect.apply"],
+  });
+
+  return actors;
+}

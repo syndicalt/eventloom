@@ -1,15 +1,17 @@
 #!/usr/bin/env node
 import { createSoftwareWorkRegistry } from "./actors.js";
 import { JsonlEventStore } from "./event-store.js";
+import { projectEffects } from "./effect-projection.js";
 import { exportToPathlight } from "./export/pathlight.js";
 import { appendExternalEvent, parseJsonPayload } from "./ingest.js";
 import { formatMailbox, formatTaskExplanation, formatTimeline } from "./inspect.js";
 import { verifyEventChain } from "./integrity.js";
 import { buildMailbox } from "./mailbox.js";
 import { eventTypeCounts, projectionHash } from "./projection.js";
+import { projectResearch } from "./research-projection.js";
 import { projectTasks } from "./task-projection.js";
 import { runSoftwareWorkDemo } from "./demo.js";
-import { runSoftwareWorkRuntime } from "./runners.js";
+import { runHumanOpsRuntime, runResearchPipelineRuntime, runSoftwareWorkRuntime } from "./runners.js";
 
 async function main(argv: string[]): Promise<void> {
   const [command, path, extra, rest] = argv;
@@ -43,6 +45,20 @@ async function main(argv: string[]): Promise<void> {
   if (command === "run" && path === "software-work") {
     const outPath = extra ?? ".threadline/events.jsonl";
     const result = await runSoftwareWorkRuntime(outPath, { resume: argv.includes("--resume") });
+    console.log(JSON.stringify({ path: outPath, ...result }, null, 2));
+    return;
+  }
+
+  if (command === "run" && path === "research-pipeline") {
+    const outPath = extra ?? ".threadline/research-events.jsonl";
+    const result = await runResearchPipelineRuntime(outPath, { resume: argv.includes("--resume") });
+    console.log(JSON.stringify({ path: outPath, ...result }, null, 2));
+    return;
+  }
+
+  if (command === "run" && path === "human-ops") {
+    const outPath = extra ?? ".threadline/human-ops-events.jsonl";
+    const result = await runHumanOpsRuntime(outPath, { resume: argv.includes("--resume") });
     console.log(JSON.stringify({ path: outPath, ...result }, null, 2));
     return;
   }
@@ -88,6 +104,8 @@ async function main(argv: string[]): Promise<void> {
   const integrity = verifyEventChain(events);
   const projection = {
     eventTypes: eventTypeCounts(events),
+    effects: projectEffects(events),
+    research: projectResearch(events),
     tasks: projectTasks(events),
   };
 
@@ -104,6 +122,8 @@ function printUsage(): void {
   console.error("       threadline replay <events.jsonl>");
   console.error("       threadline demo software-work [events.jsonl]");
   console.error("       threadline run software-work [events.jsonl] [--resume]");
+  console.error("       threadline run research-pipeline [events.jsonl] [--resume]");
+  console.error("       threadline run human-ops [events.jsonl] [--resume]");
   console.error("       threadline export pathlight <events.jsonl> --base-url <url> [--trace-name <name>]");
   console.error("       threadline timeline <events.jsonl>");
   console.error("       threadline explain task <taskId> <events.jsonl>");

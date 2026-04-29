@@ -217,6 +217,18 @@ A CLI proves the runtime semantics faster than a dashboard. Pathlight already pr
 - Event schemas can become too generic. Keep the first use case concrete.
 - Effects need a safety model before filesystem or API mutation is allowed.
 
-## Near-Term Next Step
+## Current Status
 
-Bootstrap the TypeScript project and implement Sprint 1. Do not build actor abstractions until append, replay, validation, and projection hashing are working.
+Sprints 0-6 are implemented for the local prototype:
+
+- JSONL event storage, validation, replay, and projection hashing.
+- Task, actor, thread, mailbox, and causal inspection surfaces.
+- Actor registry, intention validation, orchestrated software-work runtime, and processed markers.
+- External event ingestion and tamper-evident event-chain verification.
+- Pathlight export adapter verified against a local collector.
+- Multi-agent research pipeline as a second deterministic workflow.
+- Human-in-the-loop effect approvals with external approval ingestion and resume.
+- Git/project provenance and projection metadata in Pathlight exports.
+- Documented package API around runtime primitives.
+
+Next, choose a new runtime milestone beyond the original roadmap.

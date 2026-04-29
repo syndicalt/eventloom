@@ -1,12 +1,14 @@
 import { rm } from "node:fs/promises";
 import type { ActorDefinition, ActorRegistry } from "./actors.js";
-import { createSoftwareWorkRegistry } from "./actors.js";
+import { createHumanOpsRegistry, createResearchPipelineRegistry, createSoftwareWorkRegistry } from "./actors.js";
 import { JsonlEventStore } from "./event-store.js";
 import { createEvent, type EventEnvelope } from "./events.js";
+import { projectEffects } from "./effect-projection.js";
 import type { Intention } from "./intentions.js";
 import { buildMailboxForActor, type MailboxItem } from "./mailbox.js";
 import { Orchestrator } from "./orchestrator.js";
 import { canonicalJson } from "./projection.js";
+import { projectResearch } from "./research-projection.js";
 
 export interface ActorRunnerContext {
   actor: ActorDefinition;
@@ -196,6 +198,134 @@ export function createSoftwareWorkRunners(): Record<string, ActorRunner> {
   };
 }
 
+export function createResearchPipelineRunners(): Record<string, ActorRunner> {
+  return {
+    researcher: ({ mailbox }) => mailbox
+      .filter((item) => item.event.type === "research.question.created")
+      .map((item) => ({
+        type: "source.find",
+        actorId: "researcher",
+        threadId: item.event.threadId,
+        parentEventId: item.event.id,
+        causedBy: [item.event.id],
+        payload: {
+          questionId: String(item.event.payload.questionId),
+          sourceId: "source_runtime_notes",
+          title: "Runtime design notes",
+          url: "threadline://fixtures/runtime-design-notes",
+        },
+      })),
+    analyst: ({ mailbox }) => mailbox
+      .filter((item) => item.event.type === "source.found")
+      .map((item) => ({
+        type: "claim.extract",
+        actorId: "analyst",
+        threadId: item.event.threadId,
+        parentEventId: item.event.id,
+        causedBy: [item.event.id],
+        payload: {
+          questionId: String(item.event.payload.questionId),
+          sourceId: String(item.event.payload.sourceId),
+          claimId: "claim_evented_runtime",
+          text: "Evented runtimes preserve causality better than transcript-only workflows.",
+        },
+      })),
+    critic: ({ mailbox }) => mailbox
+      .filter((item) => item.event.type === "claim.extracted")
+      .map((item) => ({
+        type: "claim.challenge",
+        actorId: "critic",
+        threadId: item.event.threadId,
+        parentEventId: item.event.id,
+        causedBy: [item.event.id],
+        payload: {
+          questionId: String(item.event.payload.questionId),
+          claimId: String(item.event.payload.claimId),
+          challengeId: "challenge_causality",
+          verdict: "supported_for_local_replay",
+        },
+      })),
+    writer: ({ mailbox }) => mailbox
+      .filter((item) => item.event.type === "claim.challenged")
+      .map((item) => ({
+        type: "report.draftSection",
+        actorId: "writer",
+        threadId: item.event.threadId,
+        parentEventId: item.event.id,
+        causedBy: [item.event.id],
+        payload: {
+          questionId: String(item.event.payload.questionId),
+          sectionId: "section_runtime_model",
+          title: "Runtime model",
+          content: "Threadline coordinates research as validated actor turns over an append-only log.",
+        },
+      })),
+    editor: ({ mailbox }) => mailbox
+      .filter((item) => item.event.type === "report.section.drafted")
+      .map((item) => ({
+        type: "report.finalize",
+        actorId: "editor",
+        threadId: item.event.threadId,
+        parentEventId: item.event.id,
+        causedBy: [item.event.id],
+        payload: {
+          questionId: String(item.event.payload.questionId),
+          reportId: "report_runtime_model",
+          summary: "Threadline's evented runtime gives research actors replayable state and provenance.",
+        },
+      })),
+  };
+}
+
+export function createHumanOpsRunners(): Record<string, ActorRunner> {
+  return {
+    responder: ({ mailbox }) => mailbox
+      .filter((item) => item.event.type === "external.alert.received")
+      .map((item) => ({
+        type: "effect.request",
+        actorId: "responder",
+        threadId: item.event.threadId,
+        parentEventId: item.event.id,
+        causedBy: [item.event.id],
+        payload: {
+          effectId: "effect_runtime_mitigation",
+          action: "notify",
+          target: "ops-on-call",
+          description: `Investigate ${String(item.event.payload.title ?? "external alert")}`,
+        },
+      })),
+    safety: ({ mailbox }) => mailbox
+      .filter((item) => item.event.type === "effect.requested")
+      .map((item) => ({
+        type: "approval.request",
+        actorId: "safety",
+        threadId: item.event.threadId,
+        parentEventId: item.event.id,
+        causedBy: [item.event.id],
+        payload: {
+          effectId: String(item.event.payload.effectId),
+          approvalId: "approval_runtime_mitigation",
+          reason: "Human approval required before applying operational effects.",
+        },
+      })),
+    applier: ({ mailbox }) => mailbox
+      .filter((item) => item.event.type === "approval.granted")
+      .map((item) => ({
+        type: "effect.apply",
+        actorId: "applier",
+        threadId: item.event.threadId,
+        parentEventId: item.event.id,
+        causedBy: [item.event.id],
+        payload: {
+          effectId: String(item.event.payload.effectId),
+          action: "notify",
+          target: "ops-on-call",
+          description: "Human-approved mitigation notification recorded.",
+        },
+      })),
+  };
+}
+
 export async function runSoftwareWorkRuntime(path: string, options: { resume?: boolean } = {}): Promise<RuntimeLoopResult> {
   if (!options.resume) {
     await rm(path, { force: true });
@@ -219,4 +349,75 @@ export async function runSoftwareWorkRuntime(path: string, options: { resume?: b
     createSoftwareWorkRegistry(),
     createSoftwareWorkRunners(),
   );
+}
+
+export async function runResearchPipelineRuntime(path: string, options: { resume?: boolean } = {}): Promise<RuntimeLoopResult> {
+  if (!options.resume) {
+    await rm(path, { force: true });
+  }
+
+  const store = new JsonlEventStore(path);
+  const existing = await store.readAll();
+  if (existing.length === 0) {
+    await store.append(createEvent({
+      id: "evt_research_question",
+      type: "research.question.created",
+      actorId: "user",
+      threadId: "thread_research",
+      parentEventId: null,
+      payload: {
+        questionId: "question_evented_runtime",
+        question: "How should multi-agent research preserve provenance?",
+      },
+    }));
+  }
+
+  const result = await runRuntimeLoop(
+    store,
+    createResearchPipelineRegistry(),
+    createResearchPipelineRunners(),
+  );
+
+  const projection = projectResearch(await store.readAll());
+  if (projection.errors.length > 0) {
+    throw new Error(`Research projection has errors: ${projection.errors.map((error) => error.message).join("; ")}`);
+  }
+
+  return result;
+}
+
+export async function runHumanOpsRuntime(path: string, options: { resume?: boolean } = {}): Promise<RuntimeLoopResult> {
+  if (!options.resume) {
+    await rm(path, { force: true });
+  }
+
+  const store = new JsonlEventStore(path);
+  const existing = await store.readAll();
+  if (existing.length === 0) {
+    await store.append(createEvent({
+      id: "evt_ops_alert",
+      type: "external.alert.received",
+      actorId: "external",
+      threadId: "thread_ops",
+      parentEventId: null,
+      payload: {
+        alertId: "alert_runtime_latency",
+        title: "Latency regression on checkout API",
+        severity: "high",
+      },
+    }));
+  }
+
+  const result = await runRuntimeLoop(
+    store,
+    createHumanOpsRegistry(),
+    createHumanOpsRunners(),
+  );
+
+  const projection = projectEffects(await store.readAll());
+  if (projection.errors.length > 0) {
+    throw new Error(`Effect projection has errors: ${projection.errors.map((error) => error.message).join("; ")}`);
+  }
+
+  return result;
 }

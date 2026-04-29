@@ -1,0 +1,35 @@
+# Threadline Documentation
+
+Threadline is documented in two layers:
+
+- User documentation for running workflows, inspecting logs, and embedding the package.
+- Technical documentation for understanding the runtime architecture, event model, projections, and extension points.
+
+## User Documentation
+
+- [User Guide](user-guide.md): install, run the built-in workflows, inspect event logs, and use human approvals.
+- [CLI Reference](cli-reference.md): complete command reference with arguments and examples.
+- [Package API](package-api.md): use Threadline as a TypeScript library.
+- [Pathlight Integration](pathlight-integration.md): export Threadline runs into Pathlight traces.
+
+## Technical Documentation
+
+- [Architecture](architecture.md): runtime components and data flow.
+- [Event Model](event-model.md): event envelopes, integrity hashes, intentions, and projections.
+- [Workflow Guide](workflows.md): software-work, research-pipeline, and human-ops workflows.
+- [Contributor Guide](contributor-guide.md): development loop, testing strategy, and extension guidance.
+
+## Planning and Decisions
+
+- [Product Spec](product-spec.md)
+- [Development Plan](development-plan.md)
+- [Stack Review](stack-review.md)
+- [Pathlight Bridge Spike](decisions/pathlight-bridge-spike.md)
+
+## Recommended Reading Order
+
+1. Start with the [User Guide](user-guide.md).
+2. Use the [CLI Reference](cli-reference.md) while running examples.
+3. Read [Architecture](architecture.md) and [Event Model](event-model.md) before changing runtime behavior.
+4. Use [Workflow Guide](workflows.md) before adding or modifying a workflow.
+5. Read [Contributor Guide](contributor-guide.md) before opening a PR.

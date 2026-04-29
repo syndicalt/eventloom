@@ -7,6 +7,14 @@ export const intentionTypeSchema = z.enum([
   "review.request",
   "review.approve",
   "issue.report",
+  "source.find",
+  "claim.extract",
+  "claim.challenge",
+  "report.draftSection",
+  "report.finalize",
+  "effect.request",
+  "approval.request",
+  "effect.apply",
 ]);
 
 export const intentionSchema = z.object({
@@ -28,6 +36,14 @@ export const intentionEventTypeMap: Record<IntentionType, string> = {
   "review.request": "review.requested",
   "review.approve": "review.approved",
   "issue.report": "issue.reported",
+  "source.find": "source.found",
+  "claim.extract": "claim.extracted",
+  "claim.challenge": "claim.challenged",
+  "report.draftSection": "report.section.drafted",
+  "report.finalize": "report.finalized",
+  "effect.request": "effect.requested",
+  "approval.request": "approval.requested",
+  "effect.apply": "effect.applied",
 };
 
 export function validateIntention(value: unknown): Intention {

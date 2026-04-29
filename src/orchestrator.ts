@@ -1,9 +1,11 @@
 import { ZodError } from "zod";
 import type { ActorRegistry } from "./actors.js";
 import type { JsonlEventStore } from "./event-store.js";
+import { validateEffectEvent } from "./effect-projection.js";
 import { createEvent, type EventEnvelope } from "./events.js";
 import { intentionEventTypeMap, validateIntention, type Intention } from "./intentions.js";
 import type { SealedEvent } from "./integrity.js";
+import { validateResearchEvent } from "./research-projection.js";
 import { validateTaskEvent } from "./task-projection.js";
 
 export interface OrchestratorResult {
@@ -66,8 +68,15 @@ export class Orchestrator {
   }
 
   private async validateEventBeforeAppend(event: EventEnvelope): Promise<string | null> {
-    const error = validateTaskEvent(await this.store.readAll(), event);
-    return error?.message ?? null;
+    const events = await this.store.readAll();
+    const taskError = validateTaskEvent(events, event);
+    if (taskError) return taskError.message;
+
+    const researchError = validateResearchEvent(events, event);
+    if (researchError) return researchError.message;
+
+    const effectError = validateEffectEvent(events, event);
+    return effectError?.message ?? null;
   }
 
   private async reject(

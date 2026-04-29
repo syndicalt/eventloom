@@ -1,5 +1,6 @@
 export * from "./actors.js";
 export * from "./demo.js";
+export * from "./effect-projection.js";
 export * from "./event-store.js";
 export * from "./events.js";
 export * from "./export/pathlight.js";
@@ -10,6 +11,9 @@ export * from "./intentions.js";
 export * from "./mailbox.js";
 export * from "./orchestrator.js";
 export * from "./projection.js";
+export * from "./provenance.js";
+export * from "./research-projection.js";
+export * from "./runtime.js";
 export * from "./runners.js";
 export * from "./causal.js";
 export * from "./task-projection.js";
