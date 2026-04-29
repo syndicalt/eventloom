@@ -20,6 +20,7 @@ export interface RuntimeLoopResult {
   iterations: number;
   appended: number;
   processed: number;
+  turns: number;
   skipped: number;
   rejected: number;
   stoppedReason: "idle" | "max_iterations";
@@ -39,6 +40,7 @@ export async function runRuntimeLoop(
   const submitted = new Set<string>();
   let appended = 0;
   let processed = 0;
+  let turns = 0;
   let skipped = 0;
   let rejected = 0;
 
@@ -53,7 +55,26 @@ export async function runRuntimeLoop(
 
       const mailbox = buildMailboxForActor(actor, events);
       for (const item of mailbox) {
+        const turnId = `turn_${String(turns + 1).padStart(6, "0")}`;
+        const started = await store.append(createEvent({
+          type: "actor.started",
+          actorId: actor.id,
+          threadId: item.event.threadId,
+          parentEventId: item.event.id,
+          causedBy: [item.event.id],
+          payload: {
+            turnId,
+            sourceEventId: item.event.id,
+            mailboxEventType: item.event.type,
+          },
+        }));
+        turns += 1;
+        appendedThisIteration += 1;
+
         const intentions = runner({ actor, mailbox: [item], events });
+        const acceptedEvents: string[] = [];
+        const rejectedEvents: string[] = [];
+
         for (const intention of intentions) {
           const key = canonicalJson(intention);
           if (submitted.has(key)) {
@@ -66,18 +87,37 @@ export async function runRuntimeLoop(
           if (result.accepted) {
             appended += 1;
             appendedThisIteration += 1;
+            acceptedEvents.push(result.event.id);
           } else {
             rejected += 1;
+            rejectedEvents.push(result.event.id);
           }
         }
+
+        const completed = await store.append(createEvent({
+          type: "actor.completed",
+          actorId: actor.id,
+          threadId: item.event.threadId,
+          parentEventId: started.id,
+          causedBy: [started.id, ...acceptedEvents, ...rejectedEvents],
+          payload: {
+            turnId,
+            sourceEventId: item.event.id,
+            intentions: intentions.map((intention) => intention.type),
+            acceptedEvents,
+            rejectedEvents,
+          },
+        }));
+        appendedThisIteration += 1;
 
         await store.append(createEvent({
           type: "actor.processed",
           actorId: actor.id,
           threadId: item.event.threadId,
-          parentEventId: item.event.id,
-          causedBy: [item.event.id],
+          parentEventId: completed.id,
+          causedBy: [completed.id],
           payload: {
+            turnId,
             sourceEventId: item.event.id,
             intentions: intentions.map((intention) => intention.type),
           },
@@ -88,11 +128,11 @@ export async function runRuntimeLoop(
     }
 
     if (appendedThisIteration === 0) {
-      return { iterations: iteration, appended, processed, skipped, rejected, stoppedReason: "idle" };
+      return { iterations: iteration, appended, processed, turns, skipped, rejected, stoppedReason: "idle" };
     }
   }
 
-  return { iterations: maxIterations, appended, processed, skipped, rejected, stoppedReason: "max_iterations" };
+  return { iterations: maxIterations, appended, processed, turns, skipped, rejected, stoppedReason: "max_iterations" };
 }
 
 export function createSoftwareWorkRunners(): Record<string, ActorRunner> {

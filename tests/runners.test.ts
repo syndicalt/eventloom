@@ -19,11 +19,15 @@ describe("deterministic actor runners", () => {
     expect(result.stoppedReason).toBe("idle");
     expect(result.appended).toBe(5);
     expect(result.processed).toBe(5);
+    expect(result.turns).toBe(5);
     expect(result.rejected).toBe(0);
     expect(result.skipped).toBe(0);
     expect((await store.verify()).ok).toBe(true);
     expect(projection.errors).toEqual([]);
     expect(projection.tasks.task_actor_runtime.status).toBe("approved");
+    expect(events.filter((event) => event.type === "actor.started")).toHaveLength(5);
+    expect(events.filter((event) => event.type === "actor.completed")).toHaveLength(5);
+    expect(events.filter((event) => event.type === "actor.processed")).toHaveLength(5);
   });
 
   it("does not reprocess mailbox items on resume", async () => {
@@ -35,6 +39,7 @@ describe("deterministic actor runners", () => {
 
     expect(resumed.appended).toBe(0);
     expect(resumed.processed).toBe(0);
+    expect(resumed.turns).toBe(0);
     expect(resumed.rejected).toBe(0);
   });
 });
