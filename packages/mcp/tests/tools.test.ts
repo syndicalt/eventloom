@@ -9,7 +9,7 @@ import type { JSONRPCMessage } from "@modelcontextprotocol/sdk/types.js";
 import { describe, expect, it, vi } from "vitest";
 import { createServerConfig, resolveLogPath } from "../src/path-safety.js";
 import { createEventloomMcpServer } from "../src/server.js";
-import { appendEvent, explainTask, exportPathlight, mailbox, replayLog, runBuiltIn, timeline } from "../src/tools.js";
+import { appendEvent, explainTask, exportPathlight, handoff, mailbox, replayLog, runBuiltIn, timeline } from "../src/tools.js";
 
 describe("Eventloom MCP tools", () => {
   it("appends and replays a local event log", async () => {
@@ -84,6 +84,35 @@ describe("Eventloom MCP tools", () => {
     expect(result.structuredContent?.items).toMatchObject([
       { event: { type: "goal.created", actorId: "user" }, task: null },
     ]);
+  });
+
+  it("summarizes handoff state", async () => {
+    const root = await tempRoot();
+    const config = createServerConfig({ root });
+    await appendEvent(config, {
+      path: "handoff.jsonl",
+      type: "goal.created",
+      actorId: "user",
+      threadId: "thread_main",
+      causedBy: [],
+      payload: { title: "Summarize work" },
+    });
+    await appendEvent(config, {
+      path: "handoff.jsonl",
+      type: "task.proposed",
+      actorId: "codex",
+      threadId: "thread_main",
+      causedBy: [],
+      payload: { taskId: "task_handoff", title: "Write handoff" },
+    });
+
+    const result = await handoff(config, { path: "handoff.jsonl" });
+
+    expect(result.structuredContent?.text).toContain("handoff summary");
+    expect(result.structuredContent?.goals).toMatchObject([{ title: "Summarize work" }]);
+    expect(result.structuredContent?.tasks).toMatchObject({
+      active: [{ id: "task_handoff", status: "proposed" }],
+    });
   });
 
   it("exports a workflow log to a Pathlight collector", async () => {

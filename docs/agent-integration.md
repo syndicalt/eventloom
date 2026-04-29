@@ -65,6 +65,32 @@ npm run eventloom -- explain task task_agent_skill .eventloom/agent-work.jsonl
 
 The replay output includes integrity status, event counts, projections, and projection hash.
 
+## Handoff Summary
+
+Use a handoff summary before pausing, switching agents, or asking for review:
+
+```bash
+npm run eventloom -- handoff .eventloom/agent-work.jsonl
+```
+
+The summary reports goals, active tasks, completed tasks, recorded decisions, verification events, and deterministic next actions.
+
+## Dogfood Templates
+
+Eventloom includes starter templates for common agent workflows:
+
+```bash
+npm run eventloom -- templates
+npm run eventloom -- templates coding-task
+```
+
+Initial templates:
+
+- `coding-task`
+- `review-task`
+- `release-task`
+- `research-task`
+
 ## Codex Skill
 
 This repository includes a Codex skill at:
@@ -105,6 +131,7 @@ MVP tools:
 - `eventloom_timeline`
 - `eventloom_explain_task`
 - `eventloom_mailbox`
+- `eventloom_summarize_handoff`
 - `eventloom_run_builtin`
 - `eventloom_export_pathlight`
 

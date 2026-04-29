@@ -227,6 +227,39 @@ Output:
 }
 ```
 
+### `eventloom_summarize_handoff`
+
+Summarize goals, task state, decisions, verification, and next actions from a local Eventloom log.
+
+Input:
+
+```json
+{
+  "path": ".eventloom/agent-work.jsonl"
+}
+```
+
+Output includes text for humans and structured content for agents:
+
+```json
+{
+  "text": "handoff summary\n...",
+  "eventCount": 12,
+  "integrity": {
+    "ok": true,
+    "errors": []
+  },
+  "goals": [],
+  "tasks": {
+    "active": [],
+    "completed": []
+  },
+  "decisions": [],
+  "verification": [],
+  "nextActions": []
+}
+```
+
 ### `eventloom_run_builtin`
 
 Run or resume one built-in deterministic workflow.

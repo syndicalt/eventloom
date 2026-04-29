@@ -9,11 +9,13 @@ import {
   formatTaskExplanation,
   formatTimeline,
   projectTasks,
+  verifyEventChain,
   type ActorRegistry,
   type BuiltInWorkflow,
   type EventEnvelope,
   type MailboxItem,
   type RuntimeReplay,
+  type TaskState,
 } from "@eventloom/runtime";
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import { z } from "zod";
@@ -46,6 +48,10 @@ export const ExplainTaskInputSchema = z.object({
   taskId: z.string().min(1),
 });
 
+export const HandoffInputSchema = z.object({
+  path: z.string().min(1),
+});
+
 export const BuiltInWorkflowSchema = z.enum(["software-work", "research-pipeline", "human-ops"]);
 
 export const MailboxInputSchema = z.object({
@@ -71,6 +77,7 @@ export type AppendInput = z.infer<typeof AppendInputSchema>;
 export type ReplayInput = z.infer<typeof ReplayInputSchema>;
 export type TimelineInput = z.infer<typeof TimelineInputSchema>;
 export type ExplainTaskInput = z.infer<typeof ExplainTaskInputSchema>;
+export type HandoffInput = z.infer<typeof HandoffInputSchema>;
 export type MailboxInput = z.infer<typeof MailboxInputSchema>;
 export type RunBuiltInInput = z.infer<typeof RunBuiltInInputSchema>;
 export type ExportPathlightInput = z.infer<typeof ExportPathlightInputSchema>;
@@ -120,6 +127,15 @@ export async function explainTask(config: ServerConfig, input: ExplainTaskInput)
   });
 }
 
+export async function handoff(config: ServerConfig, input: HandoffInput): Promise<CallToolResult> {
+  const events = await createRuntime(resolveLogPath(config, input.path)).readAll();
+  const summary = summarizeHandoffForMcp(events);
+  return toolResult({
+    text: formatHandoffForMcp(summary),
+    ...summary,
+  });
+}
+
 export async function mailbox(config: ServerConfig, input: MailboxInput): Promise<CallToolResult> {
   const runtime = createRuntime(resolveLogPath(config, input.path));
   const items = buildMailbox(registryForWorkflow(input.workflow as BuiltInWorkflow), input.actorId, await runtime.readAll());
@@ -164,6 +180,67 @@ function registryForWorkflow(workflow: BuiltInWorkflow): ActorRegistry {
   if (workflow === "software-work") return createSoftwareWorkRegistry();
   if (workflow === "research-pipeline") return createResearchPipelineRegistry();
   return createHumanOpsRegistry();
+}
+
+function summarizeHandoffForMcp(events: readonly EventEnvelope[]): Record<string, unknown> {
+  const taskStates = Object.values(projectTasks(events).tasks)
+    .sort((left, right) => left.id.localeCompare(right.id));
+  const active = taskStates.filter((task) => !["completed", "approved"].includes(task.status)).map(taskSummary);
+  const completed = taskStates.filter((task) => ["completed", "approved"].includes(task.status)).map(taskSummary);
+  return {
+    eventCount: events.length,
+    integrity: verifyEventChain(events),
+    goals: events.filter((event) => event.type === "goal.created").map((event) => ({
+      id: event.id,
+      actorId: event.actorId,
+      title: stringPayload(event, "title") ?? "(untitled goal)",
+      timestamp: event.timestamp,
+    })),
+    tasks: { active, completed },
+    decisions: events.filter((event) => event.type === "decision.recorded").map(factSummary),
+    verification: events.filter((event) => event.type.startsWith("verification.")).map(factSummary),
+    nextActions: active.length > 0
+      ? active.map((task) => `Continue ${task.title ? `${task.id}: ${task.title}` : task.id} (${task.status}).`)
+      : ["No active tasks remain."],
+  };
+}
+
+function formatHandoffForMcp(summary: Record<string, unknown>): string {
+  const integrity = summary.integrity as { ok?: boolean };
+  const tasks = summary.tasks as { active: Array<Record<string, unknown>>; completed: Array<Record<string, unknown>> };
+  return [
+    "handoff summary",
+    `events: ${String(summary.eventCount)}`,
+    `integrity: ${integrity.ok ? "ok" : "failed"}`,
+    "",
+    `active tasks: ${tasks.active.length}`,
+    `completed tasks: ${tasks.completed.length}`,
+  ].join("\n");
+}
+
+function taskSummary(task: TaskState): Record<string, unknown> {
+  return {
+    id: task.id,
+    title: task.title,
+    status: task.status,
+    actorId: task.actorId,
+    lastEventId: task.lastEventId,
+  };
+}
+
+function factSummary(event: EventEnvelope): Record<string, unknown> {
+  return {
+    id: event.id,
+    type: event.type,
+    actorId: event.actorId,
+    timestamp: event.timestamp,
+    summary: stringPayload(event, "summary") ?? stringPayload(event, "decision") ?? JSON.stringify(event.payload),
+  };
+}
+
+function stringPayload(event: EventEnvelope, key: string): string | null {
+  const value = event.payload[key];
+  return typeof value === "string" && value.length > 0 ? value : null;
 }
 
 function eventSummary(event: EventEnvelope): Record<string, unknown> {

@@ -160,6 +160,36 @@ Example:
 npm run eventloom -- mailbox worker /tmp/eventloom-software.jsonl
 ```
 
+## `handoff`
+
+Summarize goals, tasks, decisions, verification, and next actions from an Eventloom log.
+
+```bash
+npm run eventloom -- handoff <events.jsonl>
+```
+
+Example:
+
+```bash
+npm run eventloom -- handoff .eventloom/agent-work.jsonl
+```
+
+## `templates`
+
+List or inspect starter templates for common agent workflows.
+
+```bash
+npm run eventloom -- templates
+npm run eventloom -- templates <templateId>
+```
+
+Available templates:
+
+- `coding-task`
+- `review-task`
+- `release-task`
+- `research-task`
+
 ## `export pathlight`
 
 Export an Eventloom log to a Pathlight collector.

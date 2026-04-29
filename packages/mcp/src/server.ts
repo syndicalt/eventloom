@@ -5,6 +5,7 @@ import {
   AppendInputSchema,
   ExplainTaskInputSchema,
   ExportPathlightInputSchema,
+  HandoffInputSchema,
   MailboxInputSchema,
   ReplayInputSchema,
   RunBuiltInInputSchema,
@@ -12,6 +13,7 @@ import {
   appendEvent,
   explainTask,
   exportPathlight,
+  handoff,
   mailbox,
   replayLog,
   runBuiltIn,
@@ -74,6 +76,16 @@ export function createEventloomMcpServer(options: { root?: string | null } = {})
       inputSchema: MailboxInputSchema.shape,
     },
     (input) => mailbox(config, MailboxInputSchema.parse(input)),
+  );
+
+  server.registerTool(
+    "eventloom_summarize_handoff",
+    {
+      title: "Summarize Eventloom Handoff",
+      description: "Summarize goals, tasks, decisions, verification, and next actions from a local Eventloom log.",
+      inputSchema: HandoffInputSchema.shape,
+    },
+    (input) => handoff(config, HandoffInputSchema.parse(input)),
   );
 
   server.registerTool(

@@ -37,6 +37,7 @@ Run the installed CLI:
 ```bash
 npx eventloom run software-work /tmp/eventloom-software.jsonl
 npx eventloom replay /tmp/eventloom-software.jsonl
+npx eventloom templates coding-task
 ```
 
 Use the package from TypeScript:
@@ -107,6 +108,7 @@ The MCP server package lives in `packages/mcp` as `@eventloom/mcp`. It exposes E
 - [Agent Integration](docs/agent-integration.md)
 - [MCP Setup](docs/mcp-setup.md)
 - [MCP Package Design](docs/mcp-package.md)
+- [Agent Work Pathlight Case Study](docs/case-studies/agent-work-pathlight.md)
 - [Architecture](docs/architecture.md)
 - [Event Model](docs/event-model.md)
 - [Workflow Guide](docs/workflows.md)

@@ -14,6 +14,7 @@ Eventloom is documented in two layers:
 - [MCP Package Design](mcp-package.md): `@eventloom/mcp` package scope, tool contracts, and safety model.
 - [MCP Setup](mcp-setup.md): configure Eventloom MCP in Codex, Claude Desktop, or the MCP inspector.
 - [Pathlight Integration](pathlight-integration.md): export Eventloom runs into Pathlight traces.
+- [Agent Work Pathlight Case Study](case-studies/agent-work-pathlight.md): export a real agent journal to Pathlight.
 
 ## Technical Documentation
 
