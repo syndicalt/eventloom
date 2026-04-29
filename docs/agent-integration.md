@@ -7,7 +7,7 @@ Eventloom can be used by coding agents as a lightweight, local event journal. Th
 1. Use the CLI from the published package or repository checkout.
 2. Record meaningful workflow facts into a JSONL log.
 3. Replay the log before handoff or export.
-4. Add MCP later if multiple clients need a shared tool protocol.
+4. Use `@eventloom/mcp` when an editor or agent client should call Eventloom through MCP instead of shelling out.
 
 ## Install
 
@@ -75,24 +75,39 @@ This repository includes a Codex skill at:
 
 The skill teaches Codex when and how to create Eventloom logs, append projected task events, replay before handoff, and optionally export to Pathlight.
 
-## MCP Roadmap
+## MCP Package
 
-MCP should remain a separate package from the runtime. The expected package is:
+MCP remains a separate package from the runtime:
 
 ```text
 @eventloom/mcp
 ```
 
-Candidate tools:
+The package is implemented in `packages/mcp`, and the tool contract is documented in [MCP Package Design](mcp-package.md).
+
+Local checkout usage:
+
+```bash
+npm run build:mcp
+node packages/mcp/dist/cli.js --root .
+```
+
+From npm, use:
+
+```bash
+npx @eventloom/mcp --root .
+```
+
+MVP tools:
 
 - `eventloom_append`
 - `eventloom_replay`
 - `eventloom_timeline`
 - `eventloom_explain_task`
-- `eventloom_mailbox`
+- `eventloom_run_builtin`
 - `eventloom_export_pathlight`
 
-Build MCP after the Codex skill and agent workflow patterns have been used on real tasks.
+`eventloom_mailbox` should wait until mailbox rebuilding is exposed as a stable runtime capability rather than being tied to one built-in workflow registry.
 
 ## Pathlight Export
 

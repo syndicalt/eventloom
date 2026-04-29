@@ -96,6 +96,8 @@ console.log(replay.projection.research);
 
 The npm package is published as `@eventloom/runtime`. See [Package API](docs/package-api.md) for the full package-facing API.
 
+The MCP server package lives in `packages/mcp` as `@eventloom/mcp`. It exposes Eventloom log operations to local MCP clients over stdio. See [MCP Package Design](docs/mcp-package.md) for the tool contract and release criteria.
+
 ## Documentation
 
 - [Documentation Index](docs/README.md)
@@ -103,6 +105,7 @@ The npm package is published as `@eventloom/runtime`. See [Package API](docs/pac
 - [CLI Reference](docs/cli-reference.md)
 - [Package API](docs/package-api.md)
 - [Agent Integration](docs/agent-integration.md)
+- [MCP Package Design](docs/mcp-package.md)
 - [Architecture](docs/architecture.md)
 - [Event Model](docs/event-model.md)
 - [Workflow Guide](docs/workflows.md)
@@ -112,10 +115,11 @@ The npm package is published as `@eventloom/runtime`. See [Package API](docs/pac
 ## Project Layout
 
 ```text
-src/        Runtime and CLI source
-tests/      Vitest unit and integration tests
-fixtures/   Sample event logs
-docs/       User, technical, and planning docs
+src/           Runtime and CLI source
+tests/         Vitest unit and integration tests
+packages/mcp/  MCP stdio server package
+fixtures/      Sample event logs
+docs/          User, technical, and planning docs
 ```
 
 ## Status
