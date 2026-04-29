@@ -1,8 +1,35 @@
 # User Guide
 
-This guide covers the normal ways to use Eventloom from the command line and as a local TypeScript package.
+This guide covers the normal ways to use Eventloom from the command line and as a TypeScript package.
 
-## Install and Verify
+## Install From Npm
+
+For application code or command-line use, install the published package:
+
+```bash
+npm install @eventloom/runtime
+```
+
+Run the installed CLI with `npx`:
+
+```bash
+npx eventloom run software-work /tmp/eventloom-software.jsonl
+npx eventloom replay /tmp/eventloom-software.jsonl
+```
+
+Use the package API from TypeScript:
+
+```ts
+import { createRuntime } from "@eventloom/runtime";
+
+const runtime = createRuntime("/tmp/eventloom.jsonl");
+await runtime.runBuiltIn("software-work");
+
+const replay = await runtime.replay();
+console.log(replay.integrity.ok);
+```
+
+## Develop Locally
 
 Run commands from the repository root:
 

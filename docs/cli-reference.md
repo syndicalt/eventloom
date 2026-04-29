@@ -1,12 +1,24 @@
 # CLI Reference
 
-Run all commands from the repository root with:
+Install the published package with:
+
+```bash
+npm install @eventloom/runtime
+```
+
+Run the installed CLI with:
+
+```bash
+npx eventloom <command>
+```
+
+When developing from the repository root, run the source CLI with:
 
 ```bash
 npm run eventloom -- <command>
 ```
 
-The CLI entrypoint is `src/cli.ts`.
+The repository CLI entrypoint is `src/cli.ts`.
 
 ## `replay`
 

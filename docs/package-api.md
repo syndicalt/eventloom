@@ -4,6 +4,12 @@ Eventloom can be used as a library through the `@eventloom/runtime` package with
 
 The package API is local-first. It reads and writes JSONL event logs directly. Docker Compose is not required for Eventloom itself; it is only useful when you want to run optional infrastructure such as the Pathlight collector and dashboard.
 
+## Install
+
+```bash
+npm install @eventloom/runtime
+```
+
 ## Create a Runtime
 
 ```ts

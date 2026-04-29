@@ -19,6 +19,33 @@ Eventloom is currently a runtime prototype. It is designed for local development
 
 ## Quick Start
 
+Install from npm:
+
+```bash
+npm install @eventloom/runtime
+```
+
+Run the installed CLI:
+
+```bash
+npx eventloom run software-work /tmp/eventloom-software.jsonl
+npx eventloom replay /tmp/eventloom-software.jsonl
+```
+
+Use the package from TypeScript:
+
+```ts
+import { createRuntime } from "@eventloom/runtime";
+
+const runtime = createRuntime("/tmp/eventloom.jsonl");
+await runtime.runBuiltIn("software-work");
+
+const replay = await runtime.replay();
+console.log(replay.integrity.ok);
+```
+
+## Develop Locally
+
 ```bash
 npm install
 npm test
