@@ -3,9 +3,17 @@ import { JsonlEventStore } from "./event-store.js";
 import { verifyEventChain } from "./integrity.js";
 import { eventTypeCounts, projectionHash } from "./projection.js";
 import { projectTasks } from "./task-projection.js";
+import { runSoftwareWorkDemo } from "./demo.js";
 
 async function main(argv: string[]): Promise<void> {
-  const [command, path] = argv;
+  const [command, path, extra] = argv;
+
+  if (command === "demo" && path === "software-work") {
+    const outPath = extra ?? ".threadline/events.jsonl";
+    await runSoftwareWorkDemo(outPath);
+    console.log(JSON.stringify({ path: outPath }, null, 2));
+    return;
+  }
 
   if (command !== "replay" || !path) {
     printUsage();
@@ -31,6 +39,7 @@ async function main(argv: string[]): Promise<void> {
 
 function printUsage(): void {
   console.error("Usage: threadline replay <events.jsonl>");
+  console.error("       threadline demo software-work [events.jsonl]");
 }
 
 main(process.argv.slice(2)).catch((error) => {

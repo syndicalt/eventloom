@@ -22,6 +22,7 @@ npm install                              # Install dependencies
 npm test                                 # Run the Vitest suite
 npm run build                           # Compile TypeScript to dist/
 npm run threadline -- replay fixtures/sample.jsonl  # Replay a sample event log
+npm run threadline -- demo software-work /tmp/threadline-demo.jsonl  # Generate a deterministic demo log
 ```
 
 ## Coding Style & Naming Conventions
