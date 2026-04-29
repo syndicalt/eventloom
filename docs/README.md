@@ -1,6 +1,6 @@
-# Threadline Documentation
+# Eventloom Documentation
 
-Threadline is documented in two layers:
+Eventloom is documented in two layers:
 
 - User documentation for running workflows, inspecting logs, and embedding the package.
 - Technical documentation for understanding the runtime architecture, event model, projections, and extension points.
@@ -9,8 +9,8 @@ Threadline is documented in two layers:
 
 - [User Guide](user-guide.md): install, run the built-in workflows, inspect event logs, and use human approvals.
 - [CLI Reference](cli-reference.md): complete command reference with arguments and examples.
-- [Package API](package-api.md): use Threadline as a TypeScript library.
-- [Pathlight Integration](pathlight-integration.md): export Threadline runs into Pathlight traces.
+- [Package API](package-api.md): use Eventloom as a TypeScript library.
+- [Pathlight Integration](pathlight-integration.md): export Eventloom runs into Pathlight traces.
 
 ## Technical Documentation
 

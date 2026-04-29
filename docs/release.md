@@ -7,7 +7,7 @@ Eventloom runtime publishes as `@eventloom/runtime`.
 ```bash
 npm test
 npm run build
-npm_config_cache=/tmp/threadline-npm-cache npm pack --dry-run
+npm_config_cache=/tmp/eventloom-npm-cache npm pack --dry-run
 ```
 
 The package should include only:
@@ -22,13 +22,13 @@ The package should include only:
 ## Local Tarball Smoke Test
 
 ```bash
-npm_config_cache=/tmp/threadline-npm-cache npm pack
-mkdir -p /tmp/threadline-consumer
-cd /tmp/threadline-consumer
+npm_config_cache=/tmp/eventloom-npm-cache npm pack
+mkdir -p /tmp/eventloom-consumer
+cd /tmp/eventloom-consumer
 npm init -y
-npm install /path/to/threadline/eventloom-runtime-0.1.0.tgz
+npm install /path/to/eventloom/eventloom-runtime-0.1.1.tgz
 node --input-type=module -e "import { createRuntime } from '@eventloom/runtime'; console.log(typeof createRuntime)"
-npx threadline replay /path/to/threadline/fixtures/sample.jsonl
+npx eventloom replay /path/to/eventloom/fixtures/sample.jsonl
 ```
 
 ## Publish

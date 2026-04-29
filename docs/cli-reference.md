@@ -3,7 +3,7 @@
 Run all commands from the repository root with:
 
 ```bash
-npm run threadline -- <command>
+npm run eventloom -- <command>
 ```
 
 The CLI entrypoint is `src/cli.ts`.
@@ -13,13 +13,13 @@ The CLI entrypoint is `src/cli.ts`.
 Replay an event log, verify integrity, and print projections.
 
 ```bash
-npm run threadline -- replay <events.jsonl>
+npm run eventloom -- replay <events.jsonl>
 ```
 
 Example:
 
 ```bash
-npm run threadline -- replay fixtures/sample.jsonl
+npm run eventloom -- replay fixtures/sample.jsonl
 ```
 
 Output includes:
@@ -37,7 +37,7 @@ Output includes:
 Append a sealed external event.
 
 ```bash
-npm run threadline -- append <events.jsonl> <event.type> --actor <actorId> --payload '<json>'
+npm run eventloom -- append <events.jsonl> <event.type> --actor <actorId> --payload '<json>'
 ```
 
 Flags:
@@ -51,11 +51,11 @@ Flags:
 Examples:
 
 ```bash
-npm run threadline -- append /tmp/threadline.jsonl goal.created --actor user --payload '{"title":"External goal"}'
+npm run eventloom -- append /tmp/eventloom.jsonl goal.created --actor user --payload '{"title":"External goal"}'
 ```
 
 ```bash
-npm run threadline -- append /tmp/threadline-human-ops.jsonl approval.granted --actor human --thread thread_ops --payload '{"effectId":"effect_runtime_mitigation","approvalId":"approval_runtime_mitigation"}'
+npm run eventloom -- append /tmp/eventloom-human-ops.jsonl approval.granted --actor human --thread thread_ops --payload '{"effectId":"effect_runtime_mitigation","approvalId":"approval_runtime_mitigation"}'
 ```
 
 Output includes the new event id, hash, and previous hash.
@@ -65,30 +65,30 @@ Output includes the new event id, hash, and previous hash.
 Generate a deterministic software-work demo log.
 
 ```bash
-npm run threadline -- demo software-work [events.jsonl]
+npm run eventloom -- demo software-work [events.jsonl]
 ```
 
-If no path is given, Threadline writes `.threadline/events.jsonl`.
+If no path is given, Eventloom writes `.eventloom/events.jsonl`.
 
 ## `run software-work`
 
 Run the deterministic software-work actor loop.
 
 ```bash
-npm run threadline -- run software-work [events.jsonl] [--resume]
+npm run eventloom -- run software-work [events.jsonl] [--resume]
 ```
 
-Without `--resume`, the target log is replaced. With `--resume`, Threadline continues from the existing log and skips actor mailbox items already marked as processed.
+Without `--resume`, the target log is replaced. With `--resume`, Eventloom continues from the existing log and skips actor mailbox items already marked as processed.
 
 ## `run research-pipeline`
 
 Run the deterministic research actor loop.
 
 ```bash
-npm run threadline -- run research-pipeline [events.jsonl] [--resume]
+npm run eventloom -- run research-pipeline [events.jsonl] [--resume]
 ```
 
-Default path: `.threadline/research-events.jsonl`.
+Default path: `.eventloom/research-events.jsonl`.
 
 The final projection is available under `projection.research`.
 
@@ -97,10 +97,10 @@ The final projection is available under `projection.research`.
 Run the deterministic human approval workflow.
 
 ```bash
-npm run threadline -- run human-ops [events.jsonl] [--resume]
+npm run eventloom -- run human-ops [events.jsonl] [--resume]
 ```
 
-Default path: `.threadline/human-ops-events.jsonl`.
+Default path: `.eventloom/human-ops-events.jsonl`.
 
 The first run stops after `approval.requested`. Append an `approval.granted` event and resume to apply the effect.
 
@@ -109,7 +109,7 @@ The first run stops after `approval.requested`. Append an `approval.granted` eve
 Print an ordered event timeline with integrity status.
 
 ```bash
-npm run threadline -- timeline <events.jsonl>
+npm run eventloom -- timeline <events.jsonl>
 ```
 
 Each line includes:
@@ -125,13 +125,13 @@ Each line includes:
 Explain task state from projection history and causal chain.
 
 ```bash
-npm run threadline -- explain task <taskId> <events.jsonl>
+npm run eventloom -- explain task <taskId> <events.jsonl>
 ```
 
 Example:
 
 ```bash
-npm run threadline -- explain task task_actor_runtime /tmp/threadline-software.jsonl
+npm run eventloom -- explain task task_actor_runtime /tmp/eventloom-software.jsonl
 ```
 
 ## `mailbox`
@@ -139,32 +139,32 @@ npm run threadline -- explain task task_actor_runtime /tmp/threadline-software.j
 Show a rebuilt actor mailbox for the software-work registry.
 
 ```bash
-npm run threadline -- mailbox <actorId> <events.jsonl>
+npm run eventloom -- mailbox <actorId> <events.jsonl>
 ```
 
 Example:
 
 ```bash
-npm run threadline -- mailbox worker /tmp/threadline-software.jsonl
+npm run eventloom -- mailbox worker /tmp/eventloom-software.jsonl
 ```
 
 ## `export pathlight`
 
-Export a Threadline log to a Pathlight collector.
+Export an Eventloom log to a Pathlight collector.
 
 ```bash
-npm run threadline -- export pathlight <events.jsonl> --base-url <url> [--trace-name <name>]
+npm run eventloom -- export pathlight <events.jsonl> --base-url <url> [--trace-name <name>]
 ```
 
 Defaults:
 
 - `--base-url`: `http://localhost:4100`
-- `--trace-name`: `threadline-runtime`
+- `--trace-name`: `eventloom-runtime`
 
 The export creates:
 
 - one Pathlight trace
 - one agent span per `actor.started` / `actor.completed` turn
-- span events for related Threadline events
+- span events for related Eventloom events
 
 Trace metadata includes integrity, projection hash, projection kinds, runtime package metadata, thread IDs, and git provenance when available.

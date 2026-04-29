@@ -1,13 +1,13 @@
 # Workflow Guide
 
-Threadline includes three deterministic built-in workflows. They are intentionally small, concrete examples that exercise the runtime model.
+Eventloom includes three deterministic built-in workflows. They are intentionally small, concrete examples that exercise the runtime model.
 
 ## Software Work
 
 Command:
 
 ```bash
-npm run threadline -- run software-work /tmp/threadline-software.jsonl
+npm run eventloom -- run software-work /tmp/eventloom-software.jsonl
 ```
 
 Actors:
@@ -44,7 +44,7 @@ task_actor_runtime -> approved
 Command:
 
 ```bash
-npm run threadline -- run research-pipeline /tmp/threadline-research.jsonl
+npm run eventloom -- run research-pipeline /tmp/eventloom-research.jsonl
 ```
 
 Actors:
@@ -91,7 +91,7 @@ question_evented_runtime -> finalized
 Command:
 
 ```bash
-npm run threadline -- run human-ops /tmp/threadline-human-ops.jsonl
+npm run eventloom -- run human-ops /tmp/eventloom-human-ops.jsonl
 ```
 
 Actors:
@@ -115,13 +115,13 @@ external.alert.received
 The first run stops after `approval.requested`. A human approval must be appended externally:
 
 ```bash
-npm run threadline -- append /tmp/threadline-human-ops.jsonl approval.granted --actor human --thread thread_ops --payload '{"effectId":"effect_runtime_mitigation","approvalId":"approval_runtime_mitigation"}'
+npm run eventloom -- append /tmp/eventloom-human-ops.jsonl approval.granted --actor human --thread thread_ops --payload '{"effectId":"effect_runtime_mitigation","approvalId":"approval_runtime_mitigation"}'
 ```
 
 Then resume:
 
 ```bash
-npm run threadline -- run human-ops /tmp/threadline-human-ops.jsonl --resume
+npm run eventloom -- run human-ops /tmp/eventloom-human-ops.jsonl --resume
 ```
 
 Projection:

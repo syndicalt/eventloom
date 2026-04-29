@@ -6,16 +6,16 @@ import { collectRuntimeProvenance } from "../src/provenance.js";
 
 describe("runtime provenance", () => {
   it("reads package metadata and tolerates missing git metadata", async () => {
-    const dir = await mkdtemp(join(tmpdir(), "threadline-provenance-"));
+    const dir = await mkdtemp(join(tmpdir(), "eventloom-provenance-"));
     await writeFile(join(dir, "package.json"), JSON.stringify({
-      name: "threadline-test",
+      name: "eventloom-test",
       version: "9.9.9",
     }), "utf8");
 
     const provenance = await collectRuntimeProvenance(dir);
 
     expect(provenance).toEqual({
-      packageName: "threadline-test",
+      packageName: "eventloom-test",
       packageVersion: "9.9.9",
       gitCommit: null,
       gitBranch: null,

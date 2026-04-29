@@ -7,8 +7,8 @@ import { exportToPathlight } from "../src/export/pathlight.js";
 import { runSoftwareWorkRuntime } from "../src/runners.js";
 
 describe("Pathlight export", () => {
-  it("maps Threadline actor turns to Pathlight traces and spans", async () => {
-    const dir = await mkdtemp(join(tmpdir(), "threadline-pathlight-"));
+  it("maps Eventloom actor turns to Pathlight traces and spans", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "eventloom-pathlight-"));
     const path = join(dir, "events.jsonl");
     await runSoftwareWorkRuntime(path);
     const events = await new JsonlEventStore(path).readAll();
@@ -24,10 +24,10 @@ describe("Pathlight export", () => {
 
     const result = await exportToPathlight(events, {
       baseUrl: "http://pathlight.test",
-      traceName: "threadline-test",
+      traceName: "eventloom-test",
       fetchImpl: fetchImpl as typeof fetch,
       provenance: {
-        packageName: "threadline",
+        packageName: "eventloom",
         packageVersion: "0.1.0",
         gitCommit: "abc123",
         gitBranch: "main",
@@ -42,12 +42,12 @@ describe("Pathlight export", () => {
     expect(calls.some((call) => call.url === "http://pathlight.test/v1/traces/trace_1")).toBe(true);
 
     const traceCreate = JSON.parse(String(calls[0].init.body));
-    expect(traceCreate.name).toBe("threadline-test");
-    expect(traceCreate.metadata.source).toBe("threadline");
+    expect(traceCreate.name).toBe("eventloom-test");
+    expect(traceCreate.metadata.source).toBe("eventloom");
     expect(traceCreate.metadata.integrity.ok).toBe(true);
     expect(typeof traceCreate.metadata.projectionHash).toBe("string");
     expect(traceCreate.metadata.projectionKinds).toEqual(["tasks"]);
-    expect(traceCreate.metadata.runtime).toEqual({ name: "threadline", version: "0.1.0" });
+    expect(traceCreate.metadata.runtime).toEqual({ name: "eventloom", version: "0.1.0" });
     expect(traceCreate.gitCommit).toBe("abc123");
     expect(traceCreate.gitBranch).toBe("main");
     expect(traceCreate.gitDirty).toBe(true);

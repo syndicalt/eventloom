@@ -1,18 +1,18 @@
 # Package API
 
-Threadline can be used as a library through the `@eventloom/runtime` package without assembling the event store, orchestrator, runners, and projections manually.
+Eventloom can be used as a library through the `@eventloom/runtime` package without assembling the event store, orchestrator, runners, and projections manually.
 
-The package API is local-first. It reads and writes JSONL event logs directly. Docker Compose is not required for Threadline itself; it is only useful when you want to run optional infrastructure such as the Pathlight collector and dashboard.
+The package API is local-first. It reads and writes JSONL event logs directly. Docker Compose is not required for Eventloom itself; it is only useful when you want to run optional infrastructure such as the Pathlight collector and dashboard.
 
 ## Create a Runtime
 
 ```ts
 import { createRuntime } from "@eventloom/runtime";
 
-const runtime = createRuntime("/tmp/threadline.jsonl");
+const runtime = createRuntime("/tmp/eventloom.jsonl");
 ```
 
-`ThreadlineRuntime` is a small facade around the JSONL store, orchestrator, built-in workflow runners, replay helpers, and Pathlight export.
+`EventloomRuntime` is a small facade around the JSONL store, orchestrator, built-in workflow runners, replay helpers, and Pathlight export.
 
 ## Append External Events
 
@@ -92,7 +92,7 @@ actors.register({
   intentions: ["task.propose"],
 });
 
-const result = await createRuntime("/tmp/threadline.jsonl").submitIntention(actors, {
+const result = await createRuntime("/tmp/eventloom.jsonl").submitIntention(actors, {
   type: "task.propose",
   actorId: "planner",
   threadId: "thread_main",
@@ -132,7 +132,7 @@ For custom event domains, add projection validation before relying on the orches
 ```ts
 await runtime.exportPathlight({
   baseUrl: "http://localhost:4100",
-  traceName: "threadline-run",
+  traceName: "eventloom-run",
 });
 ```
 

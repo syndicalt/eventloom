@@ -7,7 +7,7 @@ import { createEvent } from "../src/events.js";
 
 describe("JsonlEventStore", () => {
   it("appends and reloads validated events", async () => {
-    const dir = await mkdtemp(join(tmpdir(), "threadline-store-"));
+    const dir = await mkdtemp(join(tmpdir(), "eventloom-store-"));
     const store = new JsonlEventStore(join(dir, "events.jsonl"));
     const event = createEvent({
       id: "evt_append_test",
@@ -26,14 +26,14 @@ describe("JsonlEventStore", () => {
   });
 
   it("returns an empty list for a missing log", async () => {
-    const dir = await mkdtemp(join(tmpdir(), "threadline-store-"));
+    const dir = await mkdtemp(join(tmpdir(), "eventloom-store-"));
     const store = new JsonlEventStore(join(dir, "missing.jsonl"));
 
     await expect(store.readAll()).resolves.toEqual([]);
   });
 
   it("rejects malformed event log lines with line context", async () => {
-    const dir = await mkdtemp(join(tmpdir(), "threadline-store-"));
+    const dir = await mkdtemp(join(tmpdir(), "eventloom-store-"));
     const path = join(dir, "events.jsonl");
     await writeFile(path, "{\"id\":\"not-valid\"}\n", "utf8");
 

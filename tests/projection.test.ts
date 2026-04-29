@@ -12,7 +12,7 @@ describe("projection replay", () => {
         threadId: "thread_main",
         parentEventId: null,
         timestamp: "2026-04-28T22:00:00.000Z",
-        payload: { title: "Build Threadline" },
+        payload: { title: "Build Eventloom" },
       }),
       createEvent({
         id: "evt_task_proposed",

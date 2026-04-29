@@ -1,10 +1,10 @@
-# Threadline
+# Eventloom
 
-Threadline is the prototype name for the Eventloom runtime, a local-first TypeScript runtime for multi-agent systems built around an append-only event log.
+Eventloom is a local-first TypeScript runtime for multi-agent systems built around an append-only event log.
 
-Instead of treating an agent run as a linear `system/user/assistant` transcript, Threadline models runtime state as typed events. Actors receive mailbox items, emit structured intentions, and an orchestrator validates those intentions before appending accepted events. Projections rebuild state from the log, so a run can be replayed and inspected after the fact.
+Instead of treating an agent run as a linear `system/user/assistant` transcript, Eventloom models runtime state as typed events. Actors receive mailbox items, emit structured intentions, and an orchestrator validates those intentions before appending accepted events. Projections rebuild state from the log, so a run can be replayed and inspected after the fact.
 
-Threadline is currently a runtime prototype. It is designed for local development, deterministic replay, and integration experiments with Pathlight.
+Eventloom is currently a runtime prototype. It is designed for local development, deterministic replay, and integration experiments with Pathlight.
 
 ## What It Does
 
@@ -15,7 +15,7 @@ Threadline is currently a runtime prototype. It is designed for local developmen
 - Rebuilds task, research, and effect projections from the log.
 - Supports human-in-the-loop approval events.
 - Exports actor turns and runtime events to Pathlight traces.
-- Provides a package API for embedding Threadline in TypeScript code.
+- Provides a package API for embedding Eventloom in TypeScript code.
 
 ## Quick Start
 
@@ -28,23 +28,23 @@ npm run build
 Run a deterministic software-work workflow:
 
 ```bash
-npm run threadline -- run software-work /tmp/threadline-software.jsonl
-npm run threadline -- replay /tmp/threadline-software.jsonl
+npm run eventloom -- run software-work /tmp/eventloom-software.jsonl
+npm run eventloom -- replay /tmp/eventloom-software.jsonl
 ```
 
 Run a research workflow:
 
 ```bash
-npm run threadline -- run research-pipeline /tmp/threadline-research.jsonl
-npm run threadline -- timeline /tmp/threadline-research.jsonl
+npm run eventloom -- run research-pipeline /tmp/eventloom-research.jsonl
+npm run eventloom -- timeline /tmp/eventloom-research.jsonl
 ```
 
 Run a human approval workflow:
 
 ```bash
-npm run threadline -- run human-ops /tmp/threadline-human-ops.jsonl
-npm run threadline -- append /tmp/threadline-human-ops.jsonl approval.granted --actor human --thread thread_ops --payload '{"effectId":"effect_runtime_mitigation","approvalId":"approval_runtime_mitigation"}'
-npm run threadline -- run human-ops /tmp/threadline-human-ops.jsonl --resume
+npm run eventloom -- run human-ops /tmp/eventloom-human-ops.jsonl
+npm run eventloom -- append /tmp/eventloom-human-ops.jsonl approval.granted --actor human --thread thread_ops --payload '{"effectId":"effect_runtime_mitigation","approvalId":"approval_runtime_mitigation"}'
+npm run eventloom -- run human-ops /tmp/eventloom-human-ops.jsonl --resume
 ```
 
 ## Use as a Library
@@ -52,7 +52,7 @@ npm run threadline -- run human-ops /tmp/threadline-human-ops.jsonl --resume
 ```ts
 import { createRuntime } from "@eventloom/runtime";
 
-const runtime = createRuntime("/tmp/threadline.jsonl");
+const runtime = createRuntime("/tmp/eventloom.jsonl");
 await runtime.runBuiltIn("research-pipeline");
 
 const replay = await runtime.replay();

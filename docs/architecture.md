@@ -1,6 +1,6 @@
 # Architecture
 
-Threadline is a local-first runtime built around an append-only event log. The runtime coordinates actors through validated intentions and rebuilds state through deterministic projections.
+Eventloom is a local-first runtime built around an append-only event log. The runtime coordinates actors through validated intentions and rebuilds state through deterministic projections.
 
 ## Runtime Components
 
@@ -129,9 +129,9 @@ The hash is computed over a canonical representation of the event. The previous 
 
 ## Pathlight Boundary
 
-Threadline coordinates execution. Pathlight observes and visualizes execution.
+Eventloom coordinates execution. Pathlight observes and visualizes execution.
 
-The Pathlight adapter is intentionally separate from the core runtime. It translates a Threadline event log into Pathlight traces, spans, and span events without making Threadline depend on Pathlight storage internals.
+The Pathlight adapter is intentionally separate from the core runtime. It translates an Eventloom event log into Pathlight traces, spans, and span events without making Eventloom depend on Pathlight storage internals.
 
 ## Extension Points
 

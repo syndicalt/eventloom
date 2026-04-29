@@ -11,7 +11,7 @@ import { projectTasks } from "../src/task-projection.js";
 
 describe("deterministic actor runners", () => {
   it("runs software-work actors until idle", async () => {
-    const dir = await mkdtemp(join(tmpdir(), "threadline-runtime-"));
+    const dir = await mkdtemp(join(tmpdir(), "eventloom-runtime-"));
     const path = join(dir, "events.jsonl");
 
     const result = await runSoftwareWorkRuntime(path);
@@ -34,7 +34,7 @@ describe("deterministic actor runners", () => {
   });
 
   it("does not reprocess mailbox items on resume", async () => {
-    const dir = await mkdtemp(join(tmpdir(), "threadline-runtime-"));
+    const dir = await mkdtemp(join(tmpdir(), "eventloom-runtime-"));
     const path = join(dir, "events.jsonl");
 
     await runSoftwareWorkRuntime(path);
@@ -47,7 +47,7 @@ describe("deterministic actor runners", () => {
   });
 
   it("runs research-pipeline actors until idle", async () => {
-    const dir = await mkdtemp(join(tmpdir(), "threadline-research-runtime-"));
+    const dir = await mkdtemp(join(tmpdir(), "eventloom-research-runtime-"));
     const path = join(dir, "events.jsonl");
 
     const result = await runResearchPipelineRuntime(path);
@@ -70,7 +70,7 @@ describe("deterministic actor runners", () => {
   });
 
   it("pauses human-ops until approval then applies the effect on resume", async () => {
-    const dir = await mkdtemp(join(tmpdir(), "threadline-human-ops-"));
+    const dir = await mkdtemp(join(tmpdir(), "eventloom-human-ops-"));
     const path = join(dir, "events.jsonl");
 
     const first = await runHumanOpsRuntime(path);

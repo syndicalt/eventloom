@@ -1,10 +1,10 @@
-# Threadline Product Spec
+# Eventloom Product Spec
 
 ## Product Thesis
 
 Multi-agent AI should be modeled as an evented system, not a linear chat transcript. The runtime should make actors, causality, external events, state transitions, replay, and audit history first-class concepts.
 
-Threadline is an append-only event log for AI systems. Named actors read projected state, emit structured intentions, and let a deterministic orchestrator validate, append, reduce, and apply effects.
+Eventloom is an append-only event log for AI systems. Named actors read projected state, emit structured intentions, and let a deterministic orchestrator validate, append, reduce, and apply effects.
 
 ## Target User
 
@@ -51,7 +51,7 @@ An event is the immutable unit of history.
   "causedBy": [],
   "timestamp": "2026-04-28T22:00:00Z",
   "payload": {
-    "title": "Research Threadline runtimes"
+    "title": "Research Eventloom runtimes"
   }
 }
 ```

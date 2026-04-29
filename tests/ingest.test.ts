@@ -52,6 +52,6 @@ describe("external event ingestion", () => {
 });
 
 async function tempLog(): Promise<string> {
-  const dir = await mkdtemp(join(tmpdir(), "threadline-ingest-"));
+  const dir = await mkdtemp(join(tmpdir(), "eventloom-ingest-"));
   return join(dir, "events.jsonl");
 }

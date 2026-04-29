@@ -2,7 +2,7 @@
 
 ## Recommendation
 
-Build Threadline as a TypeScript runtime first, with a local JSONL event store and deterministic projection tests. Reuse Pathlight's ecosystem where it helps, but do not start by embedding Threadline inside Pathlight.
+Build Eventloom as a TypeScript runtime first, with a local JSONL event store and deterministic projection tests. Reuse Pathlight's ecosystem where it helps, but do not start by embedding Eventloom inside Pathlight.
 
 The immediate goal is to prove the runtime model:
 
@@ -46,7 +46,7 @@ Expected commands:
 ```bash
 npm test
 npm run build
-npm run threadline -- replay ./fixtures/sample.jsonl
+npm run eventloom -- replay ./fixtures/sample.jsonl
 ```
 
 ### Tests: Vitest
@@ -112,11 +112,11 @@ The CLI is the first inspection surface. It should support:
 
 ### Pathlight Bridge
 
-The Pathlight bridge should be a separate adapter. It should translate Threadline runtime history into Pathlight traces/spans/events without coupling the core runtime to Pathlight internals.
+The Pathlight bridge should be a separate adapter. It should translate Eventloom runtime history into Pathlight traces/spans/events without coupling the core runtime to Pathlight internals.
 
 Initial mapping:
 
-- Threadline thread -> Pathlight trace.
+- Eventloom thread -> Pathlight trace.
 - Actor turn -> Pathlight span.
 - Runtime event -> Pathlight event or future event-log table.
 - Projection hash -> trace metadata.
@@ -127,7 +127,7 @@ Do not add these in the first implementation:
 
 - Temporal: valuable later for durable distributed workflows, too heavy for proving the event model.
 - Kafka or Redpanda: useful for scale, unnecessary for local replay semantics.
-- LangGraph: useful for graph-shaped agent workflows, but Threadline first needs its own event contract.
+- LangGraph: useful for graph-shaped agent workflows, but Eventloom first needs its own event contract.
 - Redis: useful for projection caches, premature before projections exist.
 - Vector DB: out of scope until memory/RAG is a concrete use case.
 - Web UI: Pathlight is the likely UI host; prove CLI semantics first.
@@ -151,4 +151,4 @@ Success criteria:
 
 ## Decision Summary
 
-Threadline starts as a small TypeScript runtime with JSONL persistence, Zod validation, Vitest verification, and a CLI-first inspection surface. Pathlight is the integration target, not the starting point.
+Eventloom starts as a small TypeScript runtime with JSONL persistence, Zod validation, Vitest verification, and a CLI-first inspection surface. Pathlight is the integration target, not the starting point.

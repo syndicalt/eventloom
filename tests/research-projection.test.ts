@@ -81,7 +81,7 @@ function researchLifecycleEvents(): EventEnvelope[] {
       questionId: "question_1",
       sourceId: "source_1",
       title: "Runtime notes",
-      url: "threadline://runtime-notes",
+      url: "eventloom://runtime-notes",
     }),
     event("evt_claim_extracted", "claim.extracted", "analyst", "evt_source_found", {
       questionId: "question_1",

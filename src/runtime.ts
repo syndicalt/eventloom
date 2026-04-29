@@ -39,7 +39,7 @@ export interface RuntimeRunOptions extends RuntimeLoopOptions {
   resume?: boolean;
 }
 
-export class ThreadlineRuntime {
+export class EventloomRuntime {
   readonly store: JsonlEventStore;
 
   constructor(readonly path: string) {
@@ -79,8 +79,8 @@ export class ThreadlineRuntime {
   }
 }
 
-export function createRuntime(path: string): ThreadlineRuntime {
-  return new ThreadlineRuntime(path);
+export function createRuntime(path: string): EventloomRuntime {
+  return new EventloomRuntime(path);
 }
 
 export async function runBuiltInWorkflow(

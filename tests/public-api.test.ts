@@ -55,7 +55,7 @@ describe("public package API", () => {
       baseUrl: "http://pathlight.test",
       fetchImpl: fetchImpl as typeof fetch,
       provenance: {
-        packageName: "threadline",
+        packageName: "eventloom",
         packageVersion: "0.1.0",
         gitCommit: null,
         gitBranch: null,
@@ -69,7 +69,7 @@ describe("public package API", () => {
 });
 
 async function tempLog(): Promise<string> {
-  const dir = await mkdtemp(join(tmpdir(), "threadline-api-"));
+  const dir = await mkdtemp(join(tmpdir(), "eventloom-api-"));
   return join(dir, "events.jsonl");
 }
 

@@ -212,7 +212,7 @@ export function createResearchPipelineRunners(): Record<string, ActorRunner> {
           questionId: String(item.event.payload.questionId),
           sourceId: "source_runtime_notes",
           title: "Runtime design notes",
-          url: "threadline://fixtures/runtime-design-notes",
+          url: "eventloom://fixtures/runtime-design-notes",
         },
       })),
     analyst: ({ mailbox }) => mailbox
@@ -257,7 +257,7 @@ export function createResearchPipelineRunners(): Record<string, ActorRunner> {
           questionId: String(item.event.payload.questionId),
           sectionId: "section_runtime_model",
           title: "Runtime model",
-          content: "Threadline coordinates research as validated actor turns over an append-only log.",
+          content: "Eventloom coordinates research as validated actor turns over an append-only log.",
         },
       })),
     editor: ({ mailbox }) => mailbox
@@ -271,7 +271,7 @@ export function createResearchPipelineRunners(): Record<string, ActorRunner> {
         payload: {
           questionId: String(item.event.payload.questionId),
           reportId: "report_runtime_model",
-          summary: "Threadline's evented runtime gives research actors replayable state and provenance.",
+          summary: "Eventloom's evented runtime gives research actors replayable state and provenance.",
         },
       })),
   };

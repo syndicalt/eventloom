@@ -1,6 +1,6 @@
 # Contributor Guide
 
-This guide covers the development loop and expectations for changing Threadline.
+This guide covers the development loop and expectations for changing Eventloom.
 
 ## Local Development
 
@@ -25,7 +25,7 @@ npm run build
 Run the CLI:
 
 ```bash
-npm run threadline -- replay fixtures/sample.jsonl
+npm run eventloom -- replay fixtures/sample.jsonl
 ```
 
 ## Code Organization
@@ -128,7 +128,7 @@ When adding a new public concept, update:
 
 Keep Pathlight-specific behavior inside `src/export/pathlight.ts` unless there is a strong reason to change the core runtime.
 
-Pathlight export should remain an adapter over existing event logs. Export must not mutate Threadline logs.
+Pathlight export should remain an adapter over existing event logs. Export must not mutate Eventloom logs.
 
 ## Git Hygiene
 

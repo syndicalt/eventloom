@@ -2,14 +2,14 @@
 
 ## Project Structure & Module Organization
 
-Threadline is a TypeScript runtime prototype. Core code lives in `src/`, tests live in `tests/`, sample event logs live in `fixtures/`, and planning docs live in `docs/`. Keep repository-level configuration files in the root.
+Eventloom is a TypeScript runtime prototype. Core code lives in `src/`, tests live in `tests/`, sample event logs live in `fixtures/`, and planning docs live in `docs/`. Keep repository-level configuration files in the root.
 
 Recommended layout:
 
 ```text
 src/        Application or library code
 tests/      Unit and integration tests
-fixtures/   Sample Threadline event data used by tests
+fixtures/   Sample Eventloom event data used by tests
 docs/       Design notes and contributor documentation
 ```
 
@@ -21,23 +21,23 @@ Run commands from the repository root:
 npm install                              # Install dependencies
 npm test                                 # Run the Vitest suite
 npm run build                           # Compile TypeScript to dist/
-npm run threadline -- replay fixtures/sample.jsonl  # Replay a sample event log
-npm run threadline -- append /tmp/threadline-demo.jsonl goal.created --actor user --payload '{"title":"External goal"}'  # Append a sealed external event
-npm run threadline -- demo software-work /tmp/threadline-demo.jsonl  # Generate a deterministic demo log
-npm run threadline -- run software-work /tmp/threadline-run.jsonl --resume  # Resume deterministic actor loop from an existing log
-npm run threadline -- run research-pipeline /tmp/threadline-research.jsonl  # Run the deterministic research pipeline actor loop
-npm run threadline -- run human-ops /tmp/threadline-human-ops.jsonl  # Run until human approval is required
-npm run threadline -- append /tmp/threadline-human-ops.jsonl approval.granted --actor human --thread thread_ops --payload '{"effectId":"effect_runtime_mitigation","approvalId":"approval_runtime_mitigation"}'  # Grant approval externally
-npm run threadline -- run human-ops /tmp/threadline-human-ops.jsonl --resume  # Resume and apply the approved effect
-npm run threadline -- timeline /tmp/threadline-demo.jsonl  # Show ordered event history
-npm run threadline -- explain task task_actor_intentions /tmp/threadline-demo.jsonl  # Explain task state
-npm run threadline -- mailbox worker /tmp/threadline-demo.jsonl  # Show rebuilt actor mailbox
-npm run threadline -- export pathlight /tmp/threadline-demo.jsonl --base-url http://localhost:4100  # Export to Pathlight collector
+npm run eventloom -- replay fixtures/sample.jsonl  # Replay a sample event log
+npm run eventloom -- append /tmp/eventloom-demo.jsonl goal.created --actor user --payload '{"title":"External goal"}'  # Append a sealed external event
+npm run eventloom -- demo software-work /tmp/eventloom-demo.jsonl  # Generate a deterministic demo log
+npm run eventloom -- run software-work /tmp/eventloom-run.jsonl --resume  # Resume deterministic actor loop from an existing log
+npm run eventloom -- run research-pipeline /tmp/eventloom-research.jsonl  # Run the deterministic research pipeline actor loop
+npm run eventloom -- run human-ops /tmp/eventloom-human-ops.jsonl  # Run until human approval is required
+npm run eventloom -- append /tmp/eventloom-human-ops.jsonl approval.granted --actor human --thread thread_ops --payload '{"effectId":"effect_runtime_mitigation","approvalId":"approval_runtime_mitigation"}'  # Grant approval externally
+npm run eventloom -- run human-ops /tmp/eventloom-human-ops.jsonl --resume  # Resume and apply the approved effect
+npm run eventloom -- timeline /tmp/eventloom-demo.jsonl  # Show ordered event history
+npm run eventloom -- explain task task_actor_intentions /tmp/eventloom-demo.jsonl  # Explain task state
+npm run eventloom -- mailbox worker /tmp/eventloom-demo.jsonl  # Show rebuilt actor mailbox
+npm run eventloom -- export pathlight /tmp/eventloom-demo.jsonl --base-url http://localhost:4100  # Export to Pathlight collector
 ```
 
 ## Coding Style & Naming Conventions
 
-Use strict TypeScript with ES modules. Use descriptive file and function names that reflect Threadline concepts, such as `event_store`, `event_parser`, or `append_event`.
+Use strict TypeScript with ES modules. Use descriptive file and function names that reflect Eventloom concepts, such as `event_store`, `event_parser`, or `append_event`.
 
 Prefer small modules with narrow responsibilities. Avoid committing generated files unless they are required for runtime or distribution. Use ASCII text unless a file already requires Unicode content.
 

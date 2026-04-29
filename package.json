@@ -1,6 +1,6 @@
 {
   "name": "@eventloom/runtime",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "description": "Append-only event-log runtime for multi-agent AI systems",
   "main": "./dist/index.js",
@@ -30,10 +30,10 @@
     "build": "tsc",
     "prepack": "npm test && npm run build",
     "test": "vitest run",
-    "threadline": "tsx src/cli.ts"
+    "eventloom": "tsx src/cli.ts"
   },
   "bin": {
-    "threadline": "./dist/cli.js"
+    "eventloom": "dist/cli.js"
   },
   "engines": {
     "node": ">=20"
@@ -49,12 +49,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/syndicalt/threadline.git"
+    "url": "git+https://github.com/syndicalt/eventloom.git"
   },
   "bugs": {
-    "url": "https://github.com/syndicalt/threadline/issues"
+    "url": "https://github.com/syndicalt/eventloom/issues"
   },
-  "homepage": "https://github.com/syndicalt/threadline#readme",
+  "homepage": "https://github.com/syndicalt/eventloom#readme",
   "author": "Nicholas Blanchard <syndicalt@gmail.com>",
   "dependencies": {
     "nanoid": "^5.0.9",

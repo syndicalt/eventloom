@@ -2,7 +2,7 @@
 
 ## Positioning
 
-Threadline should start as a clean runtime prototype, then graduate into Pathlight if the model proves useful. Pathlight observes agent runs after or during execution. Threadline coordinates execution through an append-only event log, named actors, validated intentions, deterministic projections, and replay.
+Eventloom should start as a clean runtime prototype, then graduate into Pathlight if the model proves useful. Pathlight observes agent runs after or during execution. Eventloom coordinates execution through an append-only event log, named actors, validated intentions, deterministic projections, and replay.
 
 The product promise is: agents become debuggable because their runtime state is built from explicit events, not hidden conversation state.
 
@@ -95,7 +95,7 @@ Key mapping:
 
 - Runtime thread -> Pathlight trace.
 - Actor turn -> Pathlight span.
-- Runtime event -> Pathlight event row or future Threadline event table.
+- Runtime event -> Pathlight event row or future Eventloom event table.
 - Projection hash -> trace metadata.
 
 ## Initial Sprints

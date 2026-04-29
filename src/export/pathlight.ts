@@ -36,10 +36,10 @@ export async function exportToPathlight(
   const research = projectResearch(events);
   const tasks = projectTasks(events);
   const trace = await post<JsonResponse>(fetcher, `${baseUrl}/v1/traces`, {
-    name: options.traceName ?? "threadline-runtime",
+    name: options.traceName ?? "eventloom-runtime",
     input: { eventCount: events.length },
     metadata: {
-      source: "threadline",
+      source: "eventloom",
       integrity,
       projectionHash: projectionHash({ effects, eventTypes: eventTypeCounts(events), research, tasks }),
       projectionKinds: projectionKinds({ effects, research, tasks }),
@@ -49,7 +49,7 @@ export async function exportToPathlight(
       },
       threadIds: [...new Set(events.map((event) => event.threadId))],
     },
-    tags: ["threadline"],
+    tags: ["eventloom"],
     gitCommit: provenance.gitCommit ?? undefined,
     gitBranch: provenance.gitBranch ?? undefined,
     gitDirty: provenance.gitDirty ?? undefined,
@@ -75,7 +75,7 @@ export async function exportToPathlight(
       type: "agent",
       input: { sourceEventId: started.payload.sourceEventId, mailboxEventType: started.payload.mailboxEventType },
       metadata: {
-        source: "threadline",
+        source: "eventloom",
         turnId,
         actorId: started.actorId,
         startedEventId: started.id,
@@ -107,7 +107,7 @@ export async function exportToPathlight(
   await patch(fetcher, `${baseUrl}/v1/traces/${trace.id}`, {
     status: integrity.ok ? "completed" : "failed",
     output: { spanCount, eventCount: pathlightEventCount },
-    error: integrity.ok ? undefined : "Threadline integrity verification failed",
+    error: integrity.ok ? undefined : "Eventloom integrity verification failed",
   });
 
   return { traceId: trace.id, spanCount, eventCount: pathlightEventCount };

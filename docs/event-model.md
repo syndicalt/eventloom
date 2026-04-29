@@ -1,6 +1,6 @@
 # Event Model
 
-Threadline runtime state is represented by typed events in an append-only log.
+Eventloom runtime state is represented by typed events in an append-only log.
 
 ## Event Envelope
 
@@ -54,7 +54,7 @@ The first segment is usually the domain object. The final segment is the fact th
 External events enter the log through the CLI or package API:
 
 ```bash
-npm run threadline -- append /tmp/threadline.jsonl goal.created --actor user --payload '{"title":"External goal"}'
+npm run eventloom -- append /tmp/eventloom.jsonl goal.created --actor user --payload '{"title":"External goal"}'
 ```
 
 External events are trusted only as facts in the log. If actors react to them, their follow-up state changes still go through the intention and orchestrator path.
@@ -146,7 +146,7 @@ Projection state is derived data. The event log is the source of truth.
 
 ## Causality
 
-Threadline uses both:
+Eventloom uses both:
 
 - `parentEventId` for the main direct parent.
 - `causedBy` for one or more causal dependencies.

@@ -1,6 +1,6 @@
 # User Guide
 
-This guide covers the normal ways to use Threadline from the command line and as a local TypeScript package.
+This guide covers the normal ways to use Eventloom from the command line and as a local TypeScript package.
 
 ## Install and Verify
 
@@ -12,13 +12,13 @@ npm test
 npm run build
 ```
 
-Threadline uses TypeScript, Node.js, Vitest, and a JSONL event store. It does not require a database or Docker Compose.
+Eventloom uses TypeScript, Node.js, Vitest, and a JSONL event store. It does not require a database or Docker Compose.
 
 ## Core Idea
 
-Threadline stores runtime history as an append-only event log. Actors do not mutate state directly. They receive mailbox items, emit intentions, and the orchestrator validates those intentions before appending accepted events.
+Eventloom stores runtime history as an append-only event log. Actors do not mutate state directly. They receive mailbox items, emit intentions, and the orchestrator validates those intentions before appending accepted events.
 
-When you replay a log, Threadline rebuilds projections from events:
+When you replay a log, Eventloom rebuilds projections from events:
 
 - `tasks`: software-work task state.
 - `research`: research questions, sources, claims, challenges, sections, and reports.
@@ -38,20 +38,20 @@ The software-work workflow models a small coding-agent style lifecycle:
 5. `reviewer` approves it.
 
 ```bash
-npm run threadline -- run software-work /tmp/threadline-software.jsonl
-npm run threadline -- replay /tmp/threadline-software.jsonl
+npm run eventloom -- run software-work /tmp/eventloom-software.jsonl
+npm run eventloom -- replay /tmp/eventloom-software.jsonl
 ```
 
 Inspect the timeline:
 
 ```bash
-npm run threadline -- timeline /tmp/threadline-software.jsonl
+npm run eventloom -- timeline /tmp/eventloom-software.jsonl
 ```
 
 Explain the built-in task:
 
 ```bash
-npm run threadline -- explain task task_actor_runtime /tmp/threadline-software.jsonl
+npm run eventloom -- explain task task_actor_runtime /tmp/eventloom-software.jsonl
 ```
 
 ## Run Research Pipeline
@@ -66,8 +66,8 @@ The research-pipeline workflow exercises a provenance-heavy multi-agent path:
 6. `editor` finalizes the report.
 
 ```bash
-npm run threadline -- run research-pipeline /tmp/threadline-research.jsonl
-npm run threadline -- replay /tmp/threadline-research.jsonl
+npm run eventloom -- run research-pipeline /tmp/eventloom-research.jsonl
+npm run eventloom -- replay /tmp/eventloom-research.jsonl
 ```
 
 The replay output includes `projection.research.questions.question_evented_runtime`.
@@ -79,20 +79,20 @@ The human-ops workflow proves that external human approval can enter the log and
 Start the workflow:
 
 ```bash
-npm run threadline -- run human-ops /tmp/threadline-human-ops.jsonl
+npm run eventloom -- run human-ops /tmp/eventloom-human-ops.jsonl
 ```
 
 The first run stops with an effect in `approval_requested` state. Grant approval externally:
 
 ```bash
-npm run threadline -- append /tmp/threadline-human-ops.jsonl approval.granted --actor human --thread thread_ops --payload '{"effectId":"effect_runtime_mitigation","approvalId":"approval_runtime_mitigation"}'
+npm run eventloom -- append /tmp/eventloom-human-ops.jsonl approval.granted --actor human --thread thread_ops --payload '{"effectId":"effect_runtime_mitigation","approvalId":"approval_runtime_mitigation"}'
 ```
 
 Resume the workflow:
 
 ```bash
-npm run threadline -- run human-ops /tmp/threadline-human-ops.jsonl --resume
-npm run threadline -- replay /tmp/threadline-human-ops.jsonl
+npm run eventloom -- run human-ops /tmp/eventloom-human-ops.jsonl --resume
+npm run eventloom -- replay /tmp/eventloom-human-ops.jsonl
 ```
 
 The effect should end in `applied` state.
@@ -102,7 +102,7 @@ The effect should end in `applied` state.
 Use `append` to insert events from outside the actor loop:
 
 ```bash
-npm run threadline -- append /tmp/threadline.jsonl goal.created --actor user --payload '{"title":"External goal"}'
+npm run eventloom -- append /tmp/eventloom.jsonl goal.created --actor user --payload '{"title":"External goal"}'
 ```
 
 Optional flags:
@@ -119,7 +119,7 @@ Every appended event is sealed into the hash chain.
 Mailboxes are rebuilt from event history. For the software-work registry:
 
 ```bash
-npm run threadline -- mailbox worker /tmp/threadline-software.jsonl
+npm run eventloom -- mailbox worker /tmp/eventloom-software.jsonl
 ```
 
 If an actor has processed all subscribed events, the mailbox is empty.
@@ -129,17 +129,17 @@ If an actor has processed all subscribed events, the mailbox is empty.
 If a Pathlight collector is running:
 
 ```bash
-npm run threadline -- export pathlight /tmp/threadline-human-ops.jsonl --base-url http://localhost:4100 --trace-name threadline-human-ops
+npm run eventloom -- export pathlight /tmp/eventloom-human-ops.jsonl --base-url http://localhost:4100 --trace-name eventloom-human-ops
 ```
 
-Threadline exports actor turns as Pathlight spans and related Threadline events as span events. Pathlight is optional; Threadline works without it.
+Eventloom exports actor turns as Pathlight spans and related Eventloom events as span events. Pathlight is optional; Eventloom works without it.
 
 ## Use the Package API
 
 ```ts
 import { createRuntime } from "@eventloom/runtime";
 
-const runtime = createRuntime("/tmp/threadline.jsonl");
+const runtime = createRuntime("/tmp/eventloom.jsonl");
 await runtime.runBuiltIn("software-work");
 
 const replay = await runtime.replay();

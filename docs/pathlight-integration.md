@@ -1,29 +1,29 @@
 # Pathlight Integration
 
-Threadline can export event logs to a Pathlight collector for visual inspection.
+Eventloom can export event logs to a Pathlight collector for visual inspection.
 
-Pathlight is optional. Threadline does not require Docker Compose, a collector, or a database to run locally.
+Pathlight is optional. Eventloom does not require Docker Compose, a collector, or a database to run locally.
 
 ## Export Command
 
 ```bash
-npm run threadline -- export pathlight <events.jsonl> --base-url http://localhost:4100 --trace-name threadline-run
+npm run eventloom -- export pathlight <events.jsonl> --base-url http://localhost:4100 --trace-name eventloom-run
 ```
 
 Example:
 
 ```bash
-npm run threadline -- run human-ops /tmp/threadline-human-ops.jsonl
-npm run threadline -- append /tmp/threadline-human-ops.jsonl approval.granted --actor human --thread thread_ops --payload '{"effectId":"effect_runtime_mitigation","approvalId":"approval_runtime_mitigation"}'
-npm run threadline -- run human-ops /tmp/threadline-human-ops.jsonl --resume
-npm run threadline -- export pathlight /tmp/threadline-human-ops.jsonl --base-url http://localhost:4100 --trace-name threadline-human-ops
+npm run eventloom -- run human-ops /tmp/eventloom-human-ops.jsonl
+npm run eventloom -- append /tmp/eventloom-human-ops.jsonl approval.granted --actor human --thread thread_ops --payload '{"effectId":"effect_runtime_mitigation","approvalId":"approval_runtime_mitigation"}'
+npm run eventloom -- run human-ops /tmp/eventloom-human-ops.jsonl --resume
+npm run eventloom -- export pathlight /tmp/eventloom-human-ops.jsonl --base-url http://localhost:4100 --trace-name eventloom-human-ops
 ```
 
 ## Mapping
 
-Threadline maps runtime history to Pathlight like this:
+Eventloom maps runtime history to Pathlight like this:
 
-| Threadline | Pathlight |
+| Eventloom | Pathlight |
 |---|---|
 | Runtime event log | Trace |
 | Actor turn | Agent span |
@@ -33,9 +33,9 @@ Threadline maps runtime history to Pathlight like this:
 
 ## Trace Metadata
 
-Threadline trace metadata includes:
+Eventloom trace metadata includes:
 
-- `source: "threadline"`
+- `source: "eventloom"`
 - `integrity`
 - `projectionHash`
 - `projectionKinds`
@@ -43,7 +43,7 @@ Threadline trace metadata includes:
 - `runtime.version`
 - `threadIds`
 
-When git metadata is available, Threadline also sends:
+When git metadata is available, Eventloom also sends:
 
 - `gitCommit`
 - `gitBranch`
@@ -53,7 +53,7 @@ When git metadata is available, Threadline also sends:
 
 Each actor turn span includes:
 
-- `source: "threadline"`
+- `source: "eventloom"`
 - `turnId`
 - `actorId`
 - `startedEventId`
@@ -79,11 +79,11 @@ Empty rejection arrays are intentionally omitted because Pathlight's issue heuri
 ```ts
 import { createRuntime } from "@eventloom/runtime";
 
-const runtime = createRuntime("/tmp/threadline-human-ops.jsonl");
+const runtime = createRuntime("/tmp/eventloom-human-ops.jsonl");
 
 await runtime.exportPathlight({
   baseUrl: "http://localhost:4100",
-  traceName: "threadline-human-ops",
+  traceName: "eventloom-human-ops",
 });
 ```
 
@@ -93,16 +93,16 @@ If the collector is unavailable, export fails with a request error. The event lo
 
 ## Docker Compose
 
-Threadline itself is not a Compose service. Use Compose only to run optional infrastructure such as Pathlight collector and dashboard.
+Eventloom itself is not a Compose service. Use Compose only to run optional infrastructure such as Pathlight collector and dashboard.
 
 A typical local setup is:
 
 1. Start Pathlight separately.
-2. Run Threadline locally with `npm run threadline`.
+2. Run Eventloom locally with `npm run eventloom`.
 3. Export a log to the collector.
 
 This keeps the runtime simple and preserves the local JSONL development model.
 
 ## Bridge Decision
 
-See [Pathlight Bridge Spike](decisions/pathlight-bridge-spike.md) for the decision to keep Threadline as a separate runtime prototype and integrate through an export adapter.
+See [Pathlight Bridge Spike](decisions/pathlight-bridge-spike.md) for the decision to keep Eventloom as a separate runtime prototype and integrate through an export adapter.

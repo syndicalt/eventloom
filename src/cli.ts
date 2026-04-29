@@ -36,28 +36,28 @@ async function main(argv: string[]): Promise<void> {
   }
 
   if (command === "demo" && path === "software-work") {
-    const outPath = extra ?? ".threadline/events.jsonl";
+    const outPath = extra ?? ".eventloom/events.jsonl";
     await runSoftwareWorkDemo(outPath);
     console.log(JSON.stringify({ path: outPath }, null, 2));
     return;
   }
 
   if (command === "run" && path === "software-work") {
-    const outPath = extra ?? ".threadline/events.jsonl";
+    const outPath = extra ?? ".eventloom/events.jsonl";
     const result = await runSoftwareWorkRuntime(outPath, { resume: argv.includes("--resume") });
     console.log(JSON.stringify({ path: outPath, ...result }, null, 2));
     return;
   }
 
   if (command === "run" && path === "research-pipeline") {
-    const outPath = extra ?? ".threadline/research-events.jsonl";
+    const outPath = extra ?? ".eventloom/research-events.jsonl";
     const result = await runResearchPipelineRuntime(outPath, { resume: argv.includes("--resume") });
     console.log(JSON.stringify({ path: outPath, ...result }, null, 2));
     return;
   }
 
   if (command === "run" && path === "human-ops") {
-    const outPath = extra ?? ".threadline/human-ops-events.jsonl";
+    const outPath = extra ?? ".eventloom/human-ops-events.jsonl";
     const result = await runHumanOpsRuntime(outPath, { resume: argv.includes("--resume") });
     console.log(JSON.stringify({ path: outPath, ...result }, null, 2));
     return;
@@ -118,16 +118,16 @@ async function main(argv: string[]): Promise<void> {
 }
 
 function printUsage(): void {
-  console.error("Usage: threadline append <events.jsonl> <event.type> --actor <actorId> --payload '<json>'");
-  console.error("       threadline replay <events.jsonl>");
-  console.error("       threadline demo software-work [events.jsonl]");
-  console.error("       threadline run software-work [events.jsonl] [--resume]");
-  console.error("       threadline run research-pipeline [events.jsonl] [--resume]");
-  console.error("       threadline run human-ops [events.jsonl] [--resume]");
-  console.error("       threadline export pathlight <events.jsonl> --base-url <url> [--trace-name <name>]");
-  console.error("       threadline timeline <events.jsonl>");
-  console.error("       threadline explain task <taskId> <events.jsonl>");
-  console.error("       threadline mailbox <actorId> <events.jsonl>");
+  console.error("Usage: eventloom append <events.jsonl> <event.type> --actor <actorId> --payload '<json>'");
+  console.error("       eventloom replay <events.jsonl>");
+  console.error("       eventloom demo software-work [events.jsonl]");
+  console.error("       eventloom run software-work [events.jsonl] [--resume]");
+  console.error("       eventloom run research-pipeline [events.jsonl] [--resume]");
+  console.error("       eventloom run human-ops [events.jsonl] [--resume]");
+  console.error("       eventloom export pathlight <events.jsonl> --base-url <url> [--trace-name <name>]");
+  console.error("       eventloom timeline <events.jsonl>");
+  console.error("       eventloom explain task <taskId> <events.jsonl>");
+  console.error("       eventloom mailbox <actorId> <events.jsonl>");
 }
 
 interface ExportOptions {

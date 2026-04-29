@@ -74,7 +74,7 @@ describe("Orchestrator", () => {
   });
 
   it("rejects invalid research state transitions before accepting events", async () => {
-    const dir = await mkdtemp(join(tmpdir(), "threadline-orchestrator-"));
+    const dir = await mkdtemp(join(tmpdir(), "eventloom-orchestrator-"));
     const store = new JsonlEventStore(join(dir, "events.jsonl"));
     const actors = new ActorRegistry();
     actors.register({
@@ -118,7 +118,7 @@ describe("Orchestrator", () => {
   });
 
   it("rejects effects applied before approval", async () => {
-    const dir = await mkdtemp(join(tmpdir(), "threadline-orchestrator-"));
+    const dir = await mkdtemp(join(tmpdir(), "eventloom-orchestrator-"));
     const store = new JsonlEventStore(join(dir, "events.jsonl"));
     const actors = new ActorRegistry();
     actors.register({
@@ -173,7 +173,7 @@ describe("Orchestrator", () => {
 });
 
 async function setup() {
-  const dir = await mkdtemp(join(tmpdir(), "threadline-orchestrator-"));
+  const dir = await mkdtemp(join(tmpdir(), "eventloom-orchestrator-"));
   const store = new JsonlEventStore(join(dir, "events.jsonl"));
   const actors = new ActorRegistry();
   actors.register({
