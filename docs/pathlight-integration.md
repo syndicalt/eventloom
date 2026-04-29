@@ -31,6 +31,8 @@ Eventloom maps runtime history to Pathlight like this:
 | Integrity and projection data | Trace metadata |
 | Git/package provenance | Native trace fields and metadata |
 
+For external agent journals that do not contain `actor.started` / `actor.completed` runtime turns, Eventloom exports projected task lifecycles as Pathlight agent spans. This gives `.eventloom/agent-work.jsonl` logs a useful visual shape without requiring agents to emit runtime actor-turn events.
+
 ## Trace Metadata
 
 Eventloom trace metadata includes:

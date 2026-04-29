@@ -4,7 +4,7 @@ import { verifyEventChain } from "../integrity.js";
 import { projectionHash } from "../projection.js";
 import { collectRuntimeProvenance, type RuntimeProvenance } from "../provenance.js";
 import { projectResearch } from "../research-projection.js";
-import { projectTasks } from "../task-projection.js";
+import { projectTasks, type TaskState } from "../task-projection.js";
 
 export interface PathlightExportOptions {
   baseUrl: string;
@@ -61,7 +61,8 @@ export async function exportToPathlight(
   let pathlightEventCount = 0;
   const byId = new Map(events.map((event) => [event.id, event]));
 
-  for (const started of events.filter((event) => event.type === "actor.started")) {
+  const actorStartedEvents = events.filter((event) => event.type === "actor.started");
+  for (const started of actorStartedEvents) {
     const turnId = String(started.payload.turnId ?? "");
     const completed = events.find((event) => (
       event.type === "actor.completed" &&
@@ -104,6 +105,12 @@ export async function exportToPathlight(
     });
   }
 
+  if (actorStartedEvents.length === 0) {
+    const exported = await exportTaskLifecycleSpans(fetcher, baseUrl, trace.id, events, tasks.tasks, byId);
+    spanCount += exported.spanCount;
+    pathlightEventCount += exported.eventCount;
+  }
+
   await patch(fetcher, `${baseUrl}/v1/traces/${trace.id}`, {
     status: integrity.ok ? "completed" : "failed",
     output: { spanCount, eventCount: pathlightEventCount },
@@ -111,6 +118,102 @@ export async function exportToPathlight(
   });
 
   return { traceId: trace.id, spanCount, eventCount: pathlightEventCount };
+}
+
+async function exportTaskLifecycleSpans(
+  fetcher: typeof fetch,
+  baseUrl: string,
+  traceId: string,
+  events: readonly EventEnvelope[],
+  tasks: Record<string, TaskState>,
+  byId: ReadonlyMap<string, EventEnvelope>,
+): Promise<{ spanCount: number; eventCount: number }> {
+  let spanCount = 0;
+  let eventCount = 0;
+  for (const task of Object.values(tasks).sort((left, right) => left.id.localeCompare(right.id))) {
+    const history = task.history
+      .map((eventId) => byId.get(eventId))
+      .filter((event): event is EventEnvelope => !!event);
+
+    const span = await post<JsonResponse>(fetcher, `${baseUrl}/v1/spans`, {
+      traceId,
+      name: `task.${task.id}`,
+      type: "agent",
+      input: {
+        taskId: task.id,
+        title: task.title ?? null,
+        firstEventId: history.at(0)?.id ?? null,
+      },
+      metadata: {
+        source: "eventloom",
+        exportKind: "task_lifecycle",
+        taskId: task.id,
+        taskStatus: task.status,
+        actorId: task.actorId,
+        historyEventIds: task.history,
+        threadIds: [...new Set(history.map((event) => event.threadId))],
+      },
+    });
+    if (!span.id) throw new Error("Pathlight span create response did not include id");
+    spanCount += 1;
+
+    for (const event of history) {
+      await post<JsonResponse>(fetcher, `${baseUrl}/v1/spans/${span.id}/events`, {
+        name: event.type,
+        level: eventLevel(event),
+        body: event,
+      });
+      eventCount += 1;
+    }
+
+    await patch(fetcher, `${baseUrl}/v1/spans/${span.id}`, {
+      status: taskSpanStatus(task),
+      output: taskSpanOutput(task, history, events),
+      error: task.status === "issue_reported" ? "Task has an issue_reported status" : undefined,
+    });
+  }
+
+  return { spanCount, eventCount };
+}
+
+function taskSpanStatus(task: TaskState): string {
+  if (task.status === "issue_reported") return "failed";
+  return "completed";
+}
+
+function taskSpanOutput(
+  task: TaskState,
+  history: readonly EventEnvelope[],
+  events: readonly EventEnvelope[],
+): Record<string, unknown> {
+  return {
+    taskId: task.id,
+    title: task.title ?? null,
+    status: task.status,
+    lastActor: task.actorId,
+    lastEventId: task.lastEventId,
+    eventTypes: eventTypeCounts(history),
+    decisions: factsForTask(events, task.id, "decision.recorded"),
+    verification: events
+      .filter((event) => event.type.startsWith("verification."))
+      .map((event) => event.payload),
+  };
+}
+
+function factsForTask(
+  events: readonly EventEnvelope[],
+  taskId: string,
+  type: string,
+): Record<string, unknown>[] {
+  return events
+    .filter((event) => event.type === type)
+    .filter((event) => event.payload.taskId === taskId || event.payload.taskId === undefined)
+    .map((event) => event.payload);
+}
+
+function eventLevel(event: EventEnvelope): string {
+  if (event.type.includes("rejected") || event.type.includes("invalid") || event.type.includes("issue")) return "warn";
+  return "info";
 }
 
 function spanOutput(completed: EventEnvelope): Record<string, unknown> {
