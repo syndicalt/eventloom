@@ -5,6 +5,12 @@ export const eventIdSchema = z.string().regex(/^evt_[A-Za-z0-9_-]+$/);
 export const actorIdSchema = z.string().min(1);
 export const threadIdSchema = z.string().min(1);
 export const eventTypeSchema = z.string().regex(/^[a-z][a-z0-9]*(\.[a-z][a-z0-9]*)+$/);
+export const sha256Schema = z.string().regex(/^sha256:[a-f0-9]{64}$/);
+
+export const eventIntegritySchema = z.object({
+  hash: sha256Schema,
+  previousHash: sha256Schema.nullable(),
+});
 
 export const eventEnvelopeSchema = z.object({
   id: eventIdSchema,
@@ -15,6 +21,7 @@ export const eventEnvelopeSchema = z.object({
   causedBy: z.array(eventIdSchema),
   timestamp: z.string().datetime({ offset: true }),
   payload: z.record(z.unknown()),
+  integrity: eventIntegritySchema.optional(),
 });
 
 export type EventEnvelope = z.infer<typeof eventEnvelopeSchema>;

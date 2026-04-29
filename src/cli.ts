@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { JsonlEventStore } from "./event-store.js";
+import { verifyEventChain } from "./integrity.js";
 import { eventTypeCounts, projectionHash } from "./projection.js";
 import { projectTasks } from "./task-projection.js";
 
@@ -14,6 +15,7 @@ async function main(argv: string[]): Promise<void> {
 
   const store = new JsonlEventStore(path);
   const events = await store.readAll();
+  const integrity = verifyEventChain(events);
   const projection = {
     eventTypes: eventTypeCounts(events),
     tasks: projectTasks(events),
@@ -21,6 +23,7 @@ async function main(argv: string[]): Promise<void> {
 
   console.log(JSON.stringify({
     eventCount: events.length,
+    integrity,
     projection,
     projectionHash: projectionHash(projection),
   }, null, 2));

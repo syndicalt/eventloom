@@ -1,6 +1,7 @@
 import { mkdir, readFile, stat, appendFile } from "node:fs/promises";
 import { dirname } from "node:path";
 import { validateEvent, type EventEnvelope } from "./events.js";
+import { sealEvent, verifyEventChain, type IntegrityReport, type SealedEvent } from "./integrity.js";
 
 export class EventStoreReadError extends Error {
   constructor(path: string, line: number, cause: unknown) {
@@ -13,10 +14,14 @@ export class EventStoreReadError extends Error {
 export class JsonlEventStore {
   constructor(private readonly path: string) {}
 
-  async append(event: EventEnvelope): Promise<void> {
+  async append(event: EventEnvelope): Promise<SealedEvent> {
     const validated = validateEvent(event);
+    const existing = await this.readAll();
+    const previousHash = existing.at(-1)?.integrity?.hash ?? null;
+    const sealed = sealEvent(validated, previousHash);
     await mkdir(dirname(this.path), { recursive: true });
-    await appendFile(this.path, `${JSON.stringify(validated)}\n`, "utf8");
+    await appendFile(this.path, JSON.stringify(sealed) + "\n", "utf8");
+    return sealed;
   }
 
   async readAll(): Promise<EventEnvelope[]> {
@@ -32,6 +37,10 @@ export class JsonlEventStore {
         throw new EventStoreReadError(this.path, index + 1, error);
       }
     });
+  }
+
+  async verify(): Promise<IntegrityReport> {
+    return verifyEventChain(await this.readAll());
   }
 }
 

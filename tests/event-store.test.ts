@@ -19,9 +19,10 @@ describe("JsonlEventStore", () => {
       payload: { title: "Test append" },
     });
 
-    await store.append(event);
+    const sealed = await store.append(event);
 
-    await expect(store.readAll()).resolves.toEqual([event]);
+    expect(sealed.integrity.previousHash).toBeNull();
+    await expect(store.readAll()).resolves.toEqual([sealed]);
   });
 
   it("returns an empty list for a missing log", async () => {
