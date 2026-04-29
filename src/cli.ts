@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { createSoftwareWorkRegistry } from "./actors.js";
 import { JsonlEventStore } from "./event-store.js";
+import { exportToPathlight } from "./export/pathlight.js";
 import { appendExternalEvent, parseJsonPayload } from "./ingest.js";
 import { formatMailbox, formatTaskExplanation, formatTimeline } from "./inspect.js";
 import { verifyEventChain } from "./integrity.js";
@@ -43,6 +44,17 @@ async function main(argv: string[]): Promise<void> {
     const outPath = extra ?? ".threadline/events.jsonl";
     const result = await runSoftwareWorkRuntime(outPath, { resume: argv.includes("--resume") });
     console.log(JSON.stringify({ path: outPath, ...result }, null, 2));
+    return;
+  }
+
+  if (command === "export" && path === "pathlight" && extra) {
+    const options = parseExportOptions(argv.slice(3));
+    const store = new JsonlEventStore(extra);
+    const result = await exportToPathlight(await store.readAll(), {
+      baseUrl: options.baseUrl,
+      traceName: options.traceName,
+    });
+    console.log(JSON.stringify(result, null, 2));
     return;
   }
 
@@ -92,9 +104,30 @@ function printUsage(): void {
   console.error("       threadline replay <events.jsonl>");
   console.error("       threadline demo software-work [events.jsonl]");
   console.error("       threadline run software-work [events.jsonl] [--resume]");
+  console.error("       threadline export pathlight <events.jsonl> --base-url <url> [--trace-name <name>]");
   console.error("       threadline timeline <events.jsonl>");
   console.error("       threadline explain task <taskId> <events.jsonl>");
   console.error("       threadline mailbox <actorId> <events.jsonl>");
+}
+
+interface ExportOptions {
+  baseUrl: string;
+  traceName?: string;
+}
+
+function parseExportOptions(args: string[]): ExportOptions {
+  const options: ExportOptions = { baseUrl: "http://localhost:4100" };
+  for (let index = 0; index < args.length; index += 1) {
+    const flag = args[index];
+    const value = args[index + 1];
+    if (!value) throw new Error("Missing value for " + flag);
+
+    if (flag === "--base-url") options.baseUrl = value;
+    else if (flag === "--trace-name") options.traceName = value;
+    else throw new Error("Unknown export option " + flag);
+    index += 1;
+  }
+  return options;
 }
 
 interface AppendOptions {

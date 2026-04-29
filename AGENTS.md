@@ -28,6 +28,7 @@ npm run threadline -- run software-work /tmp/threadline-run.jsonl --resume  # Re
 npm run threadline -- timeline /tmp/threadline-demo.jsonl  # Show ordered event history
 npm run threadline -- explain task task_actor_intentions /tmp/threadline-demo.jsonl  # Explain task state
 npm run threadline -- mailbox worker /tmp/threadline-demo.jsonl  # Show rebuilt actor mailbox
+npm run threadline -- export pathlight /tmp/threadline-demo.jsonl --base-url http://localhost:4100  # Export to Pathlight collector
 ```
 
 ## Coding Style & Naming Conventions
