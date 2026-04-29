@@ -19,6 +19,7 @@ export type ActorRunner = (context: ActorRunnerContext) => Intention[];
 export interface RuntimeLoopResult {
   iterations: number;
   appended: number;
+  processed: number;
   skipped: number;
   rejected: number;
   stoppedReason: "idle" | "max_iterations";
@@ -37,6 +38,7 @@ export async function runRuntimeLoop(
   const maxIterations = options.maxIterations ?? 20;
   const submitted = new Set<string>();
   let appended = 0;
+  let processed = 0;
   let skipped = 0;
   let rejected = 0;
 
@@ -50,31 +52,47 @@ export async function runRuntimeLoop(
       if (!runner) continue;
 
       const mailbox = buildMailboxForActor(actor, events);
-      const intentions = runner({ actor, mailbox, events });
-      for (const intention of intentions) {
-        const key = canonicalJson(intention);
-        if (submitted.has(key)) {
-          skipped += 1;
-          continue;
-        }
-        submitted.add(key);
+      for (const item of mailbox) {
+        const intentions = runner({ actor, mailbox: [item], events });
+        for (const intention of intentions) {
+          const key = canonicalJson(intention);
+          if (submitted.has(key)) {
+            skipped += 1;
+            continue;
+          }
+          submitted.add(key);
 
-        const result = await orchestrator.submitIntention(intention);
-        if (result.accepted) {
-          appended += 1;
-          appendedThisIteration += 1;
-        } else {
-          rejected += 1;
+          const result = await orchestrator.submitIntention(intention);
+          if (result.accepted) {
+            appended += 1;
+            appendedThisIteration += 1;
+          } else {
+            rejected += 1;
+          }
         }
+
+        await store.append(createEvent({
+          type: "actor.processed",
+          actorId: actor.id,
+          threadId: item.event.threadId,
+          parentEventId: item.event.id,
+          causedBy: [item.event.id],
+          payload: {
+            sourceEventId: item.event.id,
+            intentions: intentions.map((intention) => intention.type),
+          },
+        }));
+        processed += 1;
+        appendedThisIteration += 1;
       }
     }
 
     if (appendedThisIteration === 0) {
-      return { iterations: iteration, appended, skipped, rejected, stoppedReason: "idle" };
+      return { iterations: iteration, appended, processed, skipped, rejected, stoppedReason: "idle" };
     }
   }
 
-  return { iterations: maxIterations, appended, skipped, rejected, stoppedReason: "max_iterations" };
+  return { iterations: maxIterations, appended, processed, skipped, rejected, stoppedReason: "max_iterations" };
 }
 
 export function createSoftwareWorkRunners(): Record<string, ActorRunner> {

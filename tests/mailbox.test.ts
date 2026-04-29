@@ -38,6 +38,16 @@ describe("mailboxes", () => {
     expect(() => buildMailbox(registry, "missing", [])).toThrow("Actor missing is not registered");
   });
 
+  it("excludes events already processed by the actor", () => {
+    const registry = createSoftwareWorkRegistry();
+    const events = [
+      event("evt_task", "task.proposed", "planner", null, { taskId: "task_1" }),
+      event("evt_processed", "actor.processed", "worker", "evt_task", { sourceEventId: "evt_task" }),
+    ];
+
+    expect(buildMailbox(registry, "worker", events)).toEqual([]);
+  });
+
   it("formats mailbox items with task context", () => {
     const registry = createSoftwareWorkRegistry();
     const events = [

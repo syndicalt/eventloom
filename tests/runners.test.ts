@@ -18,10 +18,23 @@ describe("deterministic actor runners", () => {
 
     expect(result.stoppedReason).toBe("idle");
     expect(result.appended).toBe(5);
+    expect(result.processed).toBe(5);
     expect(result.rejected).toBe(0);
-    expect(result.skipped).toBeGreaterThan(0);
+    expect(result.skipped).toBe(0);
     expect((await store.verify()).ok).toBe(true);
     expect(projection.errors).toEqual([]);
     expect(projection.tasks.task_actor_runtime.status).toBe("approved");
+  });
+
+  it("does not reprocess mailbox items on resume", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "threadline-runtime-"));
+    const path = join(dir, "events.jsonl");
+
+    await runSoftwareWorkRuntime(path);
+    const resumed = await runSoftwareWorkRuntime(path, { resume: true });
+
+    expect(resumed.appended).toBe(0);
+    expect(resumed.processed).toBe(0);
+    expect(resumed.rejected).toBe(0);
   });
 });
