@@ -77,7 +77,7 @@ Empty rejection arrays are intentionally omitted because Pathlight's issue heuri
 ## Package API Export
 
 ```ts
-import { createRuntime } from "threadline";
+import { createRuntime } from "@syndicalt/threadline";
 
 const runtime = createRuntime("/tmp/threadline-human-ops.jsonl");
 

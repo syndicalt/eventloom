@@ -50,7 +50,7 @@ npm run threadline -- run human-ops /tmp/threadline-human-ops.jsonl --resume
 ## Use as a Library
 
 ```ts
-import { createRuntime } from "threadline";
+import { createRuntime } from "@syndicalt/threadline";
 
 const runtime = createRuntime("/tmp/threadline.jsonl");
 await runtime.runBuiltIn("research-pipeline");

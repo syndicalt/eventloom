@@ -1,17 +1,61 @@
 {
-  "name": "threadline",
+  "name": "@syndicalt/threadline",
   "version": "0.1.0",
-  "private": true,
   "type": "module",
   "description": "Append-only event-log runtime for multi-agent AI systems",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./export/pathlight": {
+      "types": "./dist/export/pathlight.d.ts",
+      "import": "./dist/export/pathlight.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "docs/package-api.md",
+    "docs/cli-reference.md",
+    "docs/user-guide.md",
+    "docs/pathlight-integration.md",
+    "fixtures/sample.jsonl"
+  ],
   "scripts": {
     "build": "tsc",
+    "prepack": "npm test && npm run build",
     "test": "vitest run",
     "threadline": "tsx src/cli.ts"
   },
   "bin": {
     "threadline": "./dist/cli.js"
   },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "agents",
+    "event-log",
+    "workflow",
+    "runtime",
+    "multi-agent",
+    "observability",
+    "pathlight"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/syndicalt/threadline.git"
+  },
+  "bugs": {
+    "url": "https://github.com/syndicalt/threadline/issues"
+  },
+  "homepage": "https://github.com/syndicalt/threadline#readme",
+  "author": "Nicholas Blanchard <syndicalt@gmail.com>",
   "dependencies": {
     "nanoid": "^5.0.9",
     "zod": "^3.24.1"

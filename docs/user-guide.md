@@ -137,7 +137,7 @@ Threadline exports actor turns as Pathlight spans and related Threadline events 
 ## Use the Package API
 
 ```ts
-import { createRuntime } from "threadline";
+import { createRuntime } from "@syndicalt/threadline";
 
 const runtime = createRuntime("/tmp/threadline.jsonl");
 await runtime.runBuiltIn("software-work");

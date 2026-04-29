@@ -7,7 +7,7 @@ The package API is local-first. It reads and writes JSONL event logs directly. D
 ## Create a Runtime
 
 ```ts
-import { createRuntime } from "threadline";
+import { createRuntime } from "@syndicalt/threadline";
 
 const runtime = createRuntime("/tmp/threadline.jsonl");
 ```
@@ -82,7 +82,7 @@ interface RuntimeReplay {
 For custom actor registries, submit intentions through the runtime facade:
 
 ```ts
-import { ActorRegistry, createRuntime } from "threadline";
+import { ActorRegistry, createRuntime } from "@syndicalt/threadline";
 
 const actors = new ActorRegistry();
 actors.register({
