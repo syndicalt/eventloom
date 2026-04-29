@@ -11,6 +11,7 @@ Eventloom is documented in two layers:
 - [CLI Reference](cli-reference.md): complete command reference with arguments and examples.
 - [Package API](package-api.md): use Eventloom as a TypeScript library.
 - [Agent Integration](agent-integration.md): use Eventloom as a replayable event journal for coding agents.
+- [MCP Package Design](mcp-package.md): `@eventloom/mcp` package scope, tool contracts, and safety model.
 - [Pathlight Integration](pathlight-integration.md): export Eventloom runs into Pathlight traces.
 
 ## Technical Documentation

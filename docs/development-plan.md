@@ -253,8 +253,10 @@ Goal: expose proven Eventloom operations to MCP clients and editors.
 Deliverables:
 
 - Separate package: `@eventloom/mcp`.
-- MCP tools for append, replay, timeline, task explanation, mailbox inspection, and Pathlight export.
+- Package design in [`docs/mcp-package.md`](mcp-package.md).
+- MCP tools for append, replay, timeline, task explanation, built-in workflow runs, and Pathlight export.
 - Fixture-backed tests that validate tool outputs against the CLI/runtime behavior.
-- Client setup docs after the tool surface is stable.
+- Stdio smoke coverage for append and replay through the MCP protocol.
+- Client setup docs after publication.
 
 Verification: an MCP client can append events, replay a log, and inspect a task without shelling out manually.

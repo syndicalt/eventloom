@@ -28,6 +28,9 @@
   ],
   "scripts": {
     "build": "tsc",
+    "build:runtime": "tsc",
+    "build:mcp": "npm --prefix packages/mcp run build",
+    "test:mcp": "npm --prefix packages/mcp test",
     "prepack": "npm test && npm run build",
     "test": "vitest run",
     "eventloom": "tsx src/cli.ts"
