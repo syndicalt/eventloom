@@ -1,17 +1,30 @@
 #!/usr/bin/env node
 import { JsonlEventStore } from "./event-store.js";
+import { formatTaskExplanation, formatTimeline } from "./inspect.js";
 import { verifyEventChain } from "./integrity.js";
 import { eventTypeCounts, projectionHash } from "./projection.js";
 import { projectTasks } from "./task-projection.js";
 import { runSoftwareWorkDemo } from "./demo.js";
 
 async function main(argv: string[]): Promise<void> {
-  const [command, path, extra] = argv;
+  const [command, path, extra, rest] = argv;
 
   if (command === "demo" && path === "software-work") {
     const outPath = extra ?? ".threadline/events.jsonl";
     await runSoftwareWorkDemo(outPath);
     console.log(JSON.stringify({ path: outPath }, null, 2));
+    return;
+  }
+
+  if (command === "timeline" && path) {
+    const store = new JsonlEventStore(path);
+    console.log(formatTimeline(await store.readAll()));
+    return;
+  }
+
+  if (command === "explain" && path === "task" && extra && rest) {
+    const store = new JsonlEventStore(rest);
+    console.log(formatTaskExplanation(await store.readAll(), extra));
     return;
   }
 
@@ -40,6 +53,8 @@ async function main(argv: string[]): Promise<void> {
 function printUsage(): void {
   console.error("Usage: threadline replay <events.jsonl>");
   console.error("       threadline demo software-work [events.jsonl]");
+  console.error("       threadline timeline <events.jsonl>");
+  console.error("       threadline explain task <taskId> <events.jsonl>");
 }
 
 main(process.argv.slice(2)).catch((error) => {
