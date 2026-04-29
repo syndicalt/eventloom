@@ -41,7 +41,7 @@ export function createSoftwareWorkRegistry(): ActorRegistry {
   actors.register({
     id: "worker",
     role: "Claim and complete tasks",
-    subscriptions: ["task.proposed", "issue.reported"],
+    subscriptions: ["task.proposed", "task.claimed", "task.completed", "issue.reported"],
     intentions: ["task.claim", "task.complete", "review.request"],
   });
   actors.register({

@@ -7,6 +7,7 @@ import { buildMailbox } from "./mailbox.js";
 import { eventTypeCounts, projectionHash } from "./projection.js";
 import { projectTasks } from "./task-projection.js";
 import { runSoftwareWorkDemo } from "./demo.js";
+import { runSoftwareWorkRuntime } from "./runners.js";
 
 async function main(argv: string[]): Promise<void> {
   const [command, path, extra, rest] = argv;
@@ -15,6 +16,13 @@ async function main(argv: string[]): Promise<void> {
     const outPath = extra ?? ".threadline/events.jsonl";
     await runSoftwareWorkDemo(outPath);
     console.log(JSON.stringify({ path: outPath }, null, 2));
+    return;
+  }
+
+  if (command === "run" && path === "software-work") {
+    const outPath = extra ?? ".threadline/events.jsonl";
+    const result = await runSoftwareWorkRuntime(outPath);
+    console.log(JSON.stringify({ path: outPath, ...result }, null, 2));
     return;
   }
 
@@ -62,6 +70,7 @@ async function main(argv: string[]): Promise<void> {
 function printUsage(): void {
   console.error("Usage: threadline replay <events.jsonl>");
   console.error("       threadline demo software-work [events.jsonl]");
+  console.error("       threadline run software-work [events.jsonl]");
   console.error("       threadline timeline <events.jsonl>");
   console.error("       threadline explain task <taskId> <events.jsonl>");
   console.error("       threadline mailbox <actorId> <events.jsonl>");

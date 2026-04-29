@@ -8,5 +8,6 @@ export * from "./intentions.js";
 export * from "./mailbox.js";
 export * from "./orchestrator.js";
 export * from "./projection.js";
+export * from "./runners.js";
 export * from "./causal.js";
 export * from "./task-projection.js";
