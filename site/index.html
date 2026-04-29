@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Eventloom - event-sourced runtime for AI agents</title>
+  <meta name="description" content="Eventloom is a local-first TypeScript runtime for AI agents built around append-only event logs, validated actor intentions, deterministic replay, and Pathlight export." />
+  <meta property="og:title" content="Eventloom - event-sourced runtime for AI agents" />
+  <meta property="og:description" content="Append-only logs, validated actor intentions, deterministic replay, and Pathlight export for AI agent systems." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://syndicalt.github.io/eventloom/" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="canonical" href="https://syndicalt.github.io/eventloom/" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 7h16M4 12h16M4 17h16' stroke='%230f172a' stroke-width='2' stroke-linecap='round'/%3E%3Ccircle cx='7' cy='7' r='2' fill='%2314b8a6'/%3E%3Ccircle cx='12' cy='12' r='2' fill='%23f59e0b'/%3E%3Ccircle cx='17' cy='17' r='2' fill='%23ef4444'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav class="nav" aria-label="Primary">
+    <a class="brand" href="#top">
+      <span class="brand-mark" aria-hidden="true"></span>
+      Eventloom
+    </a>
+    <div class="nav-links">
+      <a href="#install">Install</a>
+      <a href="https://github.com/syndicalt/eventloom#readme">Docs</a>
+      <a class="nav-cta" href="https://github.com/syndicalt/eventloom">GitHub</a>
+    </div>
+  </nav>
+
+  <main>
+    <section class="hero" id="top">
+      <div class="hero-bg" aria-hidden="true">
+        <div class="event-lane lane-a">
+          <span>goal.created</span>
+          <span>task.proposed</span>
+          <span>task.claimed</span>
+          <span>task.completed</span>
+        </div>
+        <div class="event-lane lane-b">
+          <span>actor.started</span>
+          <span>intent.accepted</span>
+          <span>review.requested</span>
+          <span>review.approved</span>
+        </div>
+        <div class="event-lane lane-c">
+          <span>research.question</span>
+          <span>source.found</span>
+          <span>claim.extracted</span>
+          <span>report.finalized</span>
+        </div>
+      </div>
+
+      <div class="hero-inner">
+        <p class="eyebrow">MIT &middot; local-first &middot; TypeScript</p>
+        <h1>Event-sourced runtime for AI agents.</h1>
+        <p class="tagline">
+          Eventloom turns agent execution into an append-only event log with validated actor intentions,
+          deterministic replay, tamper-evident integrity, and optional Pathlight export.
+        </p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="#install">Get started</a>
+          <a class="btn btn-secondary" href="https://www.npmjs.com/package/@eventloom/runtime">npm package</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="proof-strip" aria-label="Project links">
+      <a href="https://www.npmjs.com/package/@eventloom/runtime">@eventloom/runtime</a>
+      <a href="https://github.com/syndicalt/eventloom">syndicalt/eventloom</a>
+      <a href="https://github.com/syndicalt/eventloom/blob/master/LICENSE">MIT licensed</a>
+      <a href="https://github.com/syndicalt/eventloom/tree/master/docs">Documentation</a>
+    </section>
+
+    <section class="features" aria-label="Features">
+      <article class="feature">
+        <p class="eyebrow">Event log</p>
+        <h2>Tamper-evident agent history</h2>
+        <p>
+          Every accepted event is sealed into a JSONL hash chain. You can append external human approvals,
+          replay old runs, and verify that runtime history still matches the recorded contents.
+        </p>
+      </article>
+
+      <article class="feature">
+        <p class="eyebrow">Runtime contract</p>
+        <h2>Actors emit intentions, not mutations</h2>
+        <p>
+          Actors receive mailbox items and submit structured intentions. The orchestrator validates them
+          before anything reaches the log, keeping workflow state explainable and auditable.
+        </p>
+      </article>
+
+      <article class="feature">
+        <p class="eyebrow">Replay</p>
+        <h2>Deterministic projections</h2>
+        <p>
+          Task, research, and effect state rebuild from the log. A replay gives you event counts,
+          integrity status, projections, and a deterministic projection hash for comparison.
+        </p>
+      </article>
+    </section>
+
+    <section class="diagram" aria-label="Runtime flow">
+      <div class="diagram-copy">
+        <p class="eyebrow">How it runs</p>
+        <h2>A small runtime loop with inspectable state.</h2>
+        <p>
+          Eventloom is intentionally boring infrastructure: local files, typed events, deterministic
+          reducers, and a CLI you can run before adding databases, queues, or dashboards.
+        </p>
+      </div>
+      <div class="runtime-flow">
+        <div class="node">Actor</div>
+        <div class="arrow">intent</div>
+        <div class="node">Orchestrator</div>
+        <div class="arrow">event</div>
+        <div class="node">JSONL log</div>
+        <div class="arrow">replay</div>
+        <div class="node">Projection</div>
+      </div>
+    </section>
+
+    <section class="install" id="install">
+      <div class="section-heading">
+        <p class="eyebrow">Install</p>
+        <h2>Start from npm.</h2>
+      </div>
+      <div class="install-grid">
+        <article class="install-card">
+          <h3>CLI</h3>
+          <pre><code>npm install @eventloom/runtime
+npx eventloom run software-work /tmp/eventloom.jsonl
+npx eventloom replay /tmp/eventloom.jsonl</code></pre>
+        </article>
+        <article class="install-card">
+          <h3>TypeScript</h3>
+          <pre><code>import { createRuntime } from "@eventloom/runtime";
+
+const runtime = createRuntime("/tmp/eventloom.jsonl");
+await runtime.runBuiltIn("research-pipeline");
+
+const replay = await runtime.replay();
+console.log(replay.integrity.ok);</code></pre>
+        </article>
+      </div>
+    </section>
+
+    <section class="pathlight">
+      <div>
+        <p class="eyebrow">Optional bridge</p>
+        <h2>Export runs to Pathlight.</h2>
+        <p>
+          Eventloom can translate actor turns and related runtime events into Pathlight traces,
+          spans, and span events for visual inspection.
+        </p>
+      </div>
+      <a class="btn btn-secondary" href="https://syndicalt.github.io/pathlight/">Open Pathlight</a>
+    </section>
+  </main>
+
+  <footer>
+    <span>Eventloom v0.1.1 &middot; MIT</span>
+    <span>
+      <a href="https://github.com/syndicalt/eventloom">GitHub</a>
+      <a href="https://www.npmjs.com/package/@eventloom/runtime">npm</a>
+      <a href="https://github.com/syndicalt/eventloom/tree/master/docs">Docs</a>
+    </span>
+  </footer>
+</body>
+</html>
