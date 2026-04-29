@@ -264,7 +264,7 @@ This keeps normal client setup simple while preventing accidental writes across 
 
 ## Configuration
 
-Initial binary usage after package publication:
+Install from npm:
 
 ```bash
 npx @eventloom/mcp --root .

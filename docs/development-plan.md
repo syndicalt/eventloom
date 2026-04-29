@@ -257,6 +257,6 @@ Deliverables:
 - MCP tools for append, replay, timeline, task explanation, built-in workflow runs, and Pathlight export.
 - Fixture-backed tests that validate tool outputs against the CLI/runtime behavior.
 - Stdio smoke coverage for append and replay through the MCP protocol.
-- Client setup docs after publication.
+- Client setup docs for Codex and Claude.
 
 Verification: an MCP client can append events, replay a log, and inspect a task without shelling out manually.

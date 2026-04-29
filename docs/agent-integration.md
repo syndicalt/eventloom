@@ -92,7 +92,7 @@ npm run build:mcp
 node packages/mcp/dist/cli.js --root .
 ```
 
-After publication, use:
+From npm, use:
 
 ```bash
 npx @eventloom/mcp --root .

@@ -78,7 +78,7 @@ describe("Eventloom MCP tools", () => {
 
     const client = new Client({
       name: "eventloom-mcp-smoke",
-      version: "0.1.0",
+      version: "0.1.1",
     });
     const transport = new StreamClientTransport(serverToClient, clientToServer);
 

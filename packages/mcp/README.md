@@ -2,13 +2,13 @@
 
 MCP server for Eventloom local event logs.
 
-After publication:
+Install from npm:
 
 ```bash
 npx @eventloom/mcp --root .
 ```
 
-From a local checkout:
+Run from a local checkout:
 
 ```bash
 npm run build:mcp

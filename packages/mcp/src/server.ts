@@ -21,7 +21,7 @@ export function createEventloomMcpServer(options: { root?: string | null } = {})
   const config = createServerConfig(options);
   const server = new McpServer({
     name: "eventloom",
-    version: "0.1.0",
+    version: "0.1.1",
   });
 
   server.registerTool(
