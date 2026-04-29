@@ -5,12 +5,14 @@ import {
   AppendInputSchema,
   ExplainTaskInputSchema,
   ExportPathlightInputSchema,
+  MailboxInputSchema,
   ReplayInputSchema,
   RunBuiltInInputSchema,
   TimelineInputSchema,
   appendEvent,
   explainTask,
   exportPathlight,
+  mailbox,
   replayLog,
   runBuiltIn,
   timeline,
@@ -62,6 +64,16 @@ export function createEventloomMcpServer(options: { root?: string | null } = {})
       inputSchema: ExplainTaskInputSchema.shape,
     },
     (input) => explainTask(config, ExplainTaskInputSchema.parse(input)),
+  );
+
+  server.registerTool(
+    "eventloom_mailbox",
+    {
+      title: "Eventloom Actor Mailbox",
+      description: "Rebuild one actor mailbox from a local Eventloom JSONL log.",
+      inputSchema: MailboxInputSchema.shape,
+    },
+    (input) => mailbox(config, MailboxInputSchema.parse(input)),
   );
 
   server.registerTool(

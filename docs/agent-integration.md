@@ -104,10 +104,9 @@ MVP tools:
 - `eventloom_replay`
 - `eventloom_timeline`
 - `eventloom_explain_task`
+- `eventloom_mailbox`
 - `eventloom_run_builtin`
 - `eventloom_export_pathlight`
-
-`eventloom_mailbox` should wait until mailbox rebuilding is exposed as a stable runtime capability rather than being tied to one built-in workflow registry.
 
 ## Pathlight Export
 

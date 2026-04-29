@@ -9,7 +9,7 @@ import type { JSONRPCMessage } from "@modelcontextprotocol/sdk/types.js";
 import { describe, expect, it, vi } from "vitest";
 import { createServerConfig, resolveLogPath } from "../src/path-safety.js";
 import { createEventloomMcpServer } from "../src/server.js";
-import { appendEvent, explainTask, exportPathlight, replayLog, runBuiltIn, timeline } from "../src/tools.js";
+import { appendEvent, explainTask, exportPathlight, mailbox, replayLog, runBuiltIn, timeline } from "../src/tools.js";
 
 describe("Eventloom MCP tools", () => {
   it("appends and replays a local event log", async () => {
@@ -60,6 +60,30 @@ describe("Eventloom MCP tools", () => {
     expect(explanation.structuredContent?.task).toMatchObject({
       id: "task_actor_runtime",
     });
+  });
+
+  it("returns a rebuilt actor mailbox", async () => {
+    const root = await tempRoot();
+    const config = createServerConfig({ root });
+    await appendEvent(config, {
+      path: "mailbox.jsonl",
+      type: "goal.created",
+      actorId: "user",
+      threadId: "thread_main",
+      causedBy: [],
+      payload: { title: "Test mailbox" },
+    });
+
+    const result = await mailbox(config, {
+      path: "mailbox.jsonl",
+      workflow: "software-work",
+      actorId: "planner",
+    });
+
+    expect(result.structuredContent?.text).toContain("mailbox: planner");
+    expect(result.structuredContent?.items).toMatchObject([
+      { event: { type: "goal.created", actorId: "user" }, task: null },
+    ]);
   });
 
   it("exports a workflow log to a Pathlight collector", async () => {

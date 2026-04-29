@@ -133,6 +133,16 @@ const runners = {
 
 For custom event domains, add projection validation before relying on the orchestrator as a state-machine boundary.
 
+## Rebuild Actor Mailboxes
+
+Use the package facade to inspect pending mailbox items for a built-in workflow actor:
+
+```ts
+const mailbox = await runtime.mailbox("software-work", "worker");
+```
+
+The mailbox is rebuilt from the event log. Events already marked as processed by the actor are omitted, and task events include projected task context when available.
+
 ## Export to Pathlight
 
 ```ts

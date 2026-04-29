@@ -233,6 +233,7 @@ Sprints 0-6 are implemented for the local prototype:
 - Agent adoption docs and Codex skill workflow for local Eventloom journaling.
 - MCP package in `packages/mcp` with append, replay, timeline, task explanation, built-in workflow, and Pathlight export tools.
 - MCP package tests for tool adapters, path safety, stdio smoke coverage, and Pathlight export behavior.
+- Stable built-in workflow mailbox API and MCP `eventloom_mailbox` tool.
 
 ## Next Milestones
 
@@ -255,7 +256,6 @@ Goal: choose the next runtime or integration milestone now that the local runtim
 
 Candidates:
 
-- Stable mailbox API and MCP `eventloom_mailbox` tool.
 - Richer handoff summaries over `.eventloom/agent-work.jsonl`.
 - SQLite/libSQL store spike for indexed local queries.
 - Pathlight dashboard affordance if generic trace/span views are not enough.

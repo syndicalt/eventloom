@@ -177,6 +177,56 @@ Output:
 }
 ```
 
+### `eventloom_mailbox`
+
+Rebuild one actor mailbox for a built-in workflow.
+
+Input:
+
+```json
+{
+  "path": ".eventloom/agent-work.jsonl",
+  "workflow": "software-work",
+  "actorId": "worker"
+}
+```
+
+`workflow` defaults to `software-work` and accepts:
+
+- `software-work`
+- `research-pipeline`
+- `human-ops`
+
+Output:
+
+```json
+{
+  "text": "mailbox: worker\n\n01 evt_... task.proposed from=planner task=task_1 status=proposed",
+  "actorId": "worker",
+  "workflow": "software-work",
+  "items": [
+    {
+      "event": {
+        "id": "evt_...",
+        "type": "task.proposed",
+        "actorId": "planner",
+        "threadId": "thread_roadmap",
+        "timestamp": "2026-04-29T12:00:00.000Z",
+        "parentEventId": null,
+        "causedBy": [],
+        "payload": {
+          "taskId": "task_1"
+        }
+      },
+      "task": {
+        "id": "task_1",
+        "status": "proposed"
+      }
+    }
+  ]
+}
+```
+
 ### `eventloom_run_builtin`
 
 Run or resume one built-in deterministic workflow.
@@ -239,11 +289,8 @@ This tool performs a network request and should be documented as optional. Event
 
 ## Deferred Tools
 
-`eventloom_mailbox` is useful, but should wait until mailbox rebuilding is exposed as a stable runtime capability rather than being tied to one workflow registry.
-
 Possible later tools:
 
-- `eventloom_mailbox`
 - `eventloom_verify`
 - `eventloom_read_events`
 - `eventloom_summarize_handoff`
@@ -313,6 +360,7 @@ Current coverage:
 - `eventloom_replay` returns integrity and projection status for a local log.
 - `eventloom_timeline` returns ordered event summaries.
 - `eventloom_explain_task` returns the expected projected task state.
+- `eventloom_mailbox` returns rebuilt actor mailbox items for a built-in workflow.
 - `eventloom_run_builtin` can create and resume a deterministic workflow log.
 - `eventloom_export_pathlight` maps a workflow log through the MCP adapter and mocked Pathlight fetch calls.
 - Path safety rejects paths outside the configured root.

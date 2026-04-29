@@ -41,6 +41,7 @@ Restart Codex after changing MCP configuration. The available tools should inclu
 - `eventloom_replay`
 - `eventloom_timeline`
 - `eventloom_explain_task`
+- `eventloom_mailbox`
 - `eventloom_run_builtin`
 - `eventloom_export_pathlight`
 
