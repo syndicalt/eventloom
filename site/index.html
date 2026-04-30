@@ -29,7 +29,7 @@
     </a>
     <div class="nav-links">
       <a href="#why">Why</a>
-      <a href="#demo">Demo</a>
+      <a href="#visualizer">Visualizer</a>
       <a href="#how">How</a>
       <a href="#install">Install</a>
       <a href="https://github.com/syndicalt/eventloom#readme">Docs</a>
@@ -55,7 +55,7 @@
         </div>
         <div class="cta-row">
           <a class="btn btn-primary" href="#install">Start logging locally</a>
-          <a class="btn btn-secondary" href="#demo">Watch the demo</a>
+          <a class="btn btn-secondary" href="#visualizer">Try the visualizer</a>
           <a class="btn btn-secondary" href="https://github.com/syndicalt/eventloom/blob/master/docs/agent-integration.md">Agent integration guide</a>
         </div>
       </div>
@@ -68,91 +68,78 @@
       <a href="https://github.com/syndicalt/eventloom/tree/master/docs">Documentation</a>
     </section>
 
-    <section class="demo" id="demo" aria-label="Quick product demo">
-      <div class="demo-copy">
-        <p class="eyebrow">Quick demo</p>
-        <h2>See what Eventloom adds to an agent run.</h2>
+    <section class="visualizer" id="visualizer" aria-label="Eventloom log visualizer">
+      <div class="section-heading">
+        <p class="eyebrow">Visualizer</p>
+        <h2>Paste a log and get the same Capture, Replay, and Handoff views.</h2>
         <p>
           In this example a coding agent is fixing release checks. Eventloom runs beside it,
           records the operational facts, then turns the log into replay and handoff output
           another agent or human can inspect.
         </p>
-        <div class="demo-controls" role="tablist" aria-label="Demo steps">
-          <button class="demo-tab is-active" type="button" role="tab" aria-selected="true" aria-controls="demo-capture" data-demo-tab="capture">
-            Capture
-          </button>
-          <button class="demo-tab" type="button" role="tab" aria-selected="false" aria-controls="demo-replay" data-demo-tab="replay">
-            Replay
-          </button>
-          <button class="demo-tab" type="button" role="tab" aria-selected="false" aria-controls="demo-handoff" data-demo-tab="handoff">
-            Handoff
-          </button>
-        </div>
+        <p>
+          This runs entirely in your browser. Drop in an Eventloom JSONL log, or load the sample,
+          and the visualizer projects the same story: what was captured, what replay
+          rebuilt, and what a handoff should say next.
+        </p>
       </div>
 
-      <div class="demo-shell">
-        <div class="demo-bar">
-          <span></span>
-          <span></span>
-          <span></span>
-          <strong>.eventloom/agent-work.jsonl</strong>
+      <div class="visualizer-grid">
+        <div class="log-input-card">
+          <div class="input-row">
+            <label class="file-button">
+              <input id="log-file" type="file" accept=".jsonl,.json,application/json,text/plain" />
+              Upload JSONL
+            </label>
+            <button class="btn btn-secondary" type="button" id="load-sample">Load sample</button>
+            <button class="btn btn-primary" type="button" id="render-log">Visualize log</button>
+          </div>
+          <textarea id="log-input" spellcheck="false" aria-label="Eventloom JSONL log input"></textarea>
+          <p class="input-status" id="log-status" role="status">Sample log loaded. Paste your own JSONL or upload a file.</p>
         </div>
 
-        <div class="demo-pane is-active" id="demo-capture" role="tabpanel" data-demo-pane="capture">
-          <div class="demo-caption">
-            <strong>1. Capture the work as typed events</strong>
-            <span>Every important step becomes an append-only fact.</span>
+        <div class="demo-shell visualizer-shell">
+          <div class="demo-bar">
+            <span></span>
+            <span></span>
+            <span></span>
+            <strong id="visualizer-title">sample.jsonl</strong>
           </div>
-          <div class="event-stream">
-            <div><code>goal.created</code><span>Ship runtime 0.1.6</span></div>
-            <div><code>task.claimed</code><span>Enrich trace logging output</span></div>
-            <div><code>model.completed</code><span>tokens=300 latencyMs=880</span></div>
-            <div><code>tool.completed</code><span>npm test exitCode=0 results=55</span></div>
-            <div><code>verification.completed</code><span>pass=5 fail=0 evidence=tool_tests</span></div>
-          </div>
-        </div>
 
-        <div class="demo-pane" id="demo-replay" role="tabpanel" data-demo-pane="replay" hidden>
-          <div class="demo-caption">
-            <strong>2. Replay without rerunning the agent</strong>
-            <span>Eventloom rebuilds state from the immutable log.</span>
+          <div class="demo-controls visualizer-tabs" role="tablist" aria-label="Visualizer views">
+            <button class="demo-tab is-active" type="button" role="tab" aria-selected="true" aria-controls="viz-capture" data-viz-tab="capture">
+              Capture
+            </button>
+            <button class="demo-tab" type="button" role="tab" aria-selected="false" aria-controls="viz-replay" data-viz-tab="replay">
+              Replay
+            </button>
+            <button class="demo-tab" type="button" role="tab" aria-selected="false" aria-controls="viz-handoff" data-viz-tab="handoff">
+              Handoff
+            </button>
           </div>
-          <pre class="terminal"><code>$ npx eventloom replay .eventloom/agent-work.jsonl
-{
-  "integrity": { "ok": true },
-  "eventCount": 10,
-  "tasks": {
-    "task_rich_output": {
-      "status": "completed",
-      "lastActor": "codex"
-    }
-  },
-  "projectionHash": "02727f4d..."
-}</code></pre>
-        </div>
 
-        <div class="demo-pane" id="demo-handoff" role="tabpanel" data-demo-pane="handoff" hidden>
-          <div class="demo-caption">
-            <strong>3. Hand off the run with evidence</strong>
-            <span>The next agent sees what changed, what passed, and what is missing.</span>
+          <div class="demo-pane is-active" id="viz-capture" role="tabpanel" data-viz-pane="capture">
+            <div class="demo-caption">
+              <strong>Captured events</strong>
+              <span id="viz-capture-caption">Ordered facts from the log.</span>
+            </div>
+            <div class="event-stream" id="viz-capture-events"></div>
           </div>
-          <div class="handoff-card">
-            <div>
-              <span>model telemetry</span>
-              <strong>openai/gpt-test tokens=300 prompt=eventloom.rich-output.v1</strong>
+
+          <div class="demo-pane" id="viz-replay" role="tabpanel" data-viz-pane="replay" hidden>
+            <div class="demo-caption">
+              <strong>Replay projection</strong>
+              <span>State rebuilt from event history.</span>
             </div>
-            <div>
-              <span>tool telemetry</span>
-              <strong>npm test exitCode=0 results=55 decisive=true</strong>
+            <pre class="terminal"><code id="viz-replay-output"></code></pre>
+          </div>
+
+          <div class="demo-pane" id="viz-handoff" role="tabpanel" data-viz-pane="handoff" hidden>
+            <div class="demo-caption">
+              <strong>Handoff summary</strong>
+              <span>Evidence, telemetry, gaps, and next actions.</span>
             </div>
-            <div>
-              <span>verification</span>
-              <strong>runtime tests, MCP tests, build, diff check all passed</strong>
-            </div>
-            <div>
-              <span>observability gaps</span>
-              <strong>none</strong>
-            </div>
+            <div class="handoff-card" id="viz-handoff-output"></div>
           </div>
         </div>
       </div>
@@ -323,21 +310,214 @@ const replay = await runtime.replay();</code></pre>
     </span>
   </footer>
   <script>
-    for (const tab of document.querySelectorAll("[data-demo-tab]")) {
+    const sampleLog = [
+      {"id":"evt_goal","type":"goal.created","actorId":"user","threadId":"thread_main","parentEventId":null,"causedBy":[],"timestamp":"2026-04-30T12:00:00.000Z","payload":{"title":"Ship runtime 0.1.6"},"integrity":{"hash":"sha256:0000000000000000000000000000000000000000000000000000000000000001","previousHash":null}},
+      {"id":"evt_task","type":"task.proposed","actorId":"planner","threadId":"thread_main","parentEventId":"evt_goal","causedBy":["evt_goal"],"timestamp":"2026-04-30T12:01:00.000Z","payload":{"taskId":"task_rich_output","title":"Enrich trace logging output"},"integrity":{"hash":"sha256:0000000000000000000000000000000000000000000000000000000000000002","previousHash":"sha256:0000000000000000000000000000000000000000000000000000000000000001"}},
+      {"id":"evt_claim","type":"task.claimed","actorId":"codex","threadId":"thread_main","parentEventId":"evt_task","causedBy":["evt_task"],"timestamp":"2026-04-30T12:02:00.000Z","payload":{"taskId":"task_rich_output"},"integrity":{"hash":"sha256:0000000000000000000000000000000000000000000000000000000000000003","previousHash":"sha256:0000000000000000000000000000000000000000000000000000000000000002"}},
+      {"id":"evt_model_start","type":"model.started","actorId":"codex","threadId":"thread_main","parentEventId":"evt_claim","causedBy":["evt_claim"],"timestamp":"2026-04-30T12:03:00.000Z","payload":{"taskId":"task_rich_output","modelCallId":"model_rich_1","modelProvider":"openai","modelName":"gpt-test","promptVersion":"eventloom.rich-output.v1","inputSummary":"Inspect exporter and handoff code for richer output fields"},"integrity":{"hash":"sha256:0000000000000000000000000000000000000000000000000000000000000004","previousHash":"sha256:0000000000000000000000000000000000000000000000000000000000000003"}},
+      {"id":"evt_tool_start","type":"tool.started","actorId":"codex","threadId":"thread_main","parentEventId":"evt_claim","causedBy":["evt_claim"],"timestamp":"2026-04-30T12:04:00.000Z","payload":{"taskId":"task_rich_output","toolCallId":"tool_tests_1","toolName":"shell","inputSummary":"Run full runtime and MCP verification suites"},"integrity":{"hash":"sha256:0000000000000000000000000000000000000000000000000000000000000005","previousHash":"sha256:0000000000000000000000000000000000000000000000000000000000000004"}},
+      {"id":"evt_tool_done","type":"tool.completed","actorId":"codex","threadId":"thread_main","parentEventId":"evt_tool_start","causedBy":["evt_tool_start"],"timestamp":"2026-04-30T12:05:00.000Z","payload":{"taskId":"task_rich_output","toolCallId":"tool_tests_1","toolName":"shell","outputSummary":"Runtime tests/build and MCP tests/build passed","exitCode":0,"resultCount":55,"resultExcerpt":"55 runtime tests and 8 MCP tests passed","decisive":true},"integrity":{"hash":"sha256:0000000000000000000000000000000000000000000000000000000000000006","previousHash":"sha256:0000000000000000000000000000000000000000000000000000000000000005"}},
+      {"id":"evt_reasoning","type":"reasoning.summary","actorId":"codex","threadId":"thread_main","parentEventId":"evt_claim","causedBy":["evt_tool_done"],"timestamp":"2026-04-30T12:06:00.000Z","payload":{"taskId":"task_rich_output","summary":"Exporter spans and handoff summaries need structured telemetry fields.","evidenceEventIds":["evt_tool_done"],"confidence":0.87},"integrity":{"hash":"sha256:0000000000000000000000000000000000000000000000000000000000000007","previousHash":"sha256:0000000000000000000000000000000000000000000000000000000000000006"}},
+      {"id":"evt_model_done","type":"model.completed","actorId":"codex","threadId":"thread_main","parentEventId":"evt_model_start","causedBy":["evt_model_start"],"timestamp":"2026-04-30T12:07:00.000Z","payload":{"taskId":"task_rich_output","modelCallId":"model_rich_1","modelProvider":"openai","modelName":"gpt-test","outputSummary":"Implemented richer output fields across handoff, HALO, Pathlight, and runner telemetry","inputTokens":240,"outputTokens":60,"totalTokens":300,"latencyMs":880},"integrity":{"hash":"sha256:0000000000000000000000000000000000000000000000000000000000000008","previousHash":"sha256:0000000000000000000000000000000000000000000000000000000000000007"}},
+      {"id":"evt_verification","type":"verification.completed","actorId":"codex","threadId":"thread_main","parentEventId":"evt_tool_done","causedBy":["evt_tool_done"],"timestamp":"2026-04-30T12:08:00.000Z","payload":{"taskId":"task_rich_output","summary":"Richer logging and output checks passed","checks":["runtime tests","runtime build","MCP tests","MCP build","diff whitespace"],"assertions":["handoff includes rich telemetry"],"evidenceEventIds":["evt_tool_done"],"passCount":5,"failCount":0},"integrity":{"hash":"sha256:0000000000000000000000000000000000000000000000000000000000000009","previousHash":"sha256:0000000000000000000000000000000000000000000000000000000000000008"}},
+      {"id":"evt_done","type":"task.completed","actorId":"codex","threadId":"thread_main","parentEventId":"evt_verification","causedBy":["evt_verification"],"timestamp":"2026-04-30T12:09:00.000Z","payload":{"taskId":"task_rich_output"},"integrity":{"hash":"sha256:0000000000000000000000000000000000000000000000000000000000000010","previousHash":"sha256:0000000000000000000000000000000000000000000000000000000000000009"}}
+    ];
+
+    const sampleJsonl = sampleLog.map((event) => JSON.stringify(event)).join("\n");
+
+    for (const tab of document.querySelectorAll("[data-viz-tab]")) {
       tab.addEventListener("click", () => {
-        const selected = tab.getAttribute("data-demo-tab");
-        for (const item of document.querySelectorAll("[data-demo-tab]")) {
-          const isActive = item.getAttribute("data-demo-tab") === selected;
+        const selected = tab.getAttribute("data-viz-tab");
+        for (const item of document.querySelectorAll("[data-viz-tab]")) {
+          const isActive = item.getAttribute("data-viz-tab") === selected;
           item.classList.toggle("is-active", isActive);
           item.setAttribute("aria-selected", String(isActive));
         }
-        for (const pane of document.querySelectorAll("[data-demo-pane]")) {
-          const isActive = pane.getAttribute("data-demo-pane") === selected;
+        for (const pane of document.querySelectorAll("[data-viz-pane]")) {
+          const isActive = pane.getAttribute("data-viz-pane") === selected;
           pane.classList.toggle("is-active", isActive);
           pane.hidden = !isActive;
         }
       });
     }
+
+    const logInput = document.querySelector("#log-input");
+    const logStatus = document.querySelector("#log-status");
+    const visualizerTitle = document.querySelector("#visualizer-title");
+    const captureEvents = document.querySelector("#viz-capture-events");
+    const captureCaption = document.querySelector("#viz-capture-caption");
+    const replayOutput = document.querySelector("#viz-replay-output");
+    const handoffOutput = document.querySelector("#viz-handoff-output");
+
+    logInput.value = sampleJsonl;
+
+    document.querySelector("#load-sample").addEventListener("click", () => {
+      visualizerTitle.textContent = "sample.jsonl";
+      logInput.value = sampleJsonl;
+      renderLog();
+    });
+
+    document.querySelector("#render-log").addEventListener("click", renderLog);
+
+    document.querySelector("#log-file").addEventListener("change", async (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      visualizerTitle.textContent = file.name;
+      logInput.value = await file.text();
+      renderLog();
+    });
+
+    function renderLog() {
+      try {
+        const events = parseJsonl(logInput.value);
+        const projection = projectLog(events);
+        logStatus.textContent = `${events.length} event${events.length === 1 ? "" : "s"} loaded. Integrity links ${projection.integrity.ok ? "look valid" : "need attention"}.`;
+        renderCapture(events);
+        renderReplay(events, projection);
+        renderHandoff(events, projection);
+      } catch (error) {
+        logStatus.textContent = error.message;
+      }
+    }
+
+    function parseJsonl(value) {
+      const lines = value.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+      return lines.map((line, index) => {
+        try {
+          return JSON.parse(line);
+        } catch {
+          throw new Error(`Line ${index + 1} is not valid JSON.`);
+        }
+      });
+    }
+
+    function projectLog(events) {
+      const tasks = {};
+      const errors = [];
+      for (const event of events) {
+        const taskId = event.payload && event.payload.taskId;
+        if (event.type === "task.proposed" && taskId) {
+          tasks[taskId] = {
+            id: taskId,
+            title: event.payload.title || taskId,
+            status: "proposed",
+            actorId: event.actorId,
+            lastEventId: event.id,
+            history: [event.id]
+          };
+        } else if (taskId && event.type.startsWith("task.")) {
+          if (!tasks[taskId]) {
+            errors.push(`Task ${taskId} was referenced before it was proposed.`);
+            tasks[taskId] = { id: taskId, title: taskId, status: "unknown", actorId: event.actorId, lastEventId: event.id, history: [] };
+          }
+          tasks[taskId].status = event.type.replace("task.", "");
+          tasks[taskId].actorId = event.actorId;
+          tasks[taskId].lastEventId = event.id;
+          tasks[taskId].history.push(event.id);
+        } else if (taskId && event.type === "review.approved" && tasks[taskId]) {
+          tasks[taskId].status = "approved";
+          tasks[taskId].actorId = event.actorId;
+          tasks[taskId].lastEventId = event.id;
+          tasks[taskId].history.push(event.id);
+        }
+      }
+      return {
+        integrity: verifyLinks(events),
+        eventTypes: countTypes(events),
+        tasks,
+        errors
+      };
+    }
+
+    function verifyLinks(events) {
+      const errors = [];
+      events.forEach((event, index) => {
+        const expected = index === 0 ? null : events[index - 1].integrity && events[index - 1].integrity.hash;
+        const actual = event.integrity && event.integrity.previousHash;
+        if (actual !== expected) errors.push(`${event.id || `line ${index + 1}`} has previousHash ${actual || "missing"}, expected ${expected || "null"}.`);
+      });
+      return { ok: errors.length === 0, errors };
+    }
+
+    function countTypes(events) {
+      return events.reduce((counts, event) => {
+        counts[event.type] = (counts[event.type] || 0) + 1;
+        return counts;
+      }, {});
+    }
+
+    function renderCapture(events) {
+      captureCaption.textContent = `${events.length} ordered fact${events.length === 1 ? "" : "s"} from the log.`;
+      captureEvents.replaceChildren(...events.slice(0, 9).map((event) => {
+        const row = document.createElement("div");
+        const code = document.createElement("code");
+        const summary = document.createElement("span");
+        code.textContent = event.type || "event.unknown";
+        summary.textContent = eventSummary(event);
+        row.append(code, summary);
+        return row;
+      }));
+      if (events.length > 9) {
+        const row = document.createElement("div");
+        row.append(Object.assign(document.createElement("code"), { textContent: "more.events" }), Object.assign(document.createElement("span"), { textContent: `${events.length - 9} additional events hidden for scanning.` }));
+        captureEvents.append(row);
+      }
+    }
+
+    function renderReplay(events, projection) {
+      replayOutput.textContent = JSON.stringify({
+        integrity: projection.integrity,
+        eventCount: events.length,
+        eventTypes: projection.eventTypes,
+        tasks: projection.tasks,
+        projectionErrors: projection.errors
+      }, null, 2);
+    }
+
+    function renderHandoff(events, projection) {
+      const active = Object.values(projection.tasks).filter((task) => !["completed", "approved"].includes(task.status));
+      const completed = Object.values(projection.tasks).filter((task) => ["completed", "approved"].includes(task.status));
+      const modelEvents = events.filter((event) => event.type === "model.completed");
+      const toolEvents = events.filter((event) => event.type === "tool.completed");
+      const verification = events.filter((event) => event.type && event.type.startsWith("verification."));
+      const gaps = [];
+      if (modelEvents.length === 0) gaps.push("No model telemetry events recorded.");
+      if (toolEvents.length === 0) gaps.push("No tool telemetry events recorded.");
+      if (verification.length === 0) gaps.push("No verification evidence recorded.");
+      if (!projection.integrity.ok) gaps.push("Integrity links need attention.");
+
+      handoffOutput.replaceChildren(
+        handoffRow("completed tasks", completed.length ? completed.map((task) => `${task.id} status=${task.status}`).join(", ") : "none"),
+        handoffRow("active tasks", active.length ? active.map((task) => `${task.id} status=${task.status}`).join(", ") : "none"),
+        handoffRow("model telemetry", modelEvents.length ? modelEvents.map((event) => `${event.payload.modelName || "model"} tokens=${event.payload.totalTokens || "unknown"}`).join(", ") : "none"),
+        handoffRow("tool telemetry", toolEvents.length ? toolEvents.map((event) => `${event.payload.toolName || "tool"} exitCode=${event.payload.exitCode ?? "unknown"}`).join(", ") : "none"),
+        handoffRow("verification", verification.length ? verification.map((event) => event.payload.summary || event.type).join(", ") : "none"),
+        handoffRow("observability gaps", gaps.length ? gaps.join(" ") : "none"),
+        handoffRow("next actions", active.length ? `Continue ${active[0].id}.` : gaps.length ? "Add missing observability evidence." : "No active tasks remain.")
+      );
+    }
+
+    function handoffRow(label, value) {
+      const row = document.createElement("div");
+      const span = document.createElement("span");
+      const strong = document.createElement("strong");
+      span.textContent = label;
+      strong.textContent = value;
+      row.append(span, strong);
+      return row;
+    }
+
+    function eventSummary(event) {
+      const payload = event.payload || {};
+      if (payload.title) return payload.title;
+      if (payload.summary) return payload.summary;
+      if (payload.taskId) return payload.taskId;
+      if (payload.modelName) return `${payload.modelProvider || "model"}/${payload.modelName}`;
+      if (payload.toolName) return payload.toolName;
+      return event.actorId ? `actor=${event.actorId}` : event.id || "event";
+    }
+
+    renderLog();
   </script>
 </body>
 </html>

@@ -233,7 +233,7 @@ h3 {
 }
 
 .explain,
-.demo,
+.visualizer,
 .alongside,
 .benefits,
 .how,
@@ -242,19 +242,86 @@ h3 {
   padding: 76px clamp(20px, 5vw, 72px);
 }
 
-.demo {
-  display: grid;
-  grid-template-columns: minmax(0, 0.82fr) minmax(420px, 1.18fr);
-  gap: 44px;
-  align-items: center;
-  min-width: 0;
-  background: #fff;
+.visualizer {
+  background: var(--soft);
   border-bottom: 1px solid var(--line);
 }
 
-.demo-copy p {
-  max-width: 650px;
+.visualizer-grid {
+  display: grid;
+  grid-template-columns: minmax(340px, 0.82fr) minmax(460px, 1.18fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.log-input-card {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 10px 32px rgba(22, 34, 51, 0.07);
+}
+
+.input-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.file-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 12px 18px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--ink);
+  background: #fff;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.file-button input {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+#log-input {
+  width: 100%;
+  min-height: 330px;
+  resize: vertical;
+  padding: 14px;
+  border: 1px solid #cfd8e6;
+  border-radius: 8px;
+  color: #dbeafe;
+  background: #0f172a;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.input-status {
+  margin-bottom: 0;
   color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.visualizer-shell .demo-controls {
+  margin: 0;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.visualizer-shell .demo-pane {
+  min-height: 520px;
 }
 
 .demo-controls {
@@ -623,7 +690,7 @@ footer span:last-child {
 
   .proof-strip,
   .value-grid,
-  .demo,
+  .visualizer-grid,
   .alongside,
   .benefits,
   .install-grid {
@@ -652,9 +719,15 @@ footer span:last-child {
   }
 
   .nav-links {
-    width: 100%;
+    width: auto;
+    max-width: 100%;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 10px;
+    font-size: 0.9rem;
+  }
+
+  .nav-cta {
+    padding: 8px 10px;
   }
 
   h1 {
@@ -684,7 +757,6 @@ footer span:last-child {
 
   .hero-inner,
   .section-heading,
-  .demo-copy,
   .split-copy,
   .exports > div {
     max-width: 330px;
@@ -713,6 +785,14 @@ footer span:last-child {
   .handoff-card div {
     grid-template-columns: 1fr;
     gap: 6px;
+  }
+
+  .visualizer-shell .demo-pane {
+    min-height: auto;
+  }
+
+  #log-input {
+    min-height: 260px;
   }
 
   .flow-step span {
