@@ -60,7 +60,7 @@ Each span includes the HALO-required top-level fields and `inference.*` attribut
 
 The export does not mutate the Eventloom log.
 
-The built-in deterministic workflows use `modelProvider: "eventloom"` and `modelName: "deterministic-runner"` so tests and demos exercise the same telemetry shape as an LLM-backed runner. Real integrations should populate provider, model, token, cost, latency, prompt summary, tool input, and tool output fields from the underlying agent harness.
+The built-in deterministic workflows use `modelProvider: "eventloom"` and `modelName: "deterministic-runner"` so tests and demos exercise the same telemetry shape as an LLM-backed runner. Real integrations should populate provider, model, token, cost, latency, prompt version, input/output summaries, tool input/output summaries, exit code, result count, result excerpt, decisive flag, and error fields from the underlying agent harness.
 
 ## Package API
 

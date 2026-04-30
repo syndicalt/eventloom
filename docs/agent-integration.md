@@ -74,15 +74,15 @@ Recommended event sequence for one agent step:
 ```bash
 npm run eventloom -- append .eventloom/agent-work.jsonl model.started \
   --actor codex \
-  --payload '{"modelCallId":"model_1","modelProvider":"openai","modelName":"gpt-5.5","inputMessages":[{"role":"user","content":"Summarize the relevant code paths"}]}'
+  --payload '{"modelCallId":"model_1","modelProvider":"openai","modelName":"gpt-5.5","promptVersion":"agent.step.v1","inputSummary":"Summarize the relevant code paths","inputMessages":[{"role":"user","content":"Summarize the relevant code paths"}],"parameters":{"temperature":0}}'
 
 npm run eventloom -- append .eventloom/agent-work.jsonl tool.started \
   --actor codex \
-  --payload '{"toolCallId":"tool_1","toolName":"shell","input":{"cmd":"rg -n \"handoff\" src tests docs"}}'
+  --payload '{"toolCallId":"tool_1","toolName":"shell","inputSummary":"Find handoff references in source, tests, and docs","input":{"cmd":"rg -n \"handoff\" src tests docs"}}'
 
 npm run eventloom -- append .eventloom/agent-work.jsonl tool.completed \
   --actor codex \
-  --payload '{"toolCallId":"tool_1","toolName":"shell","output":{"summary":"Found runtime, test, and docs references"},"latencyMs":120}'
+  --payload '{"toolCallId":"tool_1","toolName":"shell","output":{"summary":"Found runtime, test, and docs references"},"outputSummary":"Found handoff references in runtime, tests, and docs","exitCode":0,"resultCount":3,"resultExcerpt":"src/handoff.ts tests/handoff.test.ts docs/agent-integration.md","decisive":true,"latencyMs":120}'
 
 npm run eventloom -- append .eventloom/agent-work.jsonl reasoning.summary \
   --actor codex \
@@ -90,7 +90,7 @@ npm run eventloom -- append .eventloom/agent-work.jsonl reasoning.summary \
 
 npm run eventloom -- append .eventloom/agent-work.jsonl model.completed \
   --actor codex \
-  --payload '{"modelCallId":"model_1","modelProvider":"openai","modelName":"gpt-5.5","outputText":"Add telemetry-aware handoff summaries.","inputTokens":320,"outputTokens":80,"totalTokens":400,"latencyMs":900}'
+  --payload '{"modelCallId":"model_1","modelProvider":"openai","modelName":"gpt-5.5","outputText":"Add telemetry-aware handoff summaries.","outputSummary":"Recommended telemetry-aware handoff summaries","inputTokens":320,"outputTokens":80,"totalTokens":400,"latencyMs":900}'
 ```
 
 Verification events should include the command or checks that support the claim:
@@ -98,7 +98,7 @@ Verification events should include the command or checks that support the claim:
 ```bash
 npm run eventloom -- append .eventloom/agent-work.jsonl verification.completed \
   --actor codex \
-  --payload '{"summary":"Handoff telemetry tests passed","command":"npm test -- tests/handoff.test.ts","checks":["model telemetry summarized","tool telemetry summarized","reasoning evidence summarized"],"evidenceEventIds":["tool_1"]}'
+  --payload '{"summary":"Handoff telemetry tests passed","command":"npm test -- tests/handoff.test.ts","checks":["model telemetry summarized","tool telemetry summarized","reasoning evidence summarized"],"assertions":["handoff reports no observability gaps"],"evidenceEventIds":["tool_1"],"artifactIds":["artifact_handoff_test"],"passCount":1,"failCount":0}'
 ```
 
 Do not include secrets, private prompts, hidden chain-of-thought, or unredacted user data. Use summaries, redacted inputs, event ids, and command names.

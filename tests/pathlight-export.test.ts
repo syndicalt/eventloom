@@ -99,17 +99,22 @@ describe("Pathlight export", () => {
       },
     });
 
-    expect(result).toMatchObject({ traceId: "trace_tasks", spanCount: 4, eventCount: 7 });
-    expect(calls.filter((call) => call.url === "http://pathlight.test/v1/spans")).toHaveLength(4);
+    expect(result).toMatchObject({ traceId: "trace_tasks", spanCount: 7, eventCount: 12 });
+    expect(calls.filter((call) => call.url === "http://pathlight.test/v1/spans")).toHaveLength(7);
 
     const spanCreates = calls
       .filter((call) => call.url === "http://pathlight.test/v1/spans")
       .map((call) => JSON.parse(String(call.init.body)));
-    expect(spanCreates.slice(0, 2)).toMatchObject([
+    expect(spanCreates.slice(0, 3)).toMatchObject([
+      { name: "openai.gpt-test", metadata: { exportKind: "model_invocation" } },
+      { name: "shell", metadata: { exportKind: "tool_invocation" } },
+      { name: "reasoning.summary", metadata: { exportKind: "reasoning_summary" } },
+    ]);
+    expect(spanCreates.slice(3, 5)).toMatchObject([
       { name: "task.task_docs", metadata: { exportKind: "task_lifecycle", taskStatus: "claimed" } },
       { name: "task.task_runtime", metadata: { exportKind: "task_lifecycle", taskStatus: "completed" } },
     ]);
-    expect(spanCreates.slice(2)).toMatchObject([
+    expect(spanCreates.slice(5)).toMatchObject([
       { name: "goal.created", metadata: { exportKind: "journal_fact" } },
       { name: "verification.completed", metadata: { exportKind: "journal_fact" } },
     ]);
@@ -118,9 +123,23 @@ describe("Pathlight export", () => {
       call.init.method === "PATCH" &&
       call.url.startsWith("http://pathlight.test/v1/spans/task_span_")
     ));
-    expect(spanPatches).toHaveLength(4);
-    const output = JSON.parse(String(spanPatches[0].init.body)).output;
+    expect(spanPatches).toHaveLength(7);
+    const output = JSON.parse(String(spanPatches.find((call) => String(call.url).endsWith("/task_span_4"))?.init.body)).output;
     expect(output).toMatchObject({ taskId: "task_docs", status: "claimed" });
+    expect(output.modelCalls[0]).toMatchObject({
+      callId: "model_docs",
+      status: "completed",
+      inputSummary: "Summarize exporter docs.",
+      outputSummary: "Document richer output.",
+    });
+    expect(output.toolCalls[0]).toMatchObject({
+      callId: "tool_tests",
+      status: "completed",
+      outputSummary: "Exporter tests passed.",
+      exitCode: 0,
+      resultCount: 1,
+    });
+    expect(output.reasoning[0]).toMatchObject({ summary: "Docs need richer exported output." });
   });
 });
 
@@ -139,7 +158,62 @@ function taskJournalEvents() {
       title: "Document exporter",
     }),
     event("evt_docs_claimed", "task.claimed", "codex", { taskId: "task_docs" }),
-    event("evt_verification", "verification.completed", "codex", { summary: "Exporter tests passed" }),
+    event("evt_model_start", "model.started", "codex", {
+      taskId: "task_docs",
+      modelCallId: "model_docs",
+      modelProvider: "openai",
+      modelName: "gpt-test",
+      promptVersion: "pathlight.v1",
+      inputSummary: "Summarize exporter docs.",
+      inputMessages: [{ role: "user", content: "Document exporter" }],
+    }),
+    event("evt_model_done", "model.completed", "codex", {
+      taskId: "task_docs",
+      modelCallId: "model_docs",
+      modelProvider: "openai",
+      modelName: "gpt-test",
+      outputText: "Document richer output.",
+      outputSummary: "Document richer output.",
+      inputTokens: 12,
+      outputTokens: 8,
+      totalTokens: 20,
+      latencyMs: 100,
+    }),
+    event("evt_tool_start", "tool.started", "codex", {
+      taskId: "task_docs",
+      toolCallId: "tool_tests",
+      toolName: "shell",
+      inputSummary: "Run Pathlight exporter tests.",
+      input: { cmd: "npm test -- tests/pathlight-export.test.ts" },
+    }),
+    event("evt_tool_done", "tool.completed", "codex", {
+      taskId: "task_docs",
+      toolCallId: "tool_tests",
+      toolName: "shell",
+      output: { passed: true },
+      outputSummary: "Exporter tests passed.",
+      exitCode: 0,
+      resultCount: 1,
+      resultExcerpt: "pathlight-export.test.ts passed",
+      decisive: true,
+      latencyMs: 130,
+    }),
+    event("evt_reasoning", "reasoning.summary", "codex", {
+      taskId: "task_docs",
+      summary: "Docs need richer exported output.",
+      evidenceEventIds: ["evt_tool_done"],
+      confidence: 0.82,
+    }),
+    event("evt_verification", "verification.completed", "codex", {
+      summary: "Exporter tests passed",
+      command: "npm test -- tests/pathlight-export.test.ts",
+      checks: ["Pathlight export"],
+      assertions: ["task output includes telemetry"],
+      evidenceEventIds: ["evt_tool_done"],
+      artifactIds: ["artifact_pathlight_export_test"],
+      passCount: 1,
+      failCount: 0,
+    }),
   ].map((item) => {
     const sealed = sealEvent(createEvent(item), previousHash);
     previousHash = sealed.integrity.hash;

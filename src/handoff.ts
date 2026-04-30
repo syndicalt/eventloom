@@ -44,6 +44,17 @@ export interface HandoffFact {
   actorId: string;
   timestamp: string;
   summary: string;
+  evidence: HandoffFactEvidence;
+}
+
+export interface HandoffFactEvidence {
+  command?: string;
+  checks: string[];
+  assertions: string[];
+  evidenceEventIds: string[];
+  artifactIds: string[];
+  passCount?: number;
+  failCount?: number;
 }
 
 export interface HandoffProjectionError {
@@ -64,11 +75,16 @@ export interface HandoffModelCall {
   provider: string;
   modelName: string;
   status: "completed" | "failed" | "missing";
+  promptVersion?: string;
+  inputSummary?: string;
+  outputSummary?: string;
+  parameters?: Record<string, unknown>;
   inputTokens?: number;
   outputTokens?: number;
   totalTokens?: number;
   cost?: number;
   latencyMs?: number;
+  error?: string;
 }
 
 export interface HandoffToolCall {
@@ -76,6 +92,12 @@ export interface HandoffToolCall {
   actorId: string;
   toolName: string;
   status: "completed" | "failed" | "missing";
+  inputSummary?: string;
+  outputSummary?: string;
+  exitCode?: number;
+  resultCount?: number;
+  resultExcerpt?: string;
+  decisive?: boolean;
   latencyMs?: number;
   error?: string;
 }
@@ -198,25 +220,38 @@ function factSummary(event: EventEnvelope): HandoffFact {
     stringPayload(event, "title") ??
     JSON.stringify(event.payload)
   );
+  const evidence = factEvidence(event);
   return {
     id: event.id,
     type: event.type,
     actorId: event.actorId,
     timestamp: event.timestamp,
-    summary: appendFactEvidence(baseSummary, event),
+    summary: appendFactEvidence(baseSummary, evidence),
+    evidence,
   };
 }
 
-function appendFactEvidence(summary: string, event: EventEnvelope): string {
+function factEvidence(event: EventEnvelope): HandoffFactEvidence {
+  return {
+    command: stringPayload(event, "command") ?? undefined,
+    checks: stringArrayPayload(event, "checks"),
+    assertions: stringArrayPayload(event, "assertions"),
+    evidenceEventIds: stringArrayPayload(event, "evidenceEventIds"),
+    artifactIds: stringArrayPayload(event, "artifactIds"),
+    passCount: numberPayload(event, "passCount") ?? undefined,
+    failCount: numberPayload(event, "failCount") ?? undefined,
+  };
+}
+
+function appendFactEvidence(summary: string, evidence: HandoffFactEvidence): string {
   const details: string[] = [];
-  const command = stringPayload(event, "command");
-  const checks = stringArrayPayload(event, "checks");
-  const assertions = stringArrayPayload(event, "assertions");
-  const evidence = stringArrayPayload(event, "evidenceEventIds");
-  if (command) details.push(`command=${command}`);
-  if (checks.length > 0) details.push(`checks=${checks.join(",")}`);
-  if (assertions.length > 0) details.push(`assertions=${assertions.join(",")}`);
-  if (evidence.length > 0) details.push(`evidence=${evidence.join(",")}`);
+  if (evidence.command) details.push(`command=${evidence.command}`);
+  if (evidence.checks.length > 0) details.push(`checks=${evidence.checks.join(",")}`);
+  if (evidence.assertions.length > 0) details.push(`assertions=${evidence.assertions.join(",")}`);
+  if (evidence.evidenceEventIds.length > 0) details.push(`evidence=${evidence.evidenceEventIds.join(",")}`);
+  if (evidence.artifactIds.length > 0) details.push(`artifacts=${evidence.artifactIds.join(",")}`);
+  if (evidence.passCount !== undefined) details.push(`pass=${evidence.passCount}`);
+  if (evidence.failCount !== undefined) details.push(`fail=${evidence.failCount}`);
   return details.length === 0 ? summary : `${summary} [${details.join("; ")}]`;
 }
 
@@ -258,11 +293,16 @@ function summarizeModelCall(started: EventEnvelope, events: readonly EventEnvelo
     provider: stringPayload(completed ?? started, "modelProvider") ?? "unknown",
     modelName: stringPayload(completed ?? started, "modelName") ?? "unknown",
     status: completed?.type === "model.completed" ? "completed" : completed?.type === "model.failed" ? "failed" : "missing",
+    promptVersion: stringPayload(started, "promptVersion") ?? undefined,
+    inputSummary: stringPayload(started, "inputSummary") ?? undefined,
+    outputSummary: stringPayload(completed, "outputSummary") ?? undefined,
+    parameters: recordPayload(started, "parameters") ?? undefined,
     inputTokens: numberPayload(completed, "inputTokens") ?? undefined,
     outputTokens: numberPayload(completed, "outputTokens") ?? undefined,
     totalTokens: numberPayload(completed, "totalTokens") ?? undefined,
     cost: numberPayload(completed, "cost") ?? undefined,
     latencyMs: numberPayload(completed, "latencyMs") ?? undefined,
+    error: stringPayload(completed, "error") ?? undefined,
   };
 }
 
@@ -277,6 +317,12 @@ function summarizeToolCall(started: EventEnvelope, events: readonly EventEnvelop
     actorId: started.actorId,
     toolName: stringPayload(completed ?? started, "toolName") ?? "unknown",
     status: completed?.type === "tool.completed" ? "completed" : completed?.type === "tool.failed" ? "failed" : "missing",
+    inputSummary: stringPayload(started, "inputSummary") ?? undefined,
+    outputSummary: stringPayload(completed, "outputSummary") ?? undefined,
+    exitCode: numberPayload(completed, "exitCode") ?? undefined,
+    resultCount: numberPayload(completed, "resultCount") ?? undefined,
+    resultExcerpt: stringPayload(completed, "resultExcerpt") ?? undefined,
+    decisive: booleanPayload(completed, "decisive") ?? undefined,
     latencyMs: numberPayload(completed, "latencyMs") ?? undefined,
     error: stringPayload(completed, "error") ?? undefined,
   };
@@ -289,14 +335,27 @@ function findObservabilityGaps(telemetry: HandoffTelemetry, verification: readon
   if (telemetry.reasoning.length === 0) gaps.push("No reasoning.summary events recorded.");
   if (telemetry.models.some((call) => call.status === "missing")) gaps.push("At least one model.started event has no terminal model event.");
   if (telemetry.tools.some((call) => call.status === "missing")) gaps.push("At least one tool.started event has no terminal tool event.");
+  if (telemetry.models.some((call) => !call.inputSummary && !call.promptVersion)) {
+    gaps.push("Model telemetry should include prompt version or input summary.");
+  }
+  if (telemetry.models.some((call) => call.status === "completed" && !call.outputSummary)) {
+    gaps.push("Completed model telemetry should include output summary.");
+  }
+  if (telemetry.tools.some((call) => call.status === "completed" && call.exitCode === undefined && call.resultCount === undefined && !call.outputSummary && !call.resultExcerpt)) {
+    gaps.push("Completed tool telemetry should include exit code, result count, output summary, or result excerpt.");
+  }
   if (verification.some((fact) => fact.summary.length > 0 && !verificationHasEvidence(fact))) {
-    gaps.push("Verification events should include command, checks, assertions, or evidence ids.");
+    gaps.push("Verification events should include command, checks, assertions, evidence ids, and artifacts or pass/fail counts.");
   }
   return gaps;
 }
 
 function verificationHasEvidence(fact: HandoffFact): boolean {
-  return fact.summary.includes("command=") || fact.summary.includes("checks=") || fact.summary.includes("assertions=") || fact.summary.includes("evidence=");
+  const evidence = fact.evidence;
+  return !!evidence.command &&
+    (evidence.checks.length > 0 || evidence.assertions.length > 0) &&
+    evidence.evidenceEventIds.length > 0 &&
+    (evidence.artifactIds.length > 0 || evidence.passCount !== undefined || evidence.failCount !== undefined);
 }
 
 function nextActions(
@@ -326,6 +385,16 @@ function numberPayload(event: EventEnvelope | undefined, key: string): number | 
   return typeof value === "number" && Number.isFinite(value) ? value : null;
 }
 
+function booleanPayload(event: EventEnvelope | undefined, key: string): boolean | null {
+  const value = event?.payload[key];
+  return typeof value === "boolean" ? value : null;
+}
+
+function recordPayload(event: EventEnvelope | undefined, key: string): Record<string, unknown> | null {
+  const value = event?.payload[key];
+  return value !== null && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : null;
+}
+
 function stringArrayPayload(event: EventEnvelope, key: string): string[] {
   const value = event.payload[key];
   return Array.isArray(value) ? value.filter((item): item is string => typeof item === "string") : [];
@@ -351,13 +420,22 @@ function formatProjectionError(error: HandoffProjectionError): string {
 function formatModelCall(call: HandoffModelCall): string {
   const tokens = call.totalTokens === undefined ? "" : ` tokens=${call.totalTokens}`;
   const latency = call.latencyMs === undefined ? "" : ` latencyMs=${call.latencyMs}`;
-  return `- ${call.callId} ${call.provider}/${call.modelName} status=${call.status}${tokens}${latency}`;
+  const prompt = call.promptVersion ? ` prompt=${call.promptVersion}` : "";
+  const input = call.inputSummary ? ` input="${call.inputSummary}"` : "";
+  const output = call.outputSummary ? ` output="${call.outputSummary}"` : "";
+  const error = call.error ? ` error=${call.error}` : "";
+  return `- ${call.callId} ${call.provider}/${call.modelName} status=${call.status}${tokens}${latency}${prompt}${input}${output}${error}`;
 }
 
 function formatToolCall(call: HandoffToolCall): string {
   const latency = call.latencyMs === undefined ? "" : ` latencyMs=${call.latencyMs}`;
+  const exitCode = call.exitCode === undefined ? "" : ` exitCode=${call.exitCode}`;
+  const resultCount = call.resultCount === undefined ? "" : ` results=${call.resultCount}`;
+  const decisive = call.decisive === undefined ? "" : ` decisive=${call.decisive}`;
+  const excerpt = call.resultExcerpt ? ` excerpt="${call.resultExcerpt}"` : "";
+  const output = call.outputSummary ? ` output="${call.outputSummary}"` : "";
   const error = call.error ? ` error=${call.error}` : "";
-  return `- ${call.callId} ${call.toolName} status=${call.status}${latency}${error}`;
+  return `- ${call.callId} ${call.toolName} status=${call.status}${latency}${exitCode}${resultCount}${decisive}${output}${excerpt}${error}`;
 }
 
 function formatReasoningSummary(summary: HandoffReasoningSummary): string {

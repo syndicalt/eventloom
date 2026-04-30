@@ -106,11 +106,21 @@ describe("HALO export", () => {
       "llm.model_name": "deterministic-runner",
       "inference.llm.provider": "eventloom",
       "inference.llm.model_name": "deterministic-runner",
+      "eventloom.model.prompt_version": "eventloom.deterministic-runner.v1",
     });
     expect(modelSpan?.attributes["inference.llm.input_tokens"]).toEqual(expect.any(Number));
+    expect(modelSpan?.attributes["eventloom.model.input_summary"]).toEqual(expect.any(String));
+    expect(modelSpan?.attributes["eventloom.model.output_summary"]).toEqual(expect.any(String));
 
     const toolSpan = result.spans.find((span) => span.attributes["inference.observation_kind"] === "TOOL");
     expect(toolSpan?.attributes["tool.name"]).toBe("eventloom.mailbox.read");
+    expect(toolSpan?.attributes).toMatchObject({
+      "eventloom.tool.input_summary": expect.any(String),
+      "eventloom.tool.output_summary": expect.any(String),
+      "eventloom.tool.exit_code": 0,
+      "eventloom.tool.result_count": 1,
+      "eventloom.tool.decisive": true,
+    });
   });
 });
 

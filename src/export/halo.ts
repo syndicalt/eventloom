@@ -290,13 +290,19 @@ function makeTelemetrySpans(
   const spans: HaloSpanRecord[] = [];
   for (const started of events.filter((event) => event.type === "model.started")) {
     const modelCallId = String(started.payload.modelCallId ?? started.id);
-    const completed = events.find((event) => event.type === "model.completed" && event.payload.modelCallId === modelCallId);
+    const completed = events.find((event) => (
+      (event.type === "model.completed" || event.type === "model.failed") &&
+      event.payload.modelCallId === modelCallId
+    ));
     spans.push(makeModelSpan(started, completed, parentSpanForTurn(started, rootSpanId, context.traceId), context));
   }
 
   for (const started of events.filter((event) => event.type === "tool.started")) {
     const toolCallId = String(started.payload.toolCallId ?? started.id);
-    const completed = events.find((event) => event.type === "tool.completed" && event.payload.toolCallId === toolCallId);
+    const completed = events.find((event) => (
+      (event.type === "tool.completed" || event.type === "tool.failed") &&
+      event.payload.toolCallId === toolCallId
+    ));
     spans.push(makeToolSpan(started, completed, parentSpanForTurn(started, rootSpanId, context.traceId), context));
   }
 
@@ -318,6 +324,9 @@ function makeModelSpan(
   const inputTokens = numberOrNull(completed?.payload.inputTokens);
   const outputTokens = numberOrNull(completed?.payload.outputTokens);
   const failed = !completed || completed.type === "model.failed";
+  const statusMessage = failed
+    ? stringOrNull(completed?.payload.error) ?? "Model invocation did not complete"
+    : "";
   return makeSpan({
     id: `model:${String(started.payload.modelCallId ?? started.id)}`,
     parentId: parentSpanId,
@@ -327,7 +336,7 @@ function makeModelSpan(
     startTime: started.timestamp,
     endTime: completed?.timestamp ?? started.timestamp,
     statusCode: failed ? "STATUS_CODE_ERROR" : "STATUS_CODE_OK",
-    statusMessage: failed ? "Model invocation did not complete" : "",
+    statusMessage,
     actorId: started.actorId,
     attributes: {
       "openinference.span.kind": "LLM",
@@ -343,6 +352,12 @@ function makeModelSpan(
       "inference.llm.cost.total": completed?.payload.cost ?? null,
       "eventloom.turn.id": stringOrNull(started.payload.turnId),
       "eventloom.model_call_id": stringOrNull(started.payload.modelCallId),
+      "eventloom.model.prompt_version": stringOrNull(started.payload.promptVersion),
+      "eventloom.model.input_summary": stringOrNull(started.payload.inputSummary),
+      "eventloom.model.output_summary": stringOrNull(completed?.payload.outputSummary),
+      "eventloom.model.parameters": started.payload.parameters ?? null,
+      "eventloom.model.latency_ms": numberOrNull(completed?.payload.latencyMs),
+      "eventloom.model.error": stringOrNull(completed?.payload.error),
       "input.value": JSON.stringify(started.payload.inputMessages ?? []),
       "output.value": JSON.stringify(completed?.payload.outputText ?? null),
     },
@@ -373,6 +388,14 @@ function makeToolSpan(
       "tool.name": toolName,
       "eventloom.turn.id": stringOrNull(started.payload.turnId),
       "eventloom.tool_call_id": stringOrNull(started.payload.toolCallId),
+      "eventloom.tool.input_summary": stringOrNull(started.payload.inputSummary),
+      "eventloom.tool.output_summary": stringOrNull(completed?.payload.outputSummary),
+      "eventloom.tool.exit_code": numberOrNull(completed?.payload.exitCode),
+      "eventloom.tool.result_count": numberOrNull(completed?.payload.resultCount),
+      "eventloom.tool.result_excerpt": stringOrNull(completed?.payload.resultExcerpt),
+      "eventloom.tool.decisive": completed?.payload.decisive ?? null,
+      "eventloom.tool.latency_ms": numberOrNull(completed?.payload.latencyMs),
+      "eventloom.tool.error": stringOrNull(completed?.payload.error),
       "input.value": JSON.stringify(started.payload.input ?? null),
       "output.value": JSON.stringify(completed?.payload.output ?? null),
     },

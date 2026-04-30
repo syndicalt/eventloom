@@ -85,6 +85,7 @@ export async function runRuntimeLoop(
             turnId,
             toolCallId,
             toolName: "eventloom.mailbox.read",
+            inputSummary: `Read one mailbox item for ${actor.id}.`,
             input: {
               actorId: actor.id,
               sourceEventId: item.event.id,
@@ -109,6 +110,11 @@ export async function runRuntimeLoop(
               taskId: item.task?.id ?? null,
               taskStatus: item.task?.status ?? null,
             },
+            outputSummary: `Read 1 mailbox item (${item.event.type}).`,
+            exitCode: 0,
+            resultCount: 1,
+            resultExcerpt: item.event.id,
+            decisive: true,
             latencyMs: 1,
           },
         }));
@@ -125,6 +131,8 @@ export async function runRuntimeLoop(
             modelCallId,
             modelProvider: "eventloom",
             modelName: "deterministic-runner",
+            promptVersion: "eventloom.deterministic-runner.v1",
+            inputSummary: `Actor ${actor.id} handling ${item.event.type}.`,
             inputMessages: [
               { role: "system", content: actor.role },
               { role: "user", content: `Handle ${item.event.type} from ${item.event.actorId}.` },
@@ -166,6 +174,9 @@ export async function runRuntimeLoop(
             modelProvider: "eventloom",
             modelName: "deterministic-runner",
             outputText: `Emitted ${intentions.length} intention(s): ${intentions.map((intention) => intention.type).join(", ") || "none"}.`,
+            outputSummary: intentions.length === 0
+              ? "No intentions emitted."
+              : `Emitted intentions: ${intentions.map((intention) => intention.type).join(", ")}.`,
             inputTokens: estimateTokens(`${actor.role} ${item.event.type}`),
             outputTokens: estimateTokens(intentions.map((intention) => intention.type).join(" ")),
             totalTokens: estimateTokens(`${actor.role} ${item.event.type}`) + estimateTokens(intentions.map((intention) => intention.type).join(" ")),

@@ -85,7 +85,7 @@ Empty rejection arrays are intentionally omitted because Pathlight's issue heuri
 
 Journal fact spans include the source event id, event type, actor id, thread id, parent event id, and caused-by ids in metadata. The original Eventloom event is also attached as a span event.
 
-Model and tool telemetry spans include model/provider names, token counts, cost, latency, tool names, inputs, outputs, and related turn ids when the Eventloom log contains those fields.
+Model and tool telemetry spans include model/provider names, prompt versions, input/output summaries, token counts, cost, latency, tool names, inputs, outputs, exit codes, result counts, result excerpts, decisive flags, errors, and related turn ids when the Eventloom log contains those fields. Pathlight task lifecycle output also includes task-scoped model calls, tool calls, and reasoning summaries so external journals remain inspectable even when they were not produced by Eventloom's actor loop.
 
 ## Package API Export
 

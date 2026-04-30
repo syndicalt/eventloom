@@ -66,7 +66,7 @@ npx eventloom export halo .eventloom/agent-work.jsonl \
 - Provides starter templates for coding, review, release, and research tasks.
 - Runs deterministic actor workflows.
 - Validates actor intentions before accepting state changes.
-- Records model, tool, and reasoning-summary telemetry during actor turns.
+- Records model, tool, and reasoning-summary telemetry during actor turns, including prompt versions, summaries, token counts, exit codes, result counts, excerpts, and failure details.
 - Rebuilds task, research, and effect projections from the log.
 - Supports human-in-the-loop approval events.
 - Exports actor turns and runtime events to Pathlight traces.
@@ -191,7 +191,7 @@ The original prototype roadmap is implemented:
 - Runtime provenance metadata
 - Public package API
 - HALO trace export bridge
-- Model, tool, and reasoning telemetry export
+- Rich model, tool, reasoning, and verification telemetry export
 - Agent integration workflow and Codex skill
 - MCP stdio server package
 - MCP Pathlight and HALO export tools

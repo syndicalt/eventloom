@@ -132,7 +132,7 @@ Runtime actor turns may also emit telemetry events:
 - `model.failed`
 - `reasoning.summary`
 
-Model events record provider, model name, request identity, prompt/output summaries, token counts, cost, latency, and generation parameters when available. Tool events record tool name, call id, input, output, error, latency, and the related actor turn. `reasoning.summary` records safe rationale summaries, evidence event ids, alternatives considered, and confidence. Eventloom does not require or store hidden chain-of-thought.
+Model events record provider, model name, request identity, prompt version, prompt/output summaries, token counts, cost, latency, errors, and generation parameters when available. Tool events record tool name, call id, input/output summaries, raw input/output, exit code, result count, result excerpt, decisive flag, error, latency, and the related actor turn. `reasoning.summary` records safe rationale summaries, evidence event ids, alternatives considered, and confidence. Eventloom does not require or store hidden chain-of-thought.
 
 ## Integrity Hashes
 

@@ -29,10 +29,29 @@ describe("handoff summaries", () => {
     expect(summary.releases[0].summary).toBe("Published runtime package");
     expect(summary.risks[0].summary).toBe("Collector may be offline");
     expect(summary.telemetry.models).toMatchObject([
-      { callId: "model_docs", provider: "openai", modelName: "gpt-test", status: "completed", totalTokens: 30 },
+      {
+        callId: "model_docs",
+        provider: "openai",
+        modelName: "gpt-test",
+        status: "completed",
+        promptVersion: "handoff.v1",
+        inputSummary: "Summarize documentation decisions.",
+        outputSummary: "Recommended deterministic summaries.",
+        totalTokens: 30,
+      },
     ]);
     expect(summary.telemetry.tools).toMatchObject([
-      { callId: "tool_tests", toolName: "shell", status: "completed", latencyMs: 120 },
+      {
+        callId: "tool_tests",
+        toolName: "shell",
+        status: "completed",
+        outputSummary: "Vitest passed.",
+        exitCode: 0,
+        resultCount: 1,
+        resultExcerpt: "1 test file passed",
+        decisive: true,
+        latencyMs: 120,
+      },
     ]);
     expect(summary.telemetry.reasoning).toMatchObject([
       { summary: "Docs need handoff evidence", confidence: 0.8, evidenceEventIds: ["evt_decision"] },
@@ -60,6 +79,9 @@ describe("handoff summaries", () => {
     expect(text).toContain("recent facts:");
     expect(text).toContain("model telemetry:");
     expect(text).toContain("tool telemetry:");
+    expect(text).toContain("prompt=handoff.v1");
+    expect(text).toContain("exitCode=0");
+    expect(text).toContain("results=1");
     expect(text).toContain("reasoning summaries:");
     expect(text).toContain("observability gaps:");
     expect(text).toContain("- none");
@@ -97,7 +119,10 @@ function sealedEvents(): SealedEvent[] {
       modelCallId: "model_docs",
       modelProvider: "openai",
       modelName: "gpt-test",
+      promptVersion: "handoff.v1",
+      inputSummary: "Summarize documentation decisions.",
       inputMessages: [{ role: "user", content: "Summarize docs" }],
+      parameters: { temperature: 0 },
     }),
     event("evt_reasoning", "reasoning.summary", "codex", {
       summary: "Docs need handoff evidence",
@@ -109,6 +134,7 @@ function sealedEvents(): SealedEvent[] {
       modelProvider: "openai",
       modelName: "gpt-test",
       outputText: "Use deterministic summaries",
+      outputSummary: "Recommended deterministic summaries.",
       inputTokens: 10,
       outputTokens: 20,
       totalTokens: 30,
@@ -117,12 +143,18 @@ function sealedEvents(): SealedEvent[] {
     event("evt_tool_start", "tool.started", "codex", {
       toolCallId: "tool_tests",
       toolName: "shell",
+      inputSummary: "Run focused handoff tests.",
       input: { cmd: "npm test" },
     }),
     event("evt_tool_done", "tool.completed", "codex", {
       toolCallId: "tool_tests",
       toolName: "shell",
       output: { passed: true },
+      outputSummary: "Vitest passed.",
+      exitCode: 0,
+      resultCount: 1,
+      resultExcerpt: "1 test file passed",
+      decisive: true,
       latencyMs: 120,
     }),
     event("evt_verification", "verification.completed", "codex", {
@@ -131,6 +163,9 @@ function sealedEvents(): SealedEvent[] {
       checks: ["handoff.test.ts"],
       assertions: ["handoff includes telemetry"],
       evidenceEventIds: ["evt_tool_done"],
+      artifactIds: ["artifact_handoff_test"],
+      passCount: 1,
+      failCount: 0,
     }),
     event("evt_release", "release.published", "codex", { summary: "Published runtime package" }),
     event("evt_risk", "risk.identified", "codex", { summary: "Collector may be offline" }),

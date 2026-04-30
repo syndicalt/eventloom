@@ -185,10 +185,10 @@ Built-in workflows emit deterministic model, tool, and reasoning-summary telemet
 
 For real agent journals, include:
 
-- `model.started` / `model.completed` with provider, model name, request id, token counts, latency, cost, prompt summary, and output summary when available.
-- `tool.started` / `tool.completed` with tool name, call id, redacted input, summarized output, error, and latency.
+- `model.started` / `model.completed` with provider, model name, request id, prompt version, input/output summaries, token counts, latency, cost, parameters, and errors when available.
+- `tool.started` / `tool.completed` with tool name, call id, redacted input, input/output summaries, exit code, result count, result excerpt, decisive flag, error, and latency.
 - `reasoning.summary` with safe rationale summaries, evidence event ids, alternatives considered, and confidence.
-- `verification.completed` with the command, checks, assertions, and evidence event ids behind the verification claim.
+- `verification.completed` with the command, checks, assertions, evidence event ids, artifacts, and pass/fail counts behind the verification claim.
 
 The `handoff` command reports missing model, tool, reasoning, or verification evidence as observability gaps before you export a trace for debugging.
 
