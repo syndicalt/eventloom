@@ -1,6 +1,6 @@
 # Agent Work Log Pathlight Case Study
 
-This case study exports the local Eventloom agent work journal into Pathlight so the same release and product-direction work can be inspected as a trace.
+This case study exports a clean local Eventloom agent work journal into Pathlight so the same release and product-direction work can be inspected as a trace.
 
 ## Source Log
 
@@ -8,7 +8,18 @@ This case study exports the local Eventloom agent work journal into Pathlight so
 .eventloom/agent-work.jsonl
 ```
 
-The log records external agent workflow facts: goals, task lifecycle events, decisions, verification, releases, and handoff-oriented summaries. It is intentionally local and append-only.
+The log records external agent workflow facts: goals, task lifecycle events, decisions, verification, releases, risks, and handoff-oriented summaries. It is intentionally local and append-only.
+
+Before using a journal as a canonical dogfood trace, verify its integrity and inspect its handoff summary:
+
+```bash
+npm run eventloom -- replay .eventloom/agent-work.jsonl
+npm run eventloom -- handoff .eventloom/agent-work.jsonl
+```
+
+If `integrity.ok` is false, archive or regenerate the local journal before exporting it. Eventloom uses append locking for new writes, but old logs created before locking may already contain conflicting hash links.
+
+Also check the handoff summary for projection errors. Append locking preserves hash-chain integrity, but causally dependent facts such as `task.claimed` after `task.proposed` should still be written in dependency order.
 
 ## Export Command
 
@@ -37,6 +48,8 @@ Observed local export:
 ```
 
 The log is an external agent journal, so it does not contain runtime `actor.started` / `actor.completed` turns. Eventloom exports projected task lifecycles as Pathlight spans in this case. Each task span contains its task status, actor, history event ids, and span events for the task lifecycle events.
+
+The handoff summary is the local-first companion to the exported trace. It includes event type counts, active and completed task state, projection errors, decisions, verification results, releases, risks, recent facts, and next actions.
 
 ## What This Proves
 

@@ -1,17 +1,23 @@
 import type { EventEnvelope } from "./events.js";
 import { verifyEventChain, type IntegrityReport } from "./integrity.js";
+import { eventTypeCounts } from "./projection.js";
 import { projectTasks, type TaskState } from "./task-projection.js";
 
 export interface HandoffSummary {
   eventCount: number;
+  eventTypes: Record<string, number>;
   integrity: IntegrityReport;
   goals: HandoffGoal[];
   tasks: {
     active: HandoffTask[];
     completed: HandoffTask[];
   };
+  projectionErrors: HandoffProjectionError[];
   decisions: HandoffFact[];
   verification: HandoffFact[];
+  releases: HandoffFact[];
+  risks: HandoffFact[];
+  recentFacts: HandoffFact[];
   nextActions: string[];
 }
 
@@ -38,27 +44,48 @@ export interface HandoffFact {
   summary: string;
 }
 
+export interface HandoffProjectionError {
+  eventId: string;
+  type: string;
+  message: string;
+}
+
 const completedStatuses = new Set<TaskState["status"]>(["completed", "approved"]);
 
 export function summarizeHandoff(events: readonly EventEnvelope[]): HandoffSummary {
-  const tasks = Object.values(projectTasks(events).tasks)
+  const taskProjection = projectTasks(events);
+  const tasks = Object.values(taskProjection.tasks)
     .sort((left, right) => left.id.localeCompare(right.id))
     .map(taskSummary);
   const active = tasks.filter((task) => !completedStatuses.has(task.status));
   const completed = tasks.filter((task) => completedStatuses.has(task.status));
+  const integrity = verifyEventChain(events);
+  const decisions = factsFor(events, "decision.recorded");
+  const verification = events
+    .filter((event) => event.type.startsWith("verification."))
+    .map(factSummary);
+  const releases = events
+    .filter((event) => event.type.startsWith("release."))
+    .map(factSummary);
+  const risks = events
+    .filter((event) => event.type.startsWith("risk."))
+    .map(factSummary);
 
   return {
     eventCount: events.length,
-    integrity: verifyEventChain(events),
+    eventTypes: eventTypeCounts(events),
+    integrity,
     goals: events
       .filter((event) => event.type === "goal.created")
       .map(goalSummary),
     tasks: { active, completed },
-    decisions: factsFor(events, "decision.recorded"),
-    verification: events
-      .filter((event) => event.type.startsWith("verification."))
-      .map(factSummary),
-    nextActions: nextActions(active),
+    projectionErrors: taskProjection.errors,
+    decisions,
+    verification,
+    releases,
+    risks,
+    recentFacts: recentFacts([...decisions, ...verification, ...releases, ...risks]),
+    nextActions: nextActions(active, integrity, taskProjection.errors),
   };
 }
 
@@ -67,6 +94,7 @@ export function formatHandoffSummary(summary: HandoffSummary): string {
     "handoff summary",
     `events: ${summary.eventCount}`,
     `integrity: ${summary.integrity.ok ? "ok" : "failed"}`,
+    `event types: ${formatEventTypeCounts(summary.eventTypes)}`,
     "",
     section("goals", summary.goals.map((goal) => `- ${goal.title} (${goal.id})`)),
     "",
@@ -74,9 +102,17 @@ export function formatHandoffSummary(summary: HandoffSummary): string {
     "",
     section("completed tasks", summary.tasks.completed.map(formatTask)),
     "",
+    section("projection errors", summary.projectionErrors.map(formatProjectionError)),
+    "",
     section("decisions", summary.decisions.map(formatFact)),
     "",
     section("verification", summary.verification.map(formatFact)),
+    "",
+    section("releases", summary.releases.map(formatFact)),
+    "",
+    section("risks", summary.risks.map(formatFact)),
+    "",
+    section("recent facts", summary.recentFacts.map(formatFact)),
     "",
     section("next actions", summary.nextActions.map((action) => `- ${action}`)),
   ].join("\n");
@@ -120,12 +156,25 @@ function factSummary(event: EventEnvelope): HandoffFact {
   };
 }
 
-function nextActions(active: readonly HandoffTask[]): string[] {
-  if (active.length === 0) return ["No active tasks remain."];
-  return active.map((task) => {
+function recentFacts(facts: readonly HandoffFact[]): HandoffFact[] {
+  return [...facts]
+    .sort((left, right) => left.timestamp.localeCompare(right.timestamp))
+    .slice(-5);
+}
+
+function nextActions(
+  active: readonly HandoffTask[],
+  integrity: IntegrityReport,
+  projectionErrors: readonly HandoffProjectionError[],
+): string[] {
+  const actions: string[] = [];
+  if (!integrity.ok) actions.push("Fix event log integrity before continuing or exporting.");
+  if (projectionErrors.length > 0) actions.push("Resolve projection errors before using this log as a canonical trace.");
+  if (active.length === 0) return actions.length > 0 ? actions : ["No active tasks remain."];
+  return actions.concat(active.map((task) => {
     const label = task.title ? `${task.id}: ${task.title}` : task.id;
     return `Continue ${label} (${task.status}).`;
-  });
+  }));
 }
 
 function stringPayload(event: EventEnvelope, key: string): string | null {
@@ -144,4 +193,14 @@ function formatTask(task: HandoffTask): string {
 
 function formatFact(fact: HandoffFact): string {
   return `- ${fact.summary} (${fact.type} by ${fact.actorId})`;
+}
+
+function formatProjectionError(error: HandoffProjectionError): string {
+  return `- ${error.message} (${error.type} ${error.eventId})`;
+}
+
+function formatEventTypeCounts(counts: Record<string, number>): string {
+  const entries = Object.entries(counts).sort(([left], [right]) => left.localeCompare(right));
+  if (entries.length === 0) return "none";
+  return entries.map(([type, count]) => `${type}=${count}`).join(", ");
 }
