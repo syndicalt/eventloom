@@ -78,4 +78,18 @@ const result = await runtime.exportHalo({
 await writeFile("eventloom-halo-traces.jsonl", formatHaloJsonl(result), "utf8");
 ```
 
-MCP exposure is a follow-up release step after the runtime package containing this exporter is published and the MCP package can depend on it.
+## MCP Tool
+
+The `@eventloom/mcp` package exposes the same projection through `eventloom_export_halo`:
+
+```json
+{
+  "path": ".eventloom/agent-work.jsonl",
+  "out": ".eventloom/agent-work-halo.jsonl",
+  "projectId": "eventloom",
+  "serviceName": "eventloom-agent-work",
+  "traceName": "eventloom-agent-work"
+}
+```
+
+The MCP tool writes the trace file inside the configured MCP root and returns `outputPath`, `traceId`, `eventCount`, and `spanCount`.

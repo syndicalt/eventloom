@@ -1,4 +1,4 @@
-import { mkdtemp } from "node:fs/promises";
+import { mkdtemp, readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { PassThrough } from "node:stream";
@@ -9,7 +9,7 @@ import type { JSONRPCMessage } from "@modelcontextprotocol/sdk/types.js";
 import { describe, expect, it, vi } from "vitest";
 import { createServerConfig, resolveLogPath } from "../src/path-safety.js";
 import { createEventloomMcpServer } from "../src/server.js";
-import { appendEvent, explainTask, exportPathlight, handoff, mailbox, replayLog, runBuiltIn, timeline } from "../src/tools.js";
+import { appendEvent, explainTask, exportHalo, exportPathlight, handoff, mailbox, replayLog, runBuiltIn, timeline } from "../src/tools.js";
 
 describe("Eventloom MCP tools", () => {
   it("appends and replays a local event log", async () => {
@@ -145,10 +145,10 @@ describe("Eventloom MCP tools", () => {
 
       expect(exported.structuredContent).toMatchObject({
         traceId: "trace_mcp",
-        spanCount: 5,
+        spanCount: 21,
       });
       expect(requests.filter((request) => request.method === "POST" && request.url === "http://pathlight.test/v1/traces")).toHaveLength(1);
-      expect(requests.filter((request) => request.method === "POST" && request.url === "http://pathlight.test/v1/spans")).toHaveLength(5);
+      expect(requests.filter((request) => request.method === "POST" && request.url === "http://pathlight.test/v1/spans")).toHaveLength(21);
       expect(requests.some((request) => request.method === "PATCH" && request.url === "http://pathlight.test/v1/traces/trace_mcp")).toBe(true);
 
       const traceCreate = requests.find((request) => request.url === "http://pathlight.test/v1/traces");
@@ -158,6 +158,40 @@ describe("Eventloom MCP tools", () => {
     } finally {
       fetch.mockRestore();
     }
+  });
+
+  it("exports a workflow log to HALO JSONL", async () => {
+    const root = await tempRoot();
+    const config = createServerConfig({ root });
+    await runBuiltIn(config, {
+      path: "workflow.jsonl",
+      workflow: "software-work",
+      resume: false,
+    });
+
+    const exported = await exportHalo(config, {
+      path: "workflow.jsonl",
+      out: "halo-trace.jsonl",
+      projectId: "eventloom-mcp-test",
+      serviceName: "eventloom-mcp",
+      traceName: "eventloom-mcp-test",
+    });
+
+    expect(exported.structuredContent).toMatchObject({
+      traceId: expect.any(String),
+      eventCount: expect.any(Number),
+      spanCount: expect.any(Number),
+    });
+    expect(exported.structuredContent?.outputPath).toBe(join(root, "halo-trace.jsonl"));
+
+    const lines = (await readFile(join(root, "halo-trace.jsonl"), "utf8")).trim().split("\n");
+    expect(lines).toHaveLength(exported.structuredContent?.spanCount as number);
+    const firstSpan = JSON.parse(lines[0] ?? "{}") as Record<string, unknown>;
+    const attributes = firstSpan.attributes as Record<string, unknown>;
+    const resourceAttributes = (firstSpan.resource as Record<string, Record<string, unknown>>).attributes;
+    expect(firstSpan.name).toBe("eventloom-mcp-test");
+    expect(attributes["inference.project_id"]).toBe("eventloom-mcp-test");
+    expect(resourceAttributes["service.name"]).toBe("eventloom-mcp");
   });
 
   it("rejects paths outside the configured root", async () => {

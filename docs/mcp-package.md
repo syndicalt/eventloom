@@ -320,6 +320,35 @@ Output:
 
 This tool performs a network request and should be documented as optional. Eventloom remains useful without Pathlight.
 
+### `eventloom_export_halo`
+
+Export a log to a HALO-compatible OpenTelemetry JSONL trace file.
+
+Input:
+
+```json
+{
+  "path": ".eventloom/agent-work.jsonl",
+  "out": ".eventloom/agent-work-halo.jsonl",
+  "projectId": "eventloom-agent-work",
+  "serviceName": "eventloom",
+  "traceName": "eventloom-agent-work"
+}
+```
+
+Output:
+
+```json
+{
+  "outputPath": "/workspace/.eventloom/agent-work-halo.jsonl",
+  "traceId": "...",
+  "eventCount": 9,
+  "spanCount": 4
+}
+```
+
+Both `path` and `out` are resolved inside the configured MCP root. The tool writes a local JSONL file and does not perform network requests.
+
 ## Deferred Tools
 
 Possible later tools:
@@ -396,6 +425,7 @@ Current coverage:
 - `eventloom_mailbox` returns rebuilt actor mailbox items for a built-in workflow.
 - `eventloom_run_builtin` can create and resume a deterministic workflow log.
 - `eventloom_export_pathlight` maps a workflow log through the MCP adapter and mocked Pathlight fetch calls.
+- `eventloom_export_halo` writes HALO-compatible JSONL and returns trace metadata.
 - Path safety rejects paths outside the configured root.
 - MCP stdio smoke coverage verifies append and replay through the protocol.
 

@@ -5,6 +5,7 @@ import {
   createHumanOpsRegistry,
   createResearchPipelineRegistry,
   createSoftwareWorkRegistry,
+  formatHaloJsonl,
   formatMailbox,
   formatTaskExplanation,
   formatTimeline,
@@ -18,6 +19,7 @@ import {
   type TaskState,
 } from "@eventloom/runtime";
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
+import { writeFile } from "node:fs/promises";
 import { z } from "zod";
 import { resolveLogPath, type ServerConfig } from "./path-safety.js";
 
@@ -73,6 +75,14 @@ export const ExportPathlightInputSchema = z.object({
   traceName: z.string().min(1).optional(),
 });
 
+export const ExportHaloInputSchema = z.object({
+  path: z.string().min(1),
+  out: z.string().min(1),
+  projectId: z.string().min(1).optional(),
+  serviceName: z.string().min(1).optional(),
+  traceName: z.string().min(1).optional(),
+});
+
 export type AppendInput = z.infer<typeof AppendInputSchema>;
 export type ReplayInput = z.infer<typeof ReplayInputSchema>;
 export type TimelineInput = z.infer<typeof TimelineInputSchema>;
@@ -81,6 +91,7 @@ export type HandoffInput = z.infer<typeof HandoffInputSchema>;
 export type MailboxInput = z.infer<typeof MailboxInputSchema>;
 export type RunBuiltInInput = z.infer<typeof RunBuiltInInputSchema>;
 export type ExportPathlightInput = z.infer<typeof ExportPathlightInputSchema>;
+export type ExportHaloInput = z.infer<typeof ExportHaloInputSchema>;
 
 export async function appendEvent(config: ServerConfig, input: AppendInput): Promise<CallToolResult> {
   const path = resolveLogPath(config, input.path);
@@ -166,6 +177,25 @@ export async function exportPathlight(config: ServerConfig, input: ExportPathlig
     baseUrl: input.baseUrl,
     traceName: input.traceName,
   }) });
+}
+
+export async function exportHalo(config: ServerConfig, input: ExportHaloInput): Promise<CallToolResult> {
+  const runtime = createRuntime(resolveLogPath(config, input.path));
+  const outputPath = resolveLogPath(config, input.out);
+  const events = await runtime.readAll();
+  const result = await runtime.exportHalo({
+    projectId: input.projectId,
+    serviceName: input.serviceName,
+    traceName: input.traceName,
+  });
+  await writeFile(outputPath, formatHaloJsonl(result) + "\n", "utf8");
+
+  return toolResult({
+    outputPath,
+    traceId: result.traceId,
+    eventCount: events.length,
+    spanCount: result.spanCount,
+  });
 }
 
 function compactReplay(replay: RuntimeReplay): Record<string, unknown> {

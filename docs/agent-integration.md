@@ -134,6 +134,7 @@ MVP tools:
 - `eventloom_summarize_handoff`
 - `eventloom_run_builtin`
 - `eventloom_export_pathlight`
+- `eventloom_export_halo`
 
 ## Pathlight Export
 
@@ -146,3 +147,19 @@ npm run eventloom -- export pathlight .eventloom/agent-work.jsonl \
 ```
 
 Pathlight export is optional. Eventloom remains useful as a local JSONL event log without it.
+
+## HALO Export
+
+MCP clients can also export a local agent log to HALO-compatible OpenTelemetry JSONL:
+
+```json
+{
+  "path": ".eventloom/agent-work.jsonl",
+  "out": ".eventloom/agent-work-halo.jsonl",
+  "projectId": "eventloom-agent-work",
+  "serviceName": "eventloom",
+  "traceName": "eventloom-agent-work"
+}
+```
+
+The `eventloom_export_halo` tool writes the trace file inside the configured MCP root and returns the trace id, event count, and span count.

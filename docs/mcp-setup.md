@@ -45,6 +45,7 @@ Restart Codex after changing MCP configuration. The available tools should inclu
 - `eventloom_summarize_handoff`
 - `eventloom_run_builtin`
 - `eventloom_export_pathlight`
+- `eventloom_export_halo`
 
 ## Claude Desktop
 
@@ -98,3 +99,10 @@ In the inspector, call:
 3. `eventloom_explain_task` for `task_inspector_smoke`; the task should be projected from the appended event.
 
 Pathlight export is optional. Use `eventloom_export_pathlight` only when a Pathlight collector is running and reachable from the MCP server process.
+
+HALO export writes a local JSONL trace file:
+
+1. `eventloom_run_builtin` with `path` set to `.eventloom/halo-smoke.jsonl` and `workflow` set to `software-work`.
+2. `eventloom_export_halo` with `path` set to `.eventloom/halo-smoke.jsonl`, `out` set to `.eventloom/halo-smoke-trace.jsonl`, and optional `projectId`, `serviceName`, or `traceName`.
+
+Both paths are resolved inside the configured MCP root.

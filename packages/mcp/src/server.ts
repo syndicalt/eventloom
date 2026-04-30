@@ -4,6 +4,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import {
   AppendInputSchema,
   ExplainTaskInputSchema,
+  ExportHaloInputSchema,
   ExportPathlightInputSchema,
   HandoffInputSchema,
   MailboxInputSchema,
@@ -12,6 +13,7 @@ import {
   TimelineInputSchema,
   appendEvent,
   explainTask,
+  exportHalo,
   exportPathlight,
   handoff,
   mailbox,
@@ -25,7 +27,7 @@ export function createEventloomMcpServer(options: { root?: string | null } = {})
   const config = createServerConfig(options);
   const server = new McpServer({
     name: "eventloom",
-    version: "0.1.1",
+    version: "0.1.4",
   });
 
   server.registerTool(
@@ -106,6 +108,16 @@ export function createEventloomMcpServer(options: { root?: string | null } = {})
       inputSchema: ExportPathlightInputSchema.shape,
     },
     (input) => exportPathlight(config, ExportPathlightInputSchema.parse(input)),
+  );
+
+  server.registerTool(
+    "eventloom_export_halo",
+    {
+      title: "Export Eventloom Log To HALO",
+      description: "Export a local Eventloom JSONL log to a HALO-compatible OpenTelemetry JSONL trace file.",
+      inputSchema: ExportHaloInputSchema.shape,
+    },
+    (input) => exportHalo(config, ExportHaloInputSchema.parse(input)),
   );
 
   return server;

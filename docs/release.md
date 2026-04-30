@@ -1,6 +1,6 @@
 # Release Checklist
 
-Eventloom runtime publishes as `@eventloom/runtime`.
+Eventloom runtime publishes as `@eventloom/runtime`. The MCP server publishes separately from `packages/mcp` as `@eventloom/mcp`.
 
 ## Preflight
 
@@ -47,9 +47,20 @@ npm publish
 git push origin master --tags
 ```
 
+For MCP package releases:
+
+```bash
+cd packages/mcp
+npm test
+npm run build
+npm pack --dry-run
+npm publish --access public
+```
+
 ## Notes
 
 - `prepack` runs tests and build before packing or publishing.
 - `@eventloom/runtime` is ESM-only.
+- `@eventloom/mcp` is ESM-only and depends on a published `@eventloom/runtime` version.
 - Node.js `>=20` is required.
 - Do not publish from a dirty worktree.
