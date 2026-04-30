@@ -34,8 +34,53 @@ Eventloom maps runtime history to Pathlight like this:
 | Goal, decision, verification, release, and risk facts | Journal fact spans |
 | Integrity and projection data | Trace metadata |
 | Git/package provenance | Native trace fields and metadata |
+| Capture, Replay, and Handoff visualizer model | Trace output under `visualizer` |
+| Visualizer display contract | Trace metadata under `visualizer` |
 
 For external agent journals that do not contain `actor.started` / `actor.completed` runtime turns, Eventloom exports projected task lifecycles as Pathlight agent spans. Eventloom also exports high-signal journal facts as first-class spans so goals, decisions, verification, release notes, and risks remain visible even when they are not part of a task history.
+
+## Visualizer Contract
+
+Every Pathlight export includes a trace-level display contract for the Eventloom visualizer:
+
+```json
+{
+  "version": "eventloom.pathlight.visualizer.v1",
+  "outputPath": "visualizer",
+  "panels": [
+    { "id": "capture", "title": "Capture", "outputPath": "visualizer.capture" },
+    { "id": "replay", "title": "Replay", "outputPath": "visualizer.replay" },
+    { "id": "handoff", "title": "Handoff", "outputPath": "visualizer.handoff" }
+  ]
+}
+```
+
+Pathlight can render those panels from the final trace output without reading or mutating the source JSONL log:
+
+- `visualizer.capture` contains ordered captured facts, event type counts, actor ids, thread ids, causality links, and hash-chain links.
+- `visualizer.replay` contains integrity status, projection state, projection errors, and a projection hash.
+- `visualizer.handoff` contains goals, active/completed tasks, model/tool/reasoning telemetry, verification evidence, observability gaps, and next actions.
+
+This is intentionally trace-level data. Existing Pathlight spans still show actor turns, model calls, tool calls, task lifecycles, and journal facts. The visualizer contract gives a Pathlight UI a deterministic product affordance over the same exported trace.
+
+## Visualizer Smoke Flow
+
+Generate one local workflow, inspect the same model locally, then export it to Pathlight:
+
+```bash
+npm run eventloom -- run software-work /tmp/eventloom-pathlight-viz.jsonl
+npm run eventloom -- visualize /tmp/eventloom-pathlight-viz.jsonl
+npm run eventloom -- export pathlight /tmp/eventloom-pathlight-viz.jsonl \
+  --base-url http://localhost:4100 \
+  --trace-name eventloom-pathlight-viz
+```
+
+Expected result:
+
+- The local `visualize` command prints top-level `capture`, `replay`, and `handoff` keys.
+- The Pathlight trace metadata includes `visualizer.version: "eventloom.pathlight.visualizer.v1"`.
+- The final Pathlight trace output includes `visualizer.capture`, `visualizer.replay`, and `visualizer.handoff`.
+- The Eventloom JSONL file is unchanged by both commands.
 
 ## Trace Metadata
 
@@ -48,6 +93,7 @@ Eventloom trace metadata includes:
 - `runtime.name`
 - `runtime.version`
 - `threadIds`
+- `visualizer`
 
 When git metadata is available, Eventloom also sends:
 

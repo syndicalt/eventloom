@@ -5,6 +5,7 @@ import { projectionHash } from "../projection.js";
 import { collectRuntimeProvenance, type RuntimeProvenance } from "../provenance.js";
 import { projectResearch } from "../research-projection.js";
 import { projectTasks, type TaskState } from "../task-projection.js";
+import { buildVisualizerModel, type VisualizerModel } from "../visualizer.js";
 
 export interface PathlightExportOptions {
   baseUrl: string;
@@ -18,6 +19,19 @@ export interface PathlightExportResult {
   traceId: string;
   spanCount: number;
   eventCount: number;
+}
+
+export interface PathlightVisualizerContract {
+  version: "eventloom.pathlight.visualizer.v1";
+  outputPath: "visualizer";
+  panels: PathlightVisualizerPanel[];
+}
+
+export interface PathlightVisualizerPanel {
+  id: "capture" | "replay" | "handoff";
+  title: string;
+  outputPath: `visualizer.${"capture" | "replay" | "handoff"}`;
+  summary: string;
 }
 
 interface JsonResponse {
@@ -35,6 +49,8 @@ export async function exportToPathlight(
   const integrity = verifyEventChain(events);
   const research = projectResearch(events);
   const tasks = projectTasks(events);
+  const visualizer = buildVisualizerModel(events);
+  const visualizerContract = buildPathlightVisualizerContract(visualizer);
   const trace = await post<JsonResponse>(fetcher, `${baseUrl}/v1/traces`, {
     name: options.traceName ?? "eventloom-runtime",
     input: { eventCount: events.length },
@@ -48,6 +64,7 @@ export async function exportToPathlight(
         version: provenance.packageVersion,
       },
       threadIds: [...new Set(events.map((event) => event.threadId))],
+      visualizer: visualizerContract,
     },
     tags: ["eventloom"],
     gitCommit: provenance.gitCommit ?? undefined,
@@ -124,11 +141,45 @@ export async function exportToPathlight(
 
   await patch(fetcher, `${baseUrl}/v1/traces/${trace.id}`, {
     status: integrity.ok ? "completed" : "failed",
-    output: { spanCount, eventCount: pathlightEventCount },
+    output: {
+      spanCount,
+      eventCount: pathlightEventCount,
+      visualizer,
+    },
     error: integrity.ok ? undefined : "Eventloom integrity verification failed",
   });
 
   return { traceId: trace.id, spanCount, eventCount: pathlightEventCount };
+}
+
+export function buildPathlightVisualizerContract(model: VisualizerModel): PathlightVisualizerContract {
+  const activeTasks = model.handoff.tasks.active.length;
+  const completedTasks = model.handoff.tasks.completed.length;
+  const gapCount = model.handoff.observabilityGaps.length;
+  return {
+    version: "eventloom.pathlight.visualizer.v1",
+    outputPath: "visualizer",
+    panels: [
+      {
+        id: "capture",
+        title: "Capture",
+        outputPath: "visualizer.capture",
+        summary: `${model.capture.eventCount} captured event${model.capture.eventCount === 1 ? "" : "s"} across ${Object.keys(model.capture.eventTypes).length} event type${Object.keys(model.capture.eventTypes).length === 1 ? "" : "s"}.`,
+      },
+      {
+        id: "replay",
+        title: "Replay",
+        outputPath: "visualizer.replay",
+        summary: model.replay.integrity.ok ? "Replay rebuilt projections with a valid hash chain." : "Replay found integrity errors that need inspection.",
+      },
+      {
+        id: "handoff",
+        title: "Handoff",
+        outputPath: "visualizer.handoff",
+        summary: `${activeTasks} active task${activeTasks === 1 ? "" : "s"}, ${completedTasks} completed task${completedTasks === 1 ? "" : "s"}, and ${gapCount} observability gap${gapCount === 1 ? "" : "s"}.`,
+      },
+    ],
+  };
 }
 
 async function exportTelemetrySpans(

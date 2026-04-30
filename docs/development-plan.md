@@ -284,12 +284,16 @@ Status: active.
 
 Goal: turn the visualizer model into a Pathlight-facing product surface so Eventloom runs are easier to inspect than generic trace/span lists.
 
-Deliverables:
+Delivered:
 
 - Define the Pathlight display contract for `VisualizerModel.capture`, `VisualizerModel.replay`, and `VisualizerModel.handoff`.
 - Map Eventloom Pathlight exports to Capture, Replay, and Handoff panels without mutating the source JSONL log.
 - Add a documented smoke flow from `eventloom_visualize` to Pathlight inspection.
 - Write a decision note covering whether the UI remains a Pathlight affordance, a standalone Eventloom app, or both.
+
+Remaining:
+
+- Implement the corresponding Pathlight dashboard affordance that detects `eventloom.pathlight.visualizer.v1` and renders the trace output panels.
 
 Verification: one exported Eventloom workflow can be opened in Pathlight and inspected through Capture, Replay, and Handoff views with integrity status, projected task state, telemetry, observability gaps, and next actions visible.
 

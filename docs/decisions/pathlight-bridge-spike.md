@@ -15,6 +15,32 @@ The current Pathlight trace/span/event schema is sufficient for the first bridge
 
 No Pathlight database schema extension is required for this slice.
 
+## Visualizer Affordance Update
+
+Date: 2026-04-30
+
+Eventloom now exports a versioned trace-level visualizer contract in Pathlight trace metadata:
+
+```json
+{
+  "version": "eventloom.pathlight.visualizer.v1",
+  "outputPath": "visualizer",
+  "panels": [
+    { "id": "capture", "title": "Capture", "outputPath": "visualizer.capture" },
+    { "id": "replay", "title": "Replay", "outputPath": "visualizer.replay" },
+    { "id": "handoff", "title": "Handoff", "outputPath": "visualizer.handoff" }
+  ]
+}
+```
+
+The final Pathlight trace output carries the same `VisualizerModel` produced by the runtime API, CLI, MCP tool, and browser visualizer. Pathlight can render Capture, Replay, and Handoff panels from `output.visualizer` while keeping the underlying trace/span/event export unchanged.
+
+This keeps the current boundary:
+
+- Eventloom owns event-sourced runtime semantics, replay, handoff summaries, and the visualizer model.
+- Pathlight owns trace ingestion and visual inspection.
+- The bridge remains an adapter contract rather than a Pathlight schema migration.
+
 ## Verification
 
 Generated a deterministic software-work run and exported it to the local Pathlight collector at `http://localhost:4100`.
@@ -51,5 +77,5 @@ The bridge should stay as an adapter in Eventloom while the runtime semantics ev
 
 - Add project/git provenance to exported traces when Eventloom has a stable package or run context.
 - Consider parent span links if Eventloom grows nested actor turns or parallel actor branches.
-- Add a dashboard affordance in Pathlight later only if generic trace/span/event views are not enough to explain Eventloom runs.
+- Add a dashboard affordance in Pathlight that detects `metadata.visualizer.version` and renders `output.visualizer.capture`, `output.visualizer.replay`, and `output.visualizer.handoff`.
 - Choose the next runtime milestone from the updated development roadmap candidates.

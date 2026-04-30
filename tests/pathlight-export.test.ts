@@ -50,9 +50,24 @@ describe("Pathlight export", () => {
     expect(typeof traceCreate.metadata.projectionHash).toBe("string");
     expect(traceCreate.metadata.projectionKinds).toEqual(["tasks"]);
     expect(traceCreate.metadata.runtime).toEqual({ name: "eventloom", version: "0.1.0" });
+    expect(traceCreate.metadata.visualizer).toMatchObject({
+      version: "eventloom.pathlight.visualizer.v1",
+      outputPath: "visualizer",
+      panels: [
+        { id: "capture", title: "Capture", outputPath: "visualizer.capture" },
+        { id: "replay", title: "Replay", outputPath: "visualizer.replay" },
+        { id: "handoff", title: "Handoff", outputPath: "visualizer.handoff" },
+      ],
+    });
     expect(traceCreate.gitCommit).toBe("abc123");
     expect(traceCreate.gitBranch).toBe("main");
     expect(traceCreate.gitDirty).toBe(true);
+
+    const tracePatch = calls.find((call) => call.url === "http://pathlight.test/v1/traces/trace_1");
+    const traceOutput = JSON.parse(String(tracePatch?.init.body)).output;
+    expect(traceOutput.visualizer.capture.eventCount).toBe(events.length);
+    expect(traceOutput.visualizer.replay.integrity.ok).toBe(true);
+    expect(traceOutput.visualizer.handoff.telemetry.models).toHaveLength(5);
 
     const spanPatches = calls.filter((call) => (
       call.init.method === "PATCH" &&
@@ -101,6 +116,23 @@ describe("Pathlight export", () => {
 
     expect(result).toMatchObject({ traceId: "trace_tasks", spanCount: 7, eventCount: 12 });
     expect(calls.filter((call) => call.url === "http://pathlight.test/v1/spans")).toHaveLength(7);
+
+    const traceCreate = JSON.parse(String(calls[0].init.body));
+    expect(traceCreate.metadata.visualizer.panels.map((panel: { id: string }) => panel.id)).toEqual([
+      "capture",
+      "replay",
+      "handoff",
+    ]);
+
+    const tracePatch = calls.find((call) => call.url === "http://pathlight.test/v1/traces/trace_tasks");
+    const visualizer = JSON.parse(String(tracePatch?.init.body)).output.visualizer;
+    expect(visualizer.capture.events[0]).toMatchObject({
+      id: "evt_goal",
+      type: "goal.created",
+      summary: "Ship agent journal spans",
+    });
+    expect(visualizer.replay.projection.tasks.tasks.task_docs.status).toBe("claimed");
+    expect(visualizer.handoff.tasks.active).toMatchObject([{ id: "task_docs", status: "claimed" }]);
 
     const spanCreates = calls
       .filter((call) => call.url === "http://pathlight.test/v1/spans")
