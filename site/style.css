@@ -85,6 +85,12 @@ a {
   background: var(--ink);
   padding: 9px 13px;
   border-radius: 6px;
+  cursor: pointer;
+}
+
+.nav-cta:hover,
+.nav-cta:focus-visible {
+  background: #253149;
 }
 
 .hero {
@@ -200,6 +206,8 @@ h3 {
   padding: 12px 18px;
   border-radius: 6px;
   font-weight: 800;
+  cursor: pointer;
+  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
 }
 
 .btn-primary {
@@ -207,10 +215,25 @@ h3 {
   background: var(--ink);
 }
 
+.btn-primary:hover,
+.btn-primary:focus-visible {
+  background: #253149;
+  box-shadow: 0 10px 22px rgba(22, 34, 51, 0.14);
+}
+
 .btn-secondary {
   color: var(--ink);
   background: #fff;
   border: 1px solid var(--line);
+}
+
+.btn-secondary:hover,
+.btn-secondary:focus-visible,
+.file-button:hover,
+.file-button:focus-within {
+  border-color: #aebdd0;
+  background: #f4f8fc;
+  box-shadow: 0 10px 22px rgba(22, 34, 51, 0.08);
 }
 
 .proof-strip {
@@ -283,6 +306,7 @@ h3 {
   background: #fff;
   font-weight: 800;
   cursor: pointer;
+  transition: background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
 }
 
 .file-button input {
@@ -341,12 +365,26 @@ h3 {
   font: inherit;
   font-weight: 800;
   cursor: pointer;
+  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease;
 }
 
 .demo-tab.is-active {
   color: #fff;
   background: var(--ink);
   border-color: var(--ink);
+}
+
+.demo-tab:hover,
+.demo-tab:focus-visible {
+  border-color: #aebdd0;
+  background: #f4f8fc;
+}
+
+.demo-tab.is-active:hover,
+.demo-tab.is-active:focus-visible {
+  color: #fff;
+  background: #253149;
+  border-color: #253149;
 }
 
 .demo-shell {
