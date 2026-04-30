@@ -1,6 +1,6 @@
 {
   "name": "@eventloom/mcp",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "type": "module",
   "description": "MCP server for Eventloom local event logs",
   "main": "./dist/index.js",
@@ -47,7 +47,7 @@
   "author": "Nicholas Blanchard <syndicalt@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@eventloom/runtime": "^0.1.6",
+    "@eventloom/runtime": "^0.1.7",
     "@modelcontextprotocol/sdk": "^1.29.0",
     "zod": "^3.24.1"
   },

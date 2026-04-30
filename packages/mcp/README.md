@@ -15,7 +15,7 @@ npm run build:mcp
 node packages/mcp/dist/cli.js --root .
 ```
 
-The server exposes tools for appending sealed events, replaying logs, viewing timelines, explaining task state, running built-in workflows, and exporting logs to Pathlight or HALO-compatible JSONL traces.
+The server exposes tools for appending sealed events, replaying logs, viewing timelines, explaining task state, building visualizer output, running built-in workflows, and exporting logs to Pathlight or HALO-compatible JSONL traces.
 
 By default, log paths are restricted to the configured root directory. Use `--root <dir>` or `EVENTLOOM_MCP_ROOT` to choose the allowed workspace root.
 
@@ -29,6 +29,7 @@ Tools:
 - `eventloom_explain_task`
 - `eventloom_mailbox`
 - `eventloom_summarize_handoff`
+- `eventloom_visualize`
 - `eventloom_run_builtin`
 - `eventloom_export_pathlight`
 - `eventloom_export_halo`

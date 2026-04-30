@@ -9,7 +9,7 @@ import type { JSONRPCMessage } from "@modelcontextprotocol/sdk/types.js";
 import { describe, expect, it, vi } from "vitest";
 import { createServerConfig, resolveLogPath } from "../src/path-safety.js";
 import { createEventloomMcpServer } from "../src/server.js";
-import { appendEvent, explainTask, exportHalo, exportPathlight, handoff, mailbox, replayLog, runBuiltIn, timeline } from "../src/tools.js";
+import { appendEvent, explainTask, exportHalo, exportPathlight, handoff, mailbox, replayLog, runBuiltIn, timeline, visualize } from "../src/tools.js";
 
 describe("Eventloom MCP tools", () => {
   it("appends and replays a local event log", async () => {
@@ -112,6 +112,39 @@ describe("Eventloom MCP tools", () => {
     expect(result.structuredContent?.goals).toMatchObject([{ title: "Summarize work" }]);
     expect(result.structuredContent?.tasks).toMatchObject({
       active: [{ id: "task_handoff", status: "proposed" }],
+    });
+  });
+
+  it("builds visualizer output", async () => {
+    const root = await tempRoot();
+    const config = createServerConfig({ root });
+    await runBuiltIn(config, {
+      path: "visualizer.jsonl",
+      workflow: "software-work",
+      resume: false,
+    });
+
+    const result = await visualize(config, { path: "visualizer.jsonl" });
+
+    expect(result.structuredContent?.capture).toMatchObject({
+      eventCount: expect.any(Number),
+      eventTypes: { "goal.created": 1 },
+    });
+    expect(result.structuredContent?.replay).toMatchObject({
+      integrity: { ok: true, errors: [] },
+      projection: {
+        tasks: {
+          tasks: {
+            task_actor_runtime: { status: "approved" },
+          },
+        },
+      },
+    });
+    expect(result.structuredContent?.handoff).toMatchObject({
+      tasks: {
+        completed: [{ id: "task_actor_runtime", status: "approved" }],
+      },
+      observabilityGaps: [],
     });
   });
 
@@ -238,6 +271,16 @@ describe("Eventloom MCP tools", () => {
       expect(replay.structuredContent).toMatchObject({
         eventCount: 1,
         integrity: { ok: true, errors: [] },
+      });
+
+      const visualizer = await client.callTool({
+        name: "eventloom_visualize",
+        arguments: {
+          path: "stdio.jsonl",
+        },
+      });
+      expect(visualizer.structuredContent?.capture).toMatchObject({
+        eventCount: 1,
       });
     } finally {
       await client.close();

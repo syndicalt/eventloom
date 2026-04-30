@@ -54,6 +54,10 @@ export const HandoffInputSchema = z.object({
   path: z.string().min(1),
 });
 
+export const VisualizeInputSchema = z.object({
+  path: z.string().min(1),
+});
+
 export const BuiltInWorkflowSchema = z.enum(["software-work", "research-pipeline", "human-ops"]);
 
 export const MailboxInputSchema = z.object({
@@ -88,6 +92,7 @@ export type ReplayInput = z.infer<typeof ReplayInputSchema>;
 export type TimelineInput = z.infer<typeof TimelineInputSchema>;
 export type ExplainTaskInput = z.infer<typeof ExplainTaskInputSchema>;
 export type HandoffInput = z.infer<typeof HandoffInputSchema>;
+export type VisualizeInput = z.infer<typeof VisualizeInputSchema>;
 export type MailboxInput = z.infer<typeof MailboxInputSchema>;
 export type RunBuiltInInput = z.infer<typeof RunBuiltInInputSchema>;
 export type ExportPathlightInput = z.infer<typeof ExportPathlightInputSchema>;
@@ -145,6 +150,11 @@ export async function handoff(config: ServerConfig, input: HandoffInput): Promis
     text: formatHandoffForMcp(summary),
     ...summary,
   });
+}
+
+export async function visualize(config: ServerConfig, input: VisualizeInput): Promise<CallToolResult> {
+  const model = await createRuntime(resolveLogPath(config, input.path)).visualize();
+  return toolResult({ ...model });
 }
 
 export async function mailbox(config: ServerConfig, input: MailboxInput): Promise<CallToolResult> {

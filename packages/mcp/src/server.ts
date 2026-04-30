@@ -11,6 +11,7 @@ import {
   ReplayInputSchema,
   RunBuiltInInputSchema,
   TimelineInputSchema,
+  VisualizeInputSchema,
   appendEvent,
   explainTask,
   exportHalo,
@@ -20,6 +21,7 @@ import {
   replayLog,
   runBuiltIn,
   timeline,
+  visualize,
 } from "./tools.js";
 import { createServerConfig } from "./path-safety.js";
 
@@ -88,6 +90,16 @@ export function createEventloomMcpServer(options: { root?: string | null } = {})
       inputSchema: HandoffInputSchema.shape,
     },
     (input) => handoff(config, HandoffInputSchema.parse(input)),
+  );
+
+  server.registerTool(
+    "eventloom_visualize",
+    {
+      title: "Build Eventloom Visualizer Model",
+      description: "Build Capture, Replay, and Handoff visualizer output from a local Eventloom JSONL log.",
+      inputSchema: VisualizeInputSchema.shape,
+    },
+    (input) => visualize(config, VisualizeInputSchema.parse(input)),
   );
 
   server.registerTool(

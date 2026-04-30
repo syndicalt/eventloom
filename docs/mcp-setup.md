@@ -43,6 +43,7 @@ Restart Codex after changing MCP configuration. The available tools should inclu
 - `eventloom_explain_task`
 - `eventloom_mailbox`
 - `eventloom_summarize_handoff`
+- `eventloom_visualize`
 - `eventloom_run_builtin`
 - `eventloom_export_pathlight`
 - `eventloom_export_halo`

@@ -260,6 +260,48 @@ Output includes text for humans and structured content for agents:
 }
 ```
 
+### `eventloom_visualize`
+
+Build the structured Capture, Replay, and Handoff model used by Eventloom visualizer UIs.
+
+Input:
+
+```json
+{
+  "path": ".eventloom/agent-work.jsonl"
+}
+```
+
+Output:
+
+```json
+{
+  "capture": {
+    "eventCount": 12,
+    "eventTypes": {},
+    "events": []
+  },
+  "replay": {
+    "eventCount": 12,
+    "integrity": {
+      "ok": true,
+      "errors": []
+    },
+    "projection": {},
+    "projectionHash": "..."
+  },
+  "handoff": {
+    "eventCount": 12,
+    "tasks": {
+      "active": [],
+      "completed": []
+    },
+    "observabilityGaps": [],
+    "nextActions": []
+  }
+}
+```
+
 ### `eventloom_run_builtin`
 
 Run or resume one built-in deterministic workflow.
