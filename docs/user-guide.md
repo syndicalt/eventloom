@@ -183,6 +183,15 @@ HALO can analyze the exported trace file when its CLI and model credentials are 
 
 Built-in workflows emit deterministic model, tool, and reasoning-summary telemetry so exported traces include LLM, tool, and chain spans. Real agent integrations should fill the same event fields from their model and tool calls.
 
+For real agent journals, include:
+
+- `model.started` / `model.completed` with provider, model name, request id, token counts, latency, cost, prompt summary, and output summary when available.
+- `tool.started` / `tool.completed` with tool name, call id, redacted input, summarized output, error, and latency.
+- `reasoning.summary` with safe rationale summaries, evidence event ids, alternatives considered, and confidence.
+- `verification.completed` with the command, checks, assertions, and evidence event ids behind the verification claim.
+
+The `handoff` command reports missing model, tool, reasoning, or verification evidence as observability gaps before you export a trace for debugging.
+
 ## Use the Package API
 
 ```ts

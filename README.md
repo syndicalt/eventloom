@@ -62,7 +62,7 @@ npx eventloom export halo .eventloom/agent-work.jsonl \
 
 - Appends sealed events to a JSONL event log.
 - Verifies a tamper-evident hash chain.
-- Summarizes handoffs from goals, tasks, decisions, and verification events.
+- Summarizes handoffs from goals, tasks, decisions, verification events, model/tool telemetry, reasoning summaries, and observability gaps.
 - Provides starter templates for coding, review, release, and research tasks.
 - Runs deterministic actor workflows.
 - Validates actor intentions before accepting state changes.

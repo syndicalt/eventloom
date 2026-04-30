@@ -65,6 +65,44 @@ npm run eventloom -- explain task task_agent_skill .eventloom/agent-work.jsonl
 
 The replay output includes integrity status, event counts, projections, and projection hash.
 
+## Observability Evidence
+
+For logs that will be exported to HALO or Pathlight, add observability events around real model and tool work. Lifecycle events prove that a task moved forward; telemetry events explain how and why.
+
+Recommended event sequence for one agent step:
+
+```bash
+npm run eventloom -- append .eventloom/agent-work.jsonl model.started \
+  --actor codex \
+  --payload '{"modelCallId":"model_1","modelProvider":"openai","modelName":"gpt-5.5","inputMessages":[{"role":"user","content":"Summarize the relevant code paths"}]}'
+
+npm run eventloom -- append .eventloom/agent-work.jsonl tool.started \
+  --actor codex \
+  --payload '{"toolCallId":"tool_1","toolName":"shell","input":{"cmd":"rg -n \"handoff\" src tests docs"}}'
+
+npm run eventloom -- append .eventloom/agent-work.jsonl tool.completed \
+  --actor codex \
+  --payload '{"toolCallId":"tool_1","toolName":"shell","output":{"summary":"Found runtime, test, and docs references"},"latencyMs":120}'
+
+npm run eventloom -- append .eventloom/agent-work.jsonl reasoning.summary \
+  --actor codex \
+  --payload '{"summary":"The handoff summary needs telemetry evidence because HALO can already validate the trace but cannot infer model or tool behavior without spans.","evidenceEventIds":["tool_1"],"confidence":0.84}'
+
+npm run eventloom -- append .eventloom/agent-work.jsonl model.completed \
+  --actor codex \
+  --payload '{"modelCallId":"model_1","modelProvider":"openai","modelName":"gpt-5.5","outputText":"Add telemetry-aware handoff summaries.","inputTokens":320,"outputTokens":80,"totalTokens":400,"latencyMs":900}'
+```
+
+Verification events should include the command or checks that support the claim:
+
+```bash
+npm run eventloom -- append .eventloom/agent-work.jsonl verification.completed \
+  --actor codex \
+  --payload '{"summary":"Handoff telemetry tests passed","command":"npm test -- tests/handoff.test.ts","checks":["model telemetry summarized","tool telemetry summarized","reasoning evidence summarized"],"evidenceEventIds":["tool_1"]}'
+```
+
+Do not include secrets, private prompts, hidden chain-of-thought, or unredacted user data. Use summaries, redacted inputs, event ids, and command names.
+
 ## Handoff Summary
 
 Use a handoff summary before pausing, switching agents, or asking for review:
@@ -73,7 +111,7 @@ Use a handoff summary before pausing, switching agents, or asking for review:
 npm run eventloom -- handoff .eventloom/agent-work.jsonl
 ```
 
-The summary reports goals, active tasks, completed tasks, recorded decisions, verification events, and deterministic next actions.
+The summary reports goals, active tasks, completed tasks, projection errors, recorded decisions, verification events, releases, risks, model/tool telemetry, reasoning summaries, observability gaps, and deterministic next actions.
 
 ## Dogfood Templates
 

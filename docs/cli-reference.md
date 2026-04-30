@@ -162,7 +162,7 @@ npm run eventloom -- mailbox worker /tmp/eventloom-software.jsonl
 
 ## `handoff`
 
-Summarize goals, tasks, projection errors, decisions, verification, releases, risks, recent facts, event type counts, and next actions from an Eventloom log.
+Summarize goals, tasks, projection errors, decisions, verification, releases, risks, recent facts, model/tool telemetry, reasoning summaries, observability gaps, event type counts, and next actions from an Eventloom log.
 
 ```bash
 npm run eventloom -- handoff <events.jsonl>

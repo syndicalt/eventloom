@@ -261,7 +261,7 @@ Deliverables:
 
 - Canonical `.eventloom/agent-work.jsonl` dogfood trace generated through documented CLI or MCP paths.
 - HALO JSONL export and Pathlight export examples from the same trace.
-- Richer handoff summaries over `.eventloom/agent-work.jsonl`.
+- Richer handoff summaries over `.eventloom/agent-work.jsonl`, including model/tool telemetry, reasoning summaries, verification evidence, and observability gaps.
 - Documentation that explains what HALO and Pathlight each show well for the same Eventloom journal.
 
 Verification: one real dogfood trace can be replayed, summarized, exported to HALO, and exported to Pathlight without integrity errors.

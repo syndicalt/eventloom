@@ -18,6 +18,8 @@ export interface HandoffSummary {
   releases: HandoffFact[];
   risks: HandoffFact[];
   recentFacts: HandoffFact[];
+  telemetry: HandoffTelemetry;
+  observabilityGaps: string[];
   nextActions: string[];
 }
 
@@ -50,6 +52,42 @@ export interface HandoffProjectionError {
   message: string;
 }
 
+export interface HandoffTelemetry {
+  models: HandoffModelCall[];
+  tools: HandoffToolCall[];
+  reasoning: HandoffReasoningSummary[];
+}
+
+export interface HandoffModelCall {
+  callId: string;
+  actorId: string;
+  provider: string;
+  modelName: string;
+  status: "completed" | "failed" | "missing";
+  inputTokens?: number;
+  outputTokens?: number;
+  totalTokens?: number;
+  cost?: number;
+  latencyMs?: number;
+}
+
+export interface HandoffToolCall {
+  callId: string;
+  actorId: string;
+  toolName: string;
+  status: "completed" | "failed" | "missing";
+  latencyMs?: number;
+  error?: string;
+}
+
+export interface HandoffReasoningSummary {
+  id: string;
+  actorId: string;
+  summary: string;
+  confidence?: number;
+  evidenceEventIds: string[];
+}
+
 const completedStatuses = new Set<TaskState["status"]>(["completed", "approved"]);
 
 export function summarizeHandoff(events: readonly EventEnvelope[]): HandoffSummary {
@@ -70,6 +108,8 @@ export function summarizeHandoff(events: readonly EventEnvelope[]): HandoffSumma
   const risks = events
     .filter((event) => event.type.startsWith("risk."))
     .map(factSummary);
+  const telemetry = summarizeTelemetry(events);
+  const observabilityGaps = findObservabilityGaps(telemetry, verification);
 
   return {
     eventCount: events.length,
@@ -85,7 +125,9 @@ export function summarizeHandoff(events: readonly EventEnvelope[]): HandoffSumma
     releases,
     risks,
     recentFacts: recentFacts([...decisions, ...verification, ...releases, ...risks]),
-    nextActions: nextActions(active, integrity, taskProjection.errors),
+    telemetry,
+    observabilityGaps,
+    nextActions: nextActions(active, integrity, taskProjection.errors, observabilityGaps),
   };
 }
 
@@ -113,6 +155,14 @@ export function formatHandoffSummary(summary: HandoffSummary): string {
     section("risks", summary.risks.map(formatFact)),
     "",
     section("recent facts", summary.recentFacts.map(formatFact)),
+    "",
+    section("model telemetry", summary.telemetry.models.map(formatModelCall)),
+    "",
+    section("tool telemetry", summary.telemetry.tools.map(formatToolCall)),
+    "",
+    section("reasoning summaries", summary.telemetry.reasoning.map(formatReasoningSummary)),
+    "",
+    section("observability gaps", summary.observabilityGaps.map((gap) => `- ${gap}`)),
     "",
     section("next actions", summary.nextActions.map((action) => `- ${action}`)),
   ].join("\n");
@@ -142,18 +192,32 @@ function factsFor(events: readonly EventEnvelope[], type: string): HandoffFact[]
 }
 
 function factSummary(event: EventEnvelope): HandoffFact {
+  const baseSummary = (
+    stringPayload(event, "summary") ??
+    stringPayload(event, "decision") ??
+    stringPayload(event, "title") ??
+    JSON.stringify(event.payload)
+  );
   return {
     id: event.id,
     type: event.type,
     actorId: event.actorId,
     timestamp: event.timestamp,
-    summary: (
-      stringPayload(event, "summary") ??
-      stringPayload(event, "decision") ??
-      stringPayload(event, "title") ??
-      JSON.stringify(event.payload)
-    ),
+    summary: appendFactEvidence(baseSummary, event),
   };
+}
+
+function appendFactEvidence(summary: string, event: EventEnvelope): string {
+  const details: string[] = [];
+  const command = stringPayload(event, "command");
+  const checks = stringArrayPayload(event, "checks");
+  const assertions = stringArrayPayload(event, "assertions");
+  const evidence = stringArrayPayload(event, "evidenceEventIds");
+  if (command) details.push(`command=${command}`);
+  if (checks.length > 0) details.push(`checks=${checks.join(",")}`);
+  if (assertions.length > 0) details.push(`assertions=${assertions.join(",")}`);
+  if (evidence.length > 0) details.push(`evidence=${evidence.join(",")}`);
+  return details.length === 0 ? summary : `${summary} [${details.join("; ")}]`;
 }
 
 function recentFacts(facts: readonly HandoffFact[]): HandoffFact[] {
@@ -162,14 +226,89 @@ function recentFacts(facts: readonly HandoffFact[]): HandoffFact[] {
     .slice(-5);
 }
 
+function summarizeTelemetry(events: readonly EventEnvelope[]): HandoffTelemetry {
+  return {
+    models: events
+      .filter((event) => event.type === "model.started")
+      .map((event) => summarizeModelCall(event, events)),
+    tools: events
+      .filter((event) => event.type === "tool.started")
+      .map((event) => summarizeToolCall(event, events)),
+    reasoning: events
+      .filter((event) => event.type === "reasoning.summary")
+      .map((event) => ({
+        id: event.id,
+        actorId: event.actorId,
+        summary: stringPayload(event, "summary") ?? JSON.stringify(event.payload),
+        confidence: numberPayload(event, "confidence") ?? undefined,
+        evidenceEventIds: stringArrayPayload(event, "evidenceEventIds"),
+      })),
+  };
+}
+
+function summarizeModelCall(started: EventEnvelope, events: readonly EventEnvelope[]): HandoffModelCall {
+  const callId = stringPayload(started, "modelCallId") ?? started.id;
+  const completed = events.find((event) => (
+    (event.type === "model.completed" || event.type === "model.failed") &&
+    event.payload.modelCallId === callId
+  ));
+  return {
+    callId,
+    actorId: started.actorId,
+    provider: stringPayload(completed ?? started, "modelProvider") ?? "unknown",
+    modelName: stringPayload(completed ?? started, "modelName") ?? "unknown",
+    status: completed?.type === "model.completed" ? "completed" : completed?.type === "model.failed" ? "failed" : "missing",
+    inputTokens: numberPayload(completed, "inputTokens") ?? undefined,
+    outputTokens: numberPayload(completed, "outputTokens") ?? undefined,
+    totalTokens: numberPayload(completed, "totalTokens") ?? undefined,
+    cost: numberPayload(completed, "cost") ?? undefined,
+    latencyMs: numberPayload(completed, "latencyMs") ?? undefined,
+  };
+}
+
+function summarizeToolCall(started: EventEnvelope, events: readonly EventEnvelope[]): HandoffToolCall {
+  const callId = stringPayload(started, "toolCallId") ?? started.id;
+  const completed = events.find((event) => (
+    (event.type === "tool.completed" || event.type === "tool.failed") &&
+    event.payload.toolCallId === callId
+  ));
+  return {
+    callId,
+    actorId: started.actorId,
+    toolName: stringPayload(completed ?? started, "toolName") ?? "unknown",
+    status: completed?.type === "tool.completed" ? "completed" : completed?.type === "tool.failed" ? "failed" : "missing",
+    latencyMs: numberPayload(completed, "latencyMs") ?? undefined,
+    error: stringPayload(completed, "error") ?? undefined,
+  };
+}
+
+function findObservabilityGaps(telemetry: HandoffTelemetry, verification: readonly HandoffFact[]): string[] {
+  const gaps: string[] = [];
+  if (telemetry.models.length === 0) gaps.push("No model telemetry events recorded.");
+  if (telemetry.tools.length === 0) gaps.push("No tool telemetry events recorded.");
+  if (telemetry.reasoning.length === 0) gaps.push("No reasoning.summary events recorded.");
+  if (telemetry.models.some((call) => call.status === "missing")) gaps.push("At least one model.started event has no terminal model event.");
+  if (telemetry.tools.some((call) => call.status === "missing")) gaps.push("At least one tool.started event has no terminal tool event.");
+  if (verification.some((fact) => fact.summary.length > 0 && !verificationHasEvidence(fact))) {
+    gaps.push("Verification events should include command, checks, assertions, or evidence ids.");
+  }
+  return gaps;
+}
+
+function verificationHasEvidence(fact: HandoffFact): boolean {
+  return fact.summary.includes("command=") || fact.summary.includes("checks=") || fact.summary.includes("assertions=") || fact.summary.includes("evidence=");
+}
+
 function nextActions(
   active: readonly HandoffTask[],
   integrity: IntegrityReport,
   projectionErrors: readonly HandoffProjectionError[],
+  observabilityGaps: readonly string[],
 ): string[] {
   const actions: string[] = [];
   if (!integrity.ok) actions.push("Fix event log integrity before continuing or exporting.");
   if (projectionErrors.length > 0) actions.push("Resolve projection errors before using this log as a canonical trace.");
+  if (observabilityGaps.length > 0) actions.push("Add missing observability evidence before treating this as a debugging-ready agent trace.");
   if (active.length === 0) return actions.length > 0 ? actions : ["No active tasks remain."];
   return actions.concat(active.map((task) => {
     const label = task.title ? `${task.id}: ${task.title}` : task.id;
@@ -177,9 +316,19 @@ function nextActions(
   }));
 }
 
-function stringPayload(event: EventEnvelope, key: string): string | null {
-  const value = event.payload[key];
+function stringPayload(event: EventEnvelope | undefined, key: string): string | null {
+  const value = event?.payload[key];
   return typeof value === "string" && value.length > 0 ? value : null;
+}
+
+function numberPayload(event: EventEnvelope | undefined, key: string): number | null {
+  const value = event?.payload[key];
+  return typeof value === "number" && Number.isFinite(value) ? value : null;
+}
+
+function stringArrayPayload(event: EventEnvelope, key: string): string[] {
+  const value = event.payload[key];
+  return Array.isArray(value) ? value.filter((item): item is string => typeof item === "string") : [];
 }
 
 function section(title: string, lines: string[]): string {
@@ -197,6 +346,24 @@ function formatFact(fact: HandoffFact): string {
 
 function formatProjectionError(error: HandoffProjectionError): string {
   return `- ${error.message} (${error.type} ${error.eventId})`;
+}
+
+function formatModelCall(call: HandoffModelCall): string {
+  const tokens = call.totalTokens === undefined ? "" : ` tokens=${call.totalTokens}`;
+  const latency = call.latencyMs === undefined ? "" : ` latencyMs=${call.latencyMs}`;
+  return `- ${call.callId} ${call.provider}/${call.modelName} status=${call.status}${tokens}${latency}`;
+}
+
+function formatToolCall(call: HandoffToolCall): string {
+  const latency = call.latencyMs === undefined ? "" : ` latencyMs=${call.latencyMs}`;
+  const error = call.error ? ` error=${call.error}` : "";
+  return `- ${call.callId} ${call.toolName} status=${call.status}${latency}${error}`;
+}
+
+function formatReasoningSummary(summary: HandoffReasoningSummary): string {
+  const confidence = summary.confidence === undefined ? "" : ` confidence=${summary.confidence}`;
+  const evidence = summary.evidenceEventIds.length === 0 ? "" : ` evidence=${summary.evidenceEventIds.join(",")}`;
+  return `- ${summary.summary}${confidence}${evidence}`;
 }
 
 function formatEventTypeCounts(counts: Record<string, number>): string {
