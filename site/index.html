@@ -78,9 +78,9 @@
           another agent or human can inspect.
         </p>
         <p>
-          This runs entirely in your browser. Drop in an Eventloom JSONL log, or load the sample,
-          and the visualizer projects the same story: what was captured, what replay
-          rebuilt, and what a handoff should say next.
+          This runs entirely in your browser. Drop in an Eventloom JSONL log, paste the JSON output
+          from <code>eventloom visualize</code>, or load the sample, and the visualizer projects the same
+          story: what was captured, what replay rebuilt, and what a handoff should say next.
         </p>
       </div>
 
@@ -94,8 +94,8 @@
             <button class="btn btn-secondary" type="button" id="load-sample">Load sample</button>
             <button class="btn btn-primary" type="button" id="render-log">Visualize log</button>
           </div>
-          <textarea id="log-input" spellcheck="false" aria-label="Eventloom JSONL log input"></textarea>
-          <p class="input-status" id="log-status" role="status">Sample log loaded. Paste your own JSONL or upload a file.</p>
+          <textarea id="log-input" spellcheck="false" aria-label="Eventloom log or visualizer JSON input"></textarea>
+          <p class="input-status" id="log-status" role="status">Sample log loaded. Paste JSONL, upload a file, or paste visualize output.</p>
         </div>
 
         <div class="demo-shell visualizer-shell">
@@ -369,15 +369,61 @@ const replay = await runtime.replay();</code></pre>
 
     function renderLog() {
       try {
-        const events = parseJsonl(logInput.value);
+        const input = parseVisualizerInput(logInput.value);
+        if (input.model) {
+          renderVisualizerModel(input.model);
+          const count = input.model.capture.eventCount || input.model.replay.eventCount || 0;
+          const integrity = input.model.replay.integrity && input.model.replay.integrity.ok ? "look valid" : "need attention";
+          logStatus.textContent = `${count} event${count === 1 ? "" : "s"} loaded from visualize output. Integrity links ${integrity}.`;
+          return;
+        }
+
+        const events = input.events;
         const projection = projectLog(events);
-        logStatus.textContent = `${events.length} event${events.length === 1 ? "" : "s"} loaded. Integrity links ${projection.integrity.ok ? "look valid" : "need attention"}.`;
+        logStatus.textContent = `${events.length} event${events.length === 1 ? "" : "s"} loaded from ${input.source}. Integrity links ${projection.integrity.ok ? "look valid" : "need attention"}.`;
         renderCapture(events);
         renderReplay(events, projection);
         renderHandoff(events, projection);
       } catch (error) {
         logStatus.textContent = error.message;
       }
+    }
+
+    function parseVisualizerInput(value) {
+      const trimmed = value.trim();
+      if (!trimmed) throw new Error("Paste Eventloom JSONL or visualize JSON first.");
+
+      const parsedJson = parseJsonObject(trimmed);
+      if (parsedJson) {
+        if (isVisualizerModel(parsedJson)) return { model: parsedJson, events: [], source: "visualize JSON" };
+        if (Array.isArray(parsedJson)) return { events: parsedJson, source: "JSON array" };
+        if (parsedJson.id && parsedJson.type) return { events: [parsedJson], source: "single event JSON" };
+      }
+
+      return { events: parseJsonl(trimmed), source: "JSONL" };
+    }
+
+    function parseJsonObject(value) {
+      try {
+        return JSON.parse(value);
+      } catch {
+        const start = value.indexOf("{");
+        const end = value.lastIndexOf("}");
+        if (start === -1 || end <= start) return null;
+        try {
+          return JSON.parse(value.slice(start, end + 1));
+        } catch {
+          return null;
+        }
+      }
+    }
+
+    function isVisualizerModel(value) {
+      return value &&
+        typeof value === "object" &&
+        value.capture &&
+        value.replay &&
+        value.handoff;
     }
 
     function parseJsonl(value) {
@@ -389,6 +435,17 @@ const replay = await runtime.replay();</code></pre>
           throw new Error(`Line ${index + 1} is not valid JSON.`);
         }
       });
+    }
+
+    function renderVisualizerModel(model) {
+      const capture = model.capture || {};
+      const replay = model.replay || {};
+      const handoff = model.handoff || {};
+      const events = Array.isArray(capture.events) ? capture.events : [];
+      renderCapture(events);
+      captureCaption.textContent = `${capture.eventCount || events.length} ordered fact${(capture.eventCount || events.length) === 1 ? "" : "s"} from visualize output.`;
+      replayOutput.textContent = JSON.stringify(replay, null, 2);
+      renderHandoffSummary(handoff);
     }
 
     function projectLog(events) {
@@ -497,6 +554,27 @@ const replay = await runtime.replay();</code></pre>
       );
     }
 
+    function renderHandoffSummary(summary) {
+      const active = summary.tasks && Array.isArray(summary.tasks.active) ? summary.tasks.active : [];
+      const completed = summary.tasks && Array.isArray(summary.tasks.completed) ? summary.tasks.completed : [];
+      const telemetry = summary.telemetry || {};
+      const models = Array.isArray(telemetry.models) ? telemetry.models : [];
+      const tools = Array.isArray(telemetry.tools) ? telemetry.tools : [];
+      const verification = Array.isArray(summary.verification) ? summary.verification : [];
+      const gaps = Array.isArray(summary.observabilityGaps) ? summary.observabilityGaps : [];
+      const nextActions = Array.isArray(summary.nextActions) ? summary.nextActions : [];
+
+      handoffOutput.replaceChildren(
+        handoffRow("completed tasks", completed.length ? completed.map((task) => `${task.id} status=${task.status}`).join(", ") : "none"),
+        handoffRow("active tasks", active.length ? active.map((task) => `${task.id} status=${task.status}`).join(", ") : "none"),
+        handoffRow("model telemetry", models.length ? models.map((model) => `${model.modelName || "model"} tokens=${model.totalTokens || "unknown"}`).join(", ") : "none"),
+        handoffRow("tool telemetry", tools.length ? tools.map((tool) => `${tool.toolName || "tool"} exitCode=${tool.exitCode ?? "unknown"}`).join(", ") : "none"),
+        handoffRow("verification", verification.length ? verification.map((fact) => fact.summary || fact.type).join(", ") : "none"),
+        handoffRow("observability gaps", gaps.length ? gaps.join(" ") : "none"),
+        handoffRow("next actions", nextActions.length ? nextActions.join(" ") : "No active tasks remain.")
+      );
+    }
+
     function handoffRow(label, value) {
       const row = document.createElement("div");
       const span = document.createElement("span");
@@ -509,6 +587,7 @@ const replay = await runtime.replay();</code></pre>
 
     function eventSummary(event) {
       const payload = event.payload || {};
+      if (event.summary) return event.summary;
       if (payload.title) return payload.title;
       if (payload.summary) return payload.summary;
       if (payload.taskId) return payload.taskId;
