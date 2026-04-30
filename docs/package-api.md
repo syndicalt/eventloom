@@ -83,6 +83,30 @@ interface RuntimeReplay {
 }
 ```
 
+## Build Visualizer Views
+
+```ts
+const visualizer = await runtime.visualize();
+
+console.log(visualizer.capture.events);
+console.log(visualizer.replay.integrity.ok);
+console.log(visualizer.handoff.nextActions);
+```
+
+`runtime.visualize()` returns the structured model used by visualizer UIs:
+
+- `capture`: ordered events with compact summaries and hash-chain fields.
+- `replay`: integrity, projections, event count, and projection hash.
+- `handoff`: the same handoff summary produced by `summarizeHandoff`.
+
+For in-memory logs, use the pure helper:
+
+```ts
+import { buildVisualizerModel } from "@eventloom/runtime";
+
+const visualizer = buildVisualizerModel(events);
+```
+
 ## Submit Intentions
 
 For custom actor registries, submit intentions through the runtime facade:
@@ -184,3 +208,4 @@ The public package still exports the lower-level modules for advanced use:
 - `exportToHalo`
 - `formatHaloJsonl`
 - `exportToPathlight`
+- `buildVisualizerModel`

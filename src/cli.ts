@@ -15,6 +15,7 @@ import { runSoftwareWorkDemo } from "./demo.js";
 import { createRuntime } from "./runtime.js";
 import { runHumanOpsRuntime, runResearchPipelineRuntime, runSoftwareWorkRuntime } from "./runners.js";
 import { formatAgentWorkflowTemplate, formatAgentWorkflowTemplates, getAgentWorkflowTemplate } from "./templates.js";
+import { buildVisualizerModel } from "./visualizer.js";
 
 async function main(argv: string[]): Promise<void> {
   const [command, path, extra, rest] = argv;
@@ -120,6 +121,12 @@ async function main(argv: string[]): Promise<void> {
     return;
   }
 
+  if (command === "visualize" && path) {
+    const store = new JsonlEventStore(path);
+    console.log(JSON.stringify(buildVisualizerModel(await store.readAll()), null, 2));
+    return;
+  }
+
   if (command === "templates") {
     if (!path) {
       console.log(formatAgentWorkflowTemplates());
@@ -168,6 +175,7 @@ function printUsage(): void {
   console.error("       eventloom explain task <taskId> <events.jsonl>");
   console.error("       eventloom mailbox <actorId> <events.jsonl>");
   console.error("       eventloom handoff <events.jsonl>");
+  console.error("       eventloom visualize <events.jsonl>");
   console.error("       eventloom templates [templateId]");
 }
 

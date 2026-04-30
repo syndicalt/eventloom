@@ -174,6 +174,24 @@ Example:
 npm run eventloom -- handoff .eventloom/agent-work.jsonl
 ```
 
+## `visualize`
+
+Build the structured model used by visualizer UIs. The output contains the same three views shown on the site: captured events, replay projection, and handoff summary.
+
+```bash
+npm run eventloom -- visualize <events.jsonl>
+```
+
+Output shape:
+
+- `capture.eventCount`
+- `capture.eventTypes`
+- `capture.events`
+- `replay.integrity`
+- `replay.projection`
+- `replay.projectionHash`
+- `handoff`
+
 ## `templates`
 
 List or inspect starter templates for common agent workflows.

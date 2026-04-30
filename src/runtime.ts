@@ -20,6 +20,7 @@ import {
   runSoftwareWorkRuntime,
 } from "./runners.js";
 import { projectTasks, type TaskProjection } from "./task-projection.js";
+import { buildVisualizerModel, type VisualizerModel } from "./visualizer.js";
 
 export interface RuntimeProjection {
   eventTypes: Record<string, number>;
@@ -84,6 +85,10 @@ export class EventloomRuntime {
 
   async mailbox(workflow: BuiltInWorkflow, actorId: string): Promise<MailboxItem[]> {
     return buildMailbox(createBuiltInRegistry(workflow), actorId, await this.store.readAll());
+  }
+
+  async visualize(): Promise<VisualizerModel> {
+    return buildVisualizerModel(await this.store.readAll());
   }
 }
 

@@ -35,6 +35,22 @@ describe("public package API", () => {
     expect((await runtime.replay()).projection.tasks.tasks.task_actor_runtime.status).toBe("approved");
   });
 
+  it("builds visualizer views through the runtime facade", async () => {
+    const path = await tempLog();
+    const runtime = createRuntime(path);
+
+    await runtime.runBuiltIn("software-work");
+    const visualizer = await runtime.visualize();
+
+    expect(visualizer.capture.eventCount).toBeGreaterThan(0);
+    expect(visualizer.capture.events.some((event) => event.type === "goal.created")).toBe(true);
+    expect(visualizer.replay.integrity.ok).toBe(true);
+    expect(visualizer.replay.projection.tasks.tasks.task_actor_runtime.status).toBe("approved");
+    expect(visualizer.handoff.tasks.completed).toMatchObject([
+      { id: "task_actor_runtime", status: "approved" },
+    ]);
+  });
+
   it("rebuilds built-in actor mailboxes through the facade", async () => {
     const path = await tempLog();
     const runtime = createRuntime(path);

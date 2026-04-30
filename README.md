@@ -32,6 +32,7 @@ npx eventloom append .eventloom/agent-work.jsonl task.claimed \
   --actor codex \
   --payload '{"taskId":"task_demo"}'
 
+npx eventloom visualize .eventloom/agent-work.jsonl
 npx eventloom handoff .eventloom/agent-work.jsonl
 ```
 
@@ -63,6 +64,7 @@ npx eventloom export halo .eventloom/agent-work.jsonl \
 - Appends sealed events to a JSONL event log.
 - Verifies a tamper-evident hash chain.
 - Summarizes handoffs from goals, tasks, decisions, verification events, model/tool telemetry, reasoning summaries, and observability gaps.
+- Builds Capture, Replay, and Handoff visualizer models from local logs.
 - Provides starter templates for coding, review, release, and research tasks.
 - Runs deterministic actor workflows.
 - Validates actor intentions before accepting state changes.
