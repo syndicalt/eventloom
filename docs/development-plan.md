@@ -236,8 +236,16 @@ Sprints 0-6 are implemented for the local prototype:
 - Stable built-in workflow mailbox API and MCP `eventloom_mailbox` tool.
 - Runtime telemetry export for model, tool, and reasoning-summary events.
 - Cross-process append locking for local JSONL logs so concurrent clients preserve hash-chain integrity.
+- Runtime, CLI, MCP, and browser visualizer support for Capture, Replay, and Handoff views.
 
 ## Next Milestones
+
+### Integration Backlog
+
+High-value integrations to evaluate after the active Pathlight visualizer sprint:
+
+- OpenTelemetry/OTLP export so one Eventloom adapter can feed Langfuse, Arize Phoenix, generic OTEL collectors, and other trace backends.
+- GitHub Actions artifact integration for agentic coding runs, publishing `.eventloom/*.jsonl`, `eventloom visualize` JSON, HALO JSONL, and export metadata as CI artifacts.
 
 ### Phase 4: Client Setup And Adoption
 
@@ -255,25 +263,65 @@ Verification: a fresh local client can append events, replay a log, inspect task
 
 ### Phase 5: Dogfood Trace And Handoff Quality
 
+Status: implemented.
+
 Goal: use Eventloom on real agent work and make the resulting handoff useful without reading raw JSONL.
 
-Deliverables:
+Delivered:
 
 - Canonical `.eventloom/agent-work.jsonl` dogfood trace generated through documented CLI or MCP paths.
 - HALO JSONL export and Pathlight export examples from the same trace.
 - Richer handoff summaries over `.eventloom/agent-work.jsonl`, including model/tool telemetry, reasoning summaries, verification evidence, and observability gaps.
 - Documentation that explains what HALO and Pathlight each show well for the same Eventloom journal.
+- Runtime `visualize()` API, `eventloom visualize` CLI command, `eventloom_visualize` MCP tool, and browser visualizer support for JSONL and visualizer JSON.
+- Published `@eventloom/runtime@0.1.7` and `@eventloom/mcp@0.1.6` with visualizer support.
 
 Verification: one real dogfood trace can be replayed, summarized, exported to HALO, and exported to Pathlight without integrity errors.
 
-### Phase 6: Storage And UI Decision
+### Phase 6: Pathlight Visualizer Affordance
 
-Goal: decide whether the next product surface needs indexed storage, a Pathlight dashboard affordance, or another workflow family.
+Status: active.
+
+Goal: turn the visualizer model into a Pathlight-facing product surface so Eventloom runs are easier to inspect than generic trace/span lists.
+
+Deliverables:
+
+- Define the Pathlight display contract for `VisualizerModel.capture`, `VisualizerModel.replay`, and `VisualizerModel.handoff`.
+- Map Eventloom Pathlight exports to Capture, Replay, and Handoff panels without mutating the source JSONL log.
+- Add a documented smoke flow from `eventloom_visualize` to Pathlight inspection.
+- Write a decision note covering whether the UI remains a Pathlight affordance, a standalone Eventloom app, or both.
+
+Verification: one exported Eventloom workflow can be opened in Pathlight and inspected through Capture, Replay, and Handoff views with integrity status, projected task state, telemetry, observability gaps, and next actions visible.
+
+Deferred candidates:
+
+- SQLite/libSQL store spike for indexed local queries once log size or query latency justifies it.
+- Additional workflow families beyond software-work, research-pipeline, and human-ops after the inspection surface is clearer.
+
+### Phase 7: Portable Observability Export
+
+Status: queued.
+
+Goal: make Eventloom logs portable across common LLM observability stacks without adding bespoke exporters for every vendor.
 
 Candidates:
 
-- SQLite/libSQL store spike for indexed local queries.
-- Pathlight dashboard affordance if generic trace/span views are not enough.
-- Additional workflow families beyond software-work, research-pipeline, and human-ops.
+- OpenTelemetry/OTLP exporter with GenAI attributes for model calls, tool calls, reasoning summaries, verification, and projected task state.
+- Phoenix smoke test using OTLP/OpenInference-compatible traces.
+- Langfuse smoke test using its OpenTelemetry ingestion endpoint.
 
-Verification: one candidate is selected with acceptance criteria, tests, and an updated decision note when the choice affects the Pathlight boundary or persistence model.
+Verification: one Eventloom workflow can be exported through OTLP and inspected in at least one external OpenTelemetry-compatible LLM observability tool with model/tool telemetry and task context preserved.
+
+### Phase 8: GitHub Workflow Artifacts
+
+Status: queued.
+
+Goal: make Eventloom useful in CI for agentic coding, review, and release workflows.
+
+Deliverables:
+
+- GitHub Actions example that runs an Eventloom-backed workflow and uploads the raw JSONL log.
+- Artifact upload for `eventloom visualize` JSON, HALO JSONL, and Pathlight/OTLP export metadata.
+- Documentation for using Eventloom artifacts in pull request reviews and release handoffs.
+
+Verification: one GitHub Actions workflow run produces downloadable Eventloom artifacts that can be loaded into the browser visualizer or replayed locally.

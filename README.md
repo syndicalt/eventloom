@@ -149,7 +149,7 @@ console.log(replay.projection.research);
 
 The npm package is published as `@eventloom/runtime`. See [Package API](docs/package-api.md) for the full package-facing API.
 
-The MCP server package lives in `packages/mcp` as `@eventloom/mcp`. It exposes Eventloom log operations and Pathlight/HALO export to local MCP clients over stdio. See [MCP Setup](docs/mcp-setup.md) for editor setup and [MCP Package Design](docs/mcp-package.md) for the tool contract.
+The MCP server package lives in `packages/mcp` as `@eventloom/mcp`. It exposes Eventloom log operations, visualizer output, and Pathlight/HALO export to local MCP clients over stdio. See [MCP Setup](docs/mcp-setup.md) for editor setup and [MCP Package Design](docs/mcp-package.md) for the tool contract.
 
 ## Documentation
 
@@ -198,3 +198,4 @@ The original prototype roadmap is implemented:
 - MCP stdio server package
 - MCP Pathlight and HALO export tools
 - Cross-process append locking for local JSONL logs
+- Runtime, CLI, MCP, and browser visualizer support

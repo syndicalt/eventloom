@@ -262,7 +262,7 @@
 npx eventloom append .eventloom/agent-work.jsonl \
   goal.created --actor user \
   --payload '{"title":"Ship the feature"}'
-npx eventloom handoff .eventloom/agent-work.jsonl</code></pre>
+npx eventloom visualize .eventloom/agent-work.jsonl</code></pre>
         </article>
         <article class="install-card">
           <h3>MCP</h3>
@@ -270,6 +270,7 @@ npx eventloom handoff .eventloom/agent-work.jsonl</code></pre>
 
 # tools: append, replay, timeline,
 # explain task, mailbox, handoff,
+# visualize,
 # built-in workflows, Pathlight, HALO</code></pre>
         </article>
         <article class="install-card">
@@ -278,7 +279,7 @@ npx eventloom handoff .eventloom/agent-work.jsonl</code></pre>
 
 const runtime = createRuntime(".eventloom/run.jsonl");
 await runtime.runBuiltIn("software-work");
-const replay = await runtime.replay();</code></pre>
+const visualizer = await runtime.visualize();</code></pre>
         </article>
       </div>
     </section>
@@ -302,7 +303,7 @@ const replay = await runtime.replay();</code></pre>
   </main>
 
   <footer>
-    <span>Eventloom v0.1.6 &middot; MIT</span>
+    <span>Eventloom v0.1.7 &middot; MIT</span>
     <span>
       <a href="https://github.com/syndicalt/eventloom">GitHub</a>
       <a href="https://www.npmjs.com/package/@eventloom/runtime">npm</a>
@@ -311,7 +312,7 @@ const replay = await runtime.replay();</code></pre>
   </footer>
   <script>
     const sampleLog = [
-      {"id":"evt_goal","type":"goal.created","actorId":"user","threadId":"thread_main","parentEventId":null,"causedBy":[],"timestamp":"2026-04-30T12:00:00.000Z","payload":{"title":"Ship runtime 0.1.6"},"integrity":{"hash":"sha256:0000000000000000000000000000000000000000000000000000000000000001","previousHash":null}},
+      {"id":"evt_goal","type":"goal.created","actorId":"user","threadId":"thread_main","parentEventId":null,"causedBy":[],"timestamp":"2026-04-30T12:00:00.000Z","payload":{"title":"Ship runtime 0.1.7"},"integrity":{"hash":"sha256:0000000000000000000000000000000000000000000000000000000000000001","previousHash":null}},
       {"id":"evt_task","type":"task.proposed","actorId":"planner","threadId":"thread_main","parentEventId":"evt_goal","causedBy":["evt_goal"],"timestamp":"2026-04-30T12:01:00.000Z","payload":{"taskId":"task_rich_output","title":"Enrich trace logging output"},"integrity":{"hash":"sha256:0000000000000000000000000000000000000000000000000000000000000002","previousHash":"sha256:0000000000000000000000000000000000000000000000000000000000000001"}},
       {"id":"evt_claim","type":"task.claimed","actorId":"codex","threadId":"thread_main","parentEventId":"evt_task","causedBy":["evt_task"],"timestamp":"2026-04-30T12:02:00.000Z","payload":{"taskId":"task_rich_output"},"integrity":{"hash":"sha256:0000000000000000000000000000000000000000000000000000000000000003","previousHash":"sha256:0000000000000000000000000000000000000000000000000000000000000002"}},
       {"id":"evt_model_start","type":"model.started","actorId":"codex","threadId":"thread_main","parentEventId":"evt_claim","causedBy":["evt_claim"],"timestamp":"2026-04-30T12:03:00.000Z","payload":{"taskId":"task_rich_output","modelCallId":"model_rich_1","modelProvider":"openai","modelName":"gpt-test","promptVersion":"eventloom.rich-output.v1","inputSummary":"Inspect exporter and handoff code for richer output fields"},"integrity":{"hash":"sha256:0000000000000000000000000000000000000000000000000000000000000004","previousHash":"sha256:0000000000000000000000000000000000000000000000000000000000000003"}},
