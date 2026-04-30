@@ -2,6 +2,7 @@ import { createBuiltInRegistry, type ActorRegistry, type BuiltInWorkflow } from 
 import { JsonlEventStore } from "./event-store.js";
 import { projectEffects, type EffectProjection } from "./effect-projection.js";
 import { type EventEnvelope } from "./events.js";
+import { exportToHalo, type HaloExportOptions, type HaloExportResult } from "./export/halo.js";
 import { exportToPathlight, type PathlightExportOptions, type PathlightExportResult } from "./export/pathlight.js";
 import { appendExternalEvent, type AppendExternalEventInput } from "./ingest.js";
 import { verifyEventChain, type IntegrityReport } from "./integrity.js";
@@ -75,6 +76,10 @@ export class EventloomRuntime {
 
   async exportPathlight(options: PathlightExportOptions): Promise<PathlightExportResult> {
     return exportToPathlight(await this.store.readAll(), options);
+  }
+
+  async exportHalo(options: HaloExportOptions = {}): Promise<HaloExportResult> {
+    return exportToHalo(await this.store.readAll(), options);
   }
 
   async mailbox(workflow: BuiltInWorkflow, actorId: string): Promise<MailboxItem[]> {

@@ -161,6 +161,28 @@ npm run eventloom -- export pathlight /tmp/eventloom-human-ops.jsonl --base-url 
 
 Eventloom exports actor turns as Pathlight spans and related Eventloom events as span events. Pathlight is optional; Eventloom works without it.
 
+## Export to HALO
+
+Export an Eventloom log to HALO-compatible trace JSONL:
+
+```bash
+npm run eventloom -- export halo /tmp/eventloom-human-ops.jsonl \
+  --out /tmp/eventloom-halo-traces.jsonl \
+  --project-id eventloom \
+  --service-name eventloom-human-ops
+```
+
+Then validate with a local HALO checkout:
+
+```bash
+python /home/cheapseatsecon/Projects/GitHub-Clone/HALO/demo/openai-agents-sdk-demo/verify_traces.py \
+  /tmp/eventloom-halo-traces.jsonl
+```
+
+HALO can analyze the exported trace file when its CLI and model credentials are available.
+
+Built-in workflows emit deterministic model, tool, and reasoning-summary telemetry so exported traces include LLM, tool, and chain spans. Real agent integrations should fill the same event fields from their model and tool calls.
+
 ## Use the Package API
 
 ```ts
@@ -173,4 +195,4 @@ const replay = await runtime.replay();
 console.log(replay.projection.tasks.tasks.task_actor_runtime.status);
 ```
 
-See [Package API](package-api.md) for custom actors, custom intentions, and Pathlight export from code.
+See [Package API](package-api.md) for custom actors, custom intentions, and export adapters from code.

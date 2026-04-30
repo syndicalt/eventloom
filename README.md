@@ -49,6 +49,15 @@ npx eventloom export pathlight .eventloom/agent-work.jsonl \
   --trace-name eventloom-agent-work
 ```
 
+Optional HALO export for agent failure-mode analysis:
+
+```bash
+npx eventloom export halo .eventloom/agent-work.jsonl \
+  --out eventloom-halo-traces.jsonl \
+  --project-id eventloom \
+  --service-name eventloom-agent-work
+```
+
 ## What It Does
 
 - Appends sealed events to a JSONL event log.
@@ -57,10 +66,12 @@ npx eventloom export pathlight .eventloom/agent-work.jsonl \
 - Provides starter templates for coding, review, release, and research tasks.
 - Runs deterministic actor workflows.
 - Validates actor intentions before accepting state changes.
+- Records model, tool, and reasoning-summary telemetry during actor turns.
 - Rebuilds task, research, and effect projections from the log.
 - Supports human-in-the-loop approval events.
 - Exports actor turns and runtime events to Pathlight traces.
 - Exports external agent journals to Pathlight task lifecycle spans.
+- Exports Eventloom logs to HALO-compatible OpenTelemetry JSONL traces.
 - Provides a package API for embedding Eventloom in TypeScript code.
 
 ## Quick Start
@@ -152,6 +163,7 @@ The MCP server package lives in `packages/mcp` as `@eventloom/mcp`. It exposes E
 - [Event Model](docs/event-model.md)
 - [Workflow Guide](docs/workflows.md)
 - [Pathlight Integration](docs/pathlight-integration.md)
+- [HALO Integration](docs/halo-integration.md)
 - [Contributor Guide](docs/contributor-guide.md)
 
 ## Project Layout
@@ -178,5 +190,7 @@ The original prototype roadmap is implemented:
 - Human-in-the-loop effect approval workflow
 - Runtime provenance metadata
 - Public package API
+- HALO trace export bridge
+- Model, tool, and reasoning telemetry export
 - Agent integration workflow and Codex skill
 - MCP stdio server package

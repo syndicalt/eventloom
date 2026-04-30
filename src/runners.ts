@@ -73,7 +73,108 @@ export async function runRuntimeLoop(
         turns += 1;
         appendedThisIteration += 1;
 
+        const toolCallId = `tool_${turnId}`;
+        const modelCallId = `model_${turnId}`;
+        await store.append(createEvent({
+          type: "tool.started",
+          actorId: actor.id,
+          threadId: item.event.threadId,
+          parentEventId: started.id,
+          causedBy: [started.id, item.event.id],
+          payload: {
+            turnId,
+            toolCallId,
+            toolName: "eventloom.mailbox.read",
+            input: {
+              actorId: actor.id,
+              sourceEventId: item.event.id,
+              mailboxEventType: item.event.type,
+            },
+          },
+        }));
+        appendedThisIteration += 1;
+
+        await store.append(createEvent({
+          type: "tool.completed",
+          actorId: actor.id,
+          threadId: item.event.threadId,
+          parentEventId: started.id,
+          causedBy: [started.id, item.event.id],
+          payload: {
+            turnId,
+            toolCallId,
+            toolName: "eventloom.mailbox.read",
+            output: {
+              itemCount: 1,
+              taskId: item.task?.id ?? null,
+              taskStatus: item.task?.status ?? null,
+            },
+            latencyMs: 1,
+          },
+        }));
+        appendedThisIteration += 1;
+
+        await store.append(createEvent({
+          type: "model.started",
+          actorId: actor.id,
+          threadId: item.event.threadId,
+          parentEventId: started.id,
+          causedBy: [started.id, item.event.id],
+          payload: {
+            turnId,
+            modelCallId,
+            modelProvider: "eventloom",
+            modelName: "deterministic-runner",
+            inputMessages: [
+              { role: "system", content: actor.role },
+              { role: "user", content: `Handle ${item.event.type} from ${item.event.actorId}.` },
+            ],
+            parameters: {
+              temperature: 0,
+              toolChoice: "none",
+            },
+          },
+        }));
+        appendedThisIteration += 1;
+
         const intentions = runner({ actor, mailbox: [item], events });
+        await store.append(createEvent({
+          type: "reasoning.summary",
+          actorId: actor.id,
+          threadId: item.event.threadId,
+          parentEventId: started.id,
+          causedBy: [started.id, item.event.id],
+          payload: {
+            turnId,
+            summary: reasoningSummary(actor, item, intentions),
+            alternativesConsidered: intentions.length === 0 ? ["No valid transition for mailbox item."] : [],
+            evidenceEventIds: [item.event.id],
+            confidence: 1,
+          },
+        }));
+        appendedThisIteration += 1;
+
+        await store.append(createEvent({
+          type: "model.completed",
+          actorId: actor.id,
+          threadId: item.event.threadId,
+          parentEventId: started.id,
+          causedBy: [started.id, item.event.id],
+          payload: {
+            turnId,
+            modelCallId,
+            modelProvider: "eventloom",
+            modelName: "deterministic-runner",
+            outputText: `Emitted ${intentions.length} intention(s): ${intentions.map((intention) => intention.type).join(", ") || "none"}.`,
+            inputTokens: estimateTokens(`${actor.role} ${item.event.type}`),
+            outputTokens: estimateTokens(intentions.map((intention) => intention.type).join(" ")),
+            totalTokens: estimateTokens(`${actor.role} ${item.event.type}`) + estimateTokens(intentions.map((intention) => intention.type).join(" ")),
+            cost: 0,
+            latencyMs: 1,
+          },
+        }));
+        appendedThisIteration += 1;
+
         const acceptedEvents: string[] = [];
         const rejectedEvents: string[] = [];
 
@@ -135,6 +236,15 @@ export async function runRuntimeLoop(
   }
 
   return { iterations: maxIterations, appended, processed, turns, skipped, rejected, stoppedReason: "max_iterations" };
+}
+
+function reasoningSummary(actor: ActorDefinition, item: MailboxItem, intentions: readonly Intention[]): string {
+  const emitted = intentions.map((intention) => intention.type).join(", ") || "no intentions";
+  return `${actor.id} handled ${item.event.type} as ${actor.role} and emitted ${emitted}.`;
+}
+
+function estimateTokens(text: string): number {
+  return Math.max(1, Math.ceil(text.trim().split(/\s+/).filter(Boolean).length * 1.3));
 }
 
 export function createSoftwareWorkRunners(): Record<string, ActorRunner> {

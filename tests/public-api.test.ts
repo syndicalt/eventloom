@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import { describe, expect, it } from "vitest";
 import {
   createRuntime,
+  formatHaloJsonl,
   replayEvents,
   runBuiltInWorkflow,
   type BuiltInWorkflow,
@@ -64,6 +65,7 @@ describe("public package API", () => {
     const fetchImpl = async (url: string | URL | Request, init?: RequestInit) => {
       calls.push({ url: String(url), init: init ?? {} });
       if (String(url).endsWith("/v1/traces")) return json({ id: "trace_api" });
+      if (String(url).endsWith("/v1/spans")) return json({ id: "span_api" });
       return json({ ok: true });
     };
 
@@ -79,8 +81,34 @@ describe("public package API", () => {
       },
     });
 
-    expect(exported).toEqual({ traceId: "trace_api", spanCount: 0, eventCount: 0 });
+    expect(exported).toEqual({ traceId: "trace_api", spanCount: 1, eventCount: 1 });
     expect(calls.some((call) => call.url === "http://pathlight.test/v1/traces")).toBe(true);
+  });
+
+  it("exports HALO traces through the facade", async () => {
+    const path = await tempLog();
+    const runtime = createRuntime(path);
+    await runtime.append({
+      type: "task.proposed",
+      actorId: "codex",
+      threadId: "thread_main",
+      payload: { taskId: "task_halo", title: "Export HALO traces" },
+    });
+
+    const exported = await runtime.exportHalo({
+      projectId: "eventloom-api",
+      provenance: {
+        packageName: "eventloom",
+        packageVersion: "0.1.3",
+        gitCommit: null,
+        gitBranch: null,
+        gitDirty: null,
+      },
+    });
+
+    expect(exported.projectId).toBe("eventloom-api");
+    expect(exported.spanCount).toBe(2);
+    expect(formatHaloJsonl(exported)).toContain("\"inference.project_id\":\"eventloom-api\"");
   });
 });
 

@@ -27,11 +27,15 @@ Eventloom maps runtime history to Pathlight like this:
 |---|---|
 | Runtime event log | Trace |
 | Actor turn | Agent span |
+| Model invocation telemetry | LLM span |
+| Tool invocation telemetry | Tool span |
+| Reasoning summary telemetry | Chain span |
 | Runtime event related to a turn | Span event |
+| Goal, decision, verification, release, and risk facts | Journal fact spans |
 | Integrity and projection data | Trace metadata |
 | Git/package provenance | Native trace fields and metadata |
 
-For external agent journals that do not contain `actor.started` / `actor.completed` runtime turns, Eventloom exports projected task lifecycles as Pathlight agent spans. This gives `.eventloom/agent-work.jsonl` logs a useful visual shape without requiring agents to emit runtime actor-turn events.
+For external agent journals that do not contain `actor.started` / `actor.completed` runtime turns, Eventloom exports projected task lifecycles as Pathlight agent spans. Eventloom also exports high-signal journal facts as first-class spans so goals, decisions, verification, release notes, and risks remain visible even when they are not part of a task history.
 
 ## Trace Metadata
 
@@ -56,10 +60,13 @@ When git metadata is available, Eventloom also sends:
 Each actor turn span includes:
 
 - `source: "eventloom"`
+- `exportKind: "actor_turn"`
 - `turnId`
 - `actorId`
 - `startedEventId`
 - `completedEventId`
+- `acceptedEventIds`
+- `rejectedEventIds`
 
 Span input includes:
 
@@ -75,6 +82,10 @@ Span output includes:
 - `rejectionEventIds` only when there are actual rejections
 
 Empty rejection arrays are intentionally omitted because Pathlight's issue heuristics flag span output containing words such as `rejected`.
+
+Journal fact spans include the source event id, event type, actor id, thread id, parent event id, and caused-by ids in metadata. The original Eventloom event is also attached as a span event.
+
+Model and tool telemetry spans include model/provider names, token counts, cost, latency, tool names, inputs, outputs, and related turn ids when the Eventloom log contains those fields.
 
 ## Package API Export
 

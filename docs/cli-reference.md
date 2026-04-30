@@ -211,3 +211,26 @@ The export creates:
 - span events for related Eventloom events
 
 Trace metadata includes integrity, projection hash, projection kinds, runtime package metadata, thread IDs, and git provenance when available.
+
+## `export halo`
+
+Export an Eventloom log to a HALO-compatible OpenTelemetry JSONL trace file.
+
+```bash
+npm run eventloom -- export halo <events.jsonl> --out <traces.jsonl> [--project-id <id>] [--service-name <name>] [--trace-name <name>]
+```
+
+Defaults:
+
+- `--out`: `eventloom-halo-traces.jsonl`
+- `--project-id`: `eventloom`
+- `--service-name`: `eventloom`
+- `--trace-name`: `eventloom.log`
+
+The export creates one trace with a root log span, task lifecycle spans, and high-level fact spans for goals, decisions, verification, release, and risk events.
+
+Validate the output with a local HALO checkout:
+
+```bash
+python /home/cheapseatsecon/Projects/GitHub-Clone/HALO/demo/openai-agents-sdk-demo/verify_traces.py <traces.jsonl>
+```

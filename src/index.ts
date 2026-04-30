@@ -3,6 +3,7 @@ export * from "./demo.js";
 export * from "./effect-projection.js";
 export * from "./event-store.js";
 export * from "./events.js";
+export * from "./export/halo.js";
 export * from "./export/pathlight.js";
 export * from "./handoff.js";
 export * from "./ingest.js";

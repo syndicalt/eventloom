@@ -4,9 +4,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Eventloom - event-sourced runtime for AI agents</title>
-  <meta name="description" content="Eventloom is a local-first TypeScript runtime for AI agents built around append-only event logs, validated actor intentions, deterministic replay, MCP tooling, and Pathlight export." />
+  <meta name="description" content="Eventloom is a local-first TypeScript runtime for AI agents built around append-only event logs, validated actor intentions, deterministic replay, MCP tooling, Pathlight export, and HALO trace export." />
   <meta property="og:title" content="Eventloom - event-sourced runtime for AI agents" />
-  <meta property="og:description" content="Append-only logs, validated actor intentions, deterministic replay, MCP tooling, and Pathlight export for AI agent systems." />
+  <meta property="og:description" content="Append-only logs, validated actor intentions, deterministic replay, MCP tooling, Pathlight export, and HALO trace export for AI agent systems." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://syndicalt.github.io/eventloom/" />
   <meta property="og:image" content="https://syndicalt.github.io/eventloom/assets/hero.png" />
@@ -14,7 +14,7 @@
   <meta property="og:image:height" content="1080" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Eventloom - event-sourced runtime for AI agents" />
-  <meta name="twitter:description" content="Append-only logs, validated actor intentions, deterministic replay, MCP tooling, and Pathlight export for AI agent systems." />
+  <meta name="twitter:description" content="Append-only logs, validated actor intentions, deterministic replay, MCP tooling, Pathlight export, and HALO trace export for AI agent systems." />
   <meta name="twitter:image" content="https://syndicalt.github.io/eventloom/assets/hero.png" />
   <link rel="canonical" href="https://syndicalt.github.io/eventloom/" />
   <link rel="preload" as="image" href="assets/hero.png" />
@@ -62,7 +62,7 @@
         <h1>Event-sourced runtime for AI agents.</h1>
         <p class="tagline">
           Eventloom turns agent execution into an append-only event log with validated actor intentions,
-          deterministic replay, tamper-evident integrity, MCP tooling, and optional Pathlight export.
+          deterministic replay, tamper-evident integrity, MCP tooling, and optional Pathlight and HALO export.
         </p>
         <div class="cta-row">
           <a class="btn btn-primary" href="#install">Get started</a>
@@ -150,6 +150,12 @@ const replay = await runtime.replay();
 console.log(replay.integrity.ok);</code></pre>
         </article>
         <article class="install-card">
+          <h3>HALO</h3>
+          <pre><code>npx eventloom export halo .eventloom/agent-work.jsonl \
+  --out eventloom-halo-traces.jsonl \
+  --project-id eventloom</code></pre>
+        </article>
+        <article class="install-card">
           <h3>MCP</h3>
           <pre><code>npx @eventloom/mcp --root .
 
@@ -183,18 +189,22 @@ console.log(replay.integrity.ok);</code></pre>
     <section class="pathlight">
       <div>
         <p class="eyebrow">Optional bridge</p>
-        <h2>Export runs to Pathlight.</h2>
+        <h2>Export runs to Pathlight and HALO.</h2>
         <p>
           Eventloom can translate actor turns and related runtime events into Pathlight traces,
-          spans, and span events for visual inspection.
+          spans, and span events for visual inspection. It can also project local Eventloom logs
+          into HALO-compatible OpenTelemetry JSONL for agent failure-mode analysis.
         </p>
       </div>
-      <a class="btn btn-secondary" href="https://syndicalt.github.io/pathlight/">Open Pathlight</a>
+      <div class="agent-links">
+        <a class="btn btn-secondary" href="https://syndicalt.github.io/pathlight/">Open Pathlight</a>
+        <a class="btn btn-secondary" href="https://github.com/syndicalt/eventloom/blob/master/docs/halo-integration.md">HALO guide</a>
+      </div>
     </section>
   </main>
 
   <footer>
-    <span>Eventloom v0.1.3 &middot; MIT</span>
+    <span>Eventloom v0.1.4 &middot; MIT</span>
     <span>
       <a href="https://github.com/syndicalt/eventloom">GitHub</a>
       <a href="https://www.npmjs.com/package/@eventloom/runtime">npm</a>

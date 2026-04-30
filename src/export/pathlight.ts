@@ -77,10 +77,13 @@ export async function exportToPathlight(
       input: { sourceEventId: started.payload.sourceEventId, mailboxEventType: started.payload.mailboxEventType },
       metadata: {
         source: "eventloom",
+        exportKind: "actor_turn",
         turnId,
         actorId: started.actorId,
         startedEventId: started.id,
         completedEventId: completed?.id ?? null,
+        acceptedEventIds: asStringArray(completed?.payload.acceptedEvents),
+        rejectedEventIds: asStringArray(completed?.payload.rejectedEvents),
       },
     });
     if (!span.id) throw new Error("Pathlight span create response did not include id");
@@ -100,16 +103,24 @@ export async function exportToPathlight(
 
     await patch(fetcher, `${baseUrl}/v1/spans/${span.id}`, {
       status: completed ? "completed" : "failed",
-      output: completed ? spanOutput(completed) : null,
+      output: completed ? spanOutput(completed, events) : null,
       error: completed ? undefined : "Missing actor.completed event",
     });
   }
+
+  const telemetryExport = await exportTelemetrySpans(fetcher, baseUrl, trace.id, events);
+  spanCount += telemetryExport.spanCount;
+  pathlightEventCount += telemetryExport.eventCount;
 
   if (actorStartedEvents.length === 0) {
     const exported = await exportTaskLifecycleSpans(fetcher, baseUrl, trace.id, events, tasks.tasks, byId);
     spanCount += exported.spanCount;
     pathlightEventCount += exported.eventCount;
   }
+
+  const factExport = await exportFactSpans(fetcher, baseUrl, trace.id, events);
+  spanCount += factExport.spanCount;
+  pathlightEventCount += factExport.eventCount;
 
   await patch(fetcher, `${baseUrl}/v1/traces/${trace.id}`, {
     status: integrity.ok ? "completed" : "failed",
@@ -118,6 +129,158 @@ export async function exportToPathlight(
   });
 
   return { traceId: trace.id, spanCount, eventCount: pathlightEventCount };
+}
+
+async function exportTelemetrySpans(
+  fetcher: typeof fetch,
+  baseUrl: string,
+  traceId: string,
+  events: readonly EventEnvelope[],
+): Promise<{ spanCount: number; eventCount: number }> {
+  let spanCount = 0;
+  let eventCount = 0;
+  for (const started of events.filter((event) => event.type === "model.started")) {
+    const modelCallId = String(started.payload.modelCallId ?? started.id);
+    const completed = events.find((event) => event.type === "model.completed" && event.payload.modelCallId === modelCallId);
+    const provider = stringOrNull(completed?.payload.modelProvider) ?? stringOrNull(started.payload.modelProvider) ?? "unknown";
+    const model = stringOrNull(completed?.payload.modelName) ?? stringOrNull(started.payload.modelName) ?? "unknown";
+    const span = await post<JsonResponse>(fetcher, `${baseUrl}/v1/spans`, {
+      traceId,
+      name: `${provider}.${model}`,
+      type: "llm",
+      input: {
+        modelCallId,
+        turnId: started.payload.turnId ?? null,
+        inputMessages: started.payload.inputMessages ?? [],
+      },
+      metadata: {
+        source: "eventloom",
+        exportKind: "model_invocation",
+        actorId: started.actorId,
+        modelCallId,
+        turnId: started.payload.turnId ?? null,
+        modelProvider: provider,
+        modelName: model,
+      },
+    });
+    if (!span.id) throw new Error("Pathlight span create response did not include id");
+    spanCount += 1;
+    await patch(fetcher, `${baseUrl}/v1/spans/${span.id}`, {
+      status: completed ? "completed" : "failed",
+      output: {
+        outputText: completed?.payload.outputText ?? null,
+        inputTokens: completed?.payload.inputTokens ?? null,
+        outputTokens: completed?.payload.outputTokens ?? null,
+        totalTokens: completed?.payload.totalTokens ?? null,
+        cost: completed?.payload.cost ?? null,
+        latencyMs: completed?.payload.latencyMs ?? null,
+      },
+      error: completed ? undefined : "Missing model.completed event",
+    });
+  }
+
+  for (const started of events.filter((event) => event.type === "tool.started")) {
+    const toolCallId = String(started.payload.toolCallId ?? started.id);
+    const completed = events.find((event) => event.type === "tool.completed" && event.payload.toolCallId === toolCallId);
+    const toolName = stringOrNull(completed?.payload.toolName) ?? stringOrNull(started.payload.toolName) ?? "unknown";
+    const span = await post<JsonResponse>(fetcher, `${baseUrl}/v1/spans`, {
+      traceId,
+      name: toolName,
+      type: "tool",
+      input: started.payload.input ?? null,
+      metadata: {
+        source: "eventloom",
+        exportKind: "tool_invocation",
+        actorId: started.actorId,
+        toolCallId,
+        turnId: started.payload.turnId ?? null,
+        toolName,
+      },
+    });
+    if (!span.id) throw new Error("Pathlight span create response did not include id");
+    spanCount += 1;
+    await patch(fetcher, `${baseUrl}/v1/spans/${span.id}`, {
+      status: completed ? "completed" : "failed",
+      output: completed?.payload.output ?? null,
+      error: completed ? undefined : "Missing tool.completed event",
+    });
+  }
+
+  for (const event of events.filter((item) => item.type === "reasoning.summary")) {
+    const span = await post<JsonResponse>(fetcher, `${baseUrl}/v1/spans`, {
+      traceId,
+      name: "reasoning.summary",
+      type: "chain",
+      input: {
+        turnId: event.payload.turnId ?? null,
+        evidenceEventIds: event.payload.evidenceEventIds ?? [],
+      },
+      metadata: {
+        source: "eventloom",
+        exportKind: "reasoning_summary",
+        actorId: event.actorId,
+        turnId: event.payload.turnId ?? null,
+      },
+    });
+    if (!span.id) throw new Error("Pathlight span create response did not include id");
+    spanCount += 1;
+    await patch(fetcher, `${baseUrl}/v1/spans/${span.id}`, {
+      status: "completed",
+      output: event.payload,
+    });
+  }
+
+  return { spanCount, eventCount };
+}
+
+async function exportFactSpans(
+  fetcher: typeof fetch,
+  baseUrl: string,
+  traceId: string,
+  events: readonly EventEnvelope[],
+): Promise<{ spanCount: number; eventCount: number }> {
+  let spanCount = 0;
+  let eventCount = 0;
+  for (const event of events.filter(shouldExportFactSpan)) {
+    const span = await post<JsonResponse>(fetcher, `${baseUrl}/v1/spans`, {
+      traceId,
+      name: event.type,
+      type: "event",
+      input: {
+        eventId: event.id,
+        eventType: event.type,
+        actorId: event.actorId,
+        threadId: event.threadId,
+      },
+      metadata: {
+        source: "eventloom",
+        exportKind: "journal_fact",
+        eventId: event.id,
+        eventType: event.type,
+        actorId: event.actorId,
+        threadId: event.threadId,
+        parentEventId: event.parentEventId,
+        causedBy: event.causedBy,
+      },
+    });
+    if (!span.id) throw new Error("Pathlight span create response did not include id");
+    spanCount += 1;
+
+    await post<JsonResponse>(fetcher, `${baseUrl}/v1/spans/${span.id}/events`, {
+      name: event.type,
+      level: eventLevel(event),
+      body: event,
+    });
+    eventCount += 1;
+
+    await patch(fetcher, `${baseUrl}/v1/spans/${span.id}`, {
+      status: event.type.includes("failed") || event.type.includes("issue") ? "failed" : "completed",
+      output: event.payload,
+      error: event.type.includes("failed") || event.type.includes("issue") ? event.type : undefined,
+    });
+  }
+
+  return { spanCount, eventCount };
 }
 
 async function exportTaskLifecycleSpans(
@@ -216,13 +379,41 @@ function eventLevel(event: EventEnvelope): string {
   return "info";
 }
 
-function spanOutput(completed: EventEnvelope): Record<string, unknown> {
+function shouldExportFactSpan(event: EventEnvelope): boolean {
+  return event.type === "goal.created" ||
+    event.type === "decision.recorded" ||
+    event.type.startsWith("verification.") ||
+    event.type.startsWith("release.") ||
+    event.type.startsWith("risk.");
+}
+
+function spanOutput(completed: EventEnvelope, events: readonly EventEnvelope[]): Record<string, unknown> {
   const rejected = asStringArray(completed.payload.rejectedEvents);
+  const turnId = String(completed.payload.turnId ?? "");
   const output: Record<string, unknown> = {
-    turnId: completed.payload.turnId,
+    turnId,
     sourceEventId: completed.payload.sourceEventId,
     intentions: completed.payload.intentions,
     acceptedEvents: completed.payload.acceptedEvents,
+    modelCalls: events
+      .filter((event) => event.type === "model.completed" && event.payload.turnId === turnId)
+      .map((event) => ({
+        modelProvider: event.payload.modelProvider,
+        modelName: event.payload.modelName,
+        inputTokens: event.payload.inputTokens,
+        outputTokens: event.payload.outputTokens,
+        totalTokens: event.payload.totalTokens,
+        cost: event.payload.cost,
+      })),
+    toolCalls: events
+      .filter((event) => event.type === "tool.completed" && event.payload.turnId === turnId)
+      .map((event) => ({
+        toolName: event.payload.toolName,
+        latencyMs: event.payload.latencyMs,
+      })),
+    reasoning: events
+      .filter((event) => event.type === "reasoning.summary" && event.payload.turnId === turnId)
+      .map((event) => event.payload.summary),
   };
 
   if (rejected.length > 0) {
@@ -246,6 +437,10 @@ function relatedEventIds(started: EventEnvelope, completed?: EventEnvelope): str
 
 function asStringArray(value: unknown): string[] {
   return Array.isArray(value) ? value.filter((item): item is string => typeof item === "string") : [];
+}
+
+function stringOrNull(value: unknown): string | null {
+  return typeof value === "string" && value.length > 0 ? value : null;
 }
 
 function eventTypeCounts(events: readonly EventEnvelope[]): Record<string, number> {

@@ -93,11 +93,13 @@ Projection errors are recorded in projection output during replay, but the orche
 1. Read all events.
 2. Rebuild each actor mailbox.
 3. Append `actor.started`.
-4. Run the actor runner for one mailbox item.
-5. Submit returned intentions to the orchestrator.
-6. Append `actor.completed`.
-7. Append `actor.processed`.
-8. Repeat until no new events are appended or `maxIterations` is reached.
+4. Append mailbox/tool telemetry and model-start telemetry for the turn.
+5. Run the actor runner for one mailbox item.
+6. Append a safe `reasoning.summary` and model-completion telemetry.
+7. Submit returned intentions to the orchestrator.
+8. Append `actor.completed`.
+9. Append `actor.processed`.
+10. Repeat until no new events are appended or `maxIterations` is reached.
 
 ## Data Flow
 

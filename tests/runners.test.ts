@@ -31,6 +31,16 @@ describe("deterministic actor runners", () => {
     expect(events.filter((event) => event.type === "actor.started")).toHaveLength(5);
     expect(events.filter((event) => event.type === "actor.completed")).toHaveLength(5);
     expect(events.filter((event) => event.type === "actor.processed")).toHaveLength(5);
+    expect(events.filter((event) => event.type === "model.started")).toHaveLength(5);
+    expect(events.filter((event) => event.type === "model.completed")).toHaveLength(5);
+    expect(events.filter((event) => event.type === "tool.started")).toHaveLength(5);
+    expect(events.filter((event) => event.type === "tool.completed")).toHaveLength(5);
+    expect(events.filter((event) => event.type === "reasoning.summary")).toHaveLength(5);
+    expect(events.find((event) => event.type === "model.completed")?.payload).toMatchObject({
+      modelProvider: "eventloom",
+      modelName: "deterministic-runner",
+      cost: 0,
+    });
   });
 
   it("does not reprocess mailbox items on resume", async () => {
@@ -67,6 +77,9 @@ describe("deterministic actor runners", () => {
     expect(events.filter((event) => event.type === "actor.started")).toHaveLength(5);
     expect(events.filter((event) => event.type === "actor.completed")).toHaveLength(5);
     expect(events.filter((event) => event.type === "actor.processed")).toHaveLength(5);
+    expect(events.filter((event) => event.type === "model.completed")).toHaveLength(5);
+    expect(events.filter((event) => event.type === "tool.completed")).toHaveLength(5);
+    expect(events.filter((event) => event.type === "reasoning.summary")).toHaveLength(5);
   });
 
   it("pauses human-ops until approval then applies the effect on resume", async () => {

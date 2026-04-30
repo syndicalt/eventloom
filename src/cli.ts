@@ -1,6 +1,8 @@
 #!/usr/bin/env node
+import { writeFile } from "node:fs/promises";
 import { JsonlEventStore } from "./event-store.js";
 import { projectEffects } from "./effect-projection.js";
+import { exportToHalo, formatHaloJsonl } from "./export/halo.js";
 import { exportToPathlight } from "./export/pathlight.js";
 import { formatHandoffSummary, summarizeHandoff } from "./handoff.js";
 import { appendExternalEvent, parseJsonPayload } from "./ingest.js";
@@ -75,6 +77,25 @@ async function main(argv: string[]): Promise<void> {
     return;
   }
 
+  if (command === "export" && path === "halo" && extra) {
+    const options = parseHaloExportOptions(argv.slice(3));
+    const store = new JsonlEventStore(extra);
+    const result = await exportToHalo(await store.readAll(), {
+      projectId: options.projectId,
+      serviceName: options.serviceName,
+      traceName: options.traceName,
+    });
+    await writeFile(options.out, formatHaloJsonl(result), "utf8");
+    console.log(JSON.stringify({
+      out: options.out,
+      projectId: result.projectId,
+      traceId: result.traceId,
+      traceCount: result.traceCount,
+      spanCount: result.spanCount,
+    }, null, 2));
+    return;
+  }
+
   if (command === "timeline" && path) {
     const store = new JsonlEventStore(path);
     console.log(formatTimeline(await store.readAll()));
@@ -142,6 +163,7 @@ function printUsage(): void {
   console.error("       eventloom run research-pipeline [events.jsonl] [--resume]");
   console.error("       eventloom run human-ops [events.jsonl] [--resume]");
   console.error("       eventloom export pathlight <events.jsonl> --base-url <url> [--trace-name <name>]");
+  console.error("       eventloom export halo <events.jsonl> --out <traces.jsonl> [--project-id <id>] [--service-name <name>] [--trace-name <name>]");
   console.error("       eventloom timeline <events.jsonl>");
   console.error("       eventloom explain task <taskId> <events.jsonl>");
   console.error("       eventloom mailbox <actorId> <events.jsonl>");
@@ -164,6 +186,30 @@ function parseExportOptions(args: string[]): ExportOptions {
     if (flag === "--base-url") options.baseUrl = value;
     else if (flag === "--trace-name") options.traceName = value;
     else throw new Error("Unknown export option " + flag);
+    index += 1;
+  }
+  return options;
+}
+
+interface HaloExportOptions {
+  out: string;
+  projectId?: string;
+  serviceName?: string;
+  traceName?: string;
+}
+
+function parseHaloExportOptions(args: string[]): HaloExportOptions {
+  const options: HaloExportOptions = { out: "eventloom-halo-traces.jsonl" };
+  for (let index = 0; index < args.length; index += 1) {
+    const flag = args[index];
+    const value = args[index + 1];
+    if (!value) throw new Error("Missing value for " + flag);
+
+    if (flag === "--out") options.out = value;
+    else if (flag === "--project-id") options.projectId = value;
+    else if (flag === "--service-name") options.serviceName = value;
+    else if (flag === "--trace-name") options.traceName = value;
+    else throw new Error("Unknown HALO export option " + flag);
     index += 1;
   }
   return options;

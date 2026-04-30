@@ -18,7 +18,7 @@ import { createRuntime } from "@eventloom/runtime";
 const runtime = createRuntime("/tmp/eventloom.jsonl");
 ```
 
-`EventloomRuntime` is a small facade around the JSONL store, orchestrator, built-in workflow runners, replay helpers, and Pathlight export.
+`EventloomRuntime` is a small facade around the JSONL store, orchestrator, built-in workflow runners, replay helpers, and Pathlight/HALO export.
 
 ## Append External Events
 
@@ -154,6 +154,22 @@ await runtime.exportPathlight({
 
 Pathlight export includes integrity status, projection hash, projection kinds, thread IDs, runtime package metadata, and git provenance when available.
 
+## Export to HALO
+
+```ts
+import { formatHaloJsonl } from "@eventloom/runtime";
+
+const result = await runtime.exportHalo({
+  projectId: "eventloom",
+  serviceName: "eventloom-agent-work",
+  traceName: "eventloom-agent-work",
+});
+
+const jsonl = formatHaloJsonl(result);
+```
+
+HALO export projects the Eventloom log into OpenTelemetry-shaped JSONL spans with HALO's required `inference.*` attributes. The returned result includes the generated spans so callers can write them to disk or inspect them in tests.
+
 ## Lower-Level Exports
 
 The public package still exports the lower-level modules for advanced use:
@@ -165,4 +181,6 @@ The public package still exports the lower-level modules for advanced use:
 - `projectTasks`
 - `projectResearch`
 - `projectEffects`
+- `exportToHalo`
+- `formatHaloJsonl`
 - `exportToPathlight`

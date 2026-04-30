@@ -122,6 +122,18 @@ The runtime loop records actor execution with three event types:
 
 `actor.processed` marks a source event as processed so resumed runs skip it.
 
+Runtime actor turns may also emit telemetry events:
+
+- `tool.started`
+- `tool.completed`
+- `tool.failed`
+- `model.started`
+- `model.completed`
+- `model.failed`
+- `reasoning.summary`
+
+Model events record provider, model name, request identity, prompt/output summaries, token counts, cost, latency, and generation parameters when available. Tool events record tool name, call id, input, output, error, latency, and the related actor turn. `reasoning.summary` records safe rationale summaries, evidence event ids, alternatives considered, and confidence. Eventloom does not require or store hidden chain-of-thought.
+
 ## Integrity Hashes
 
 Every appended event is sealed with:

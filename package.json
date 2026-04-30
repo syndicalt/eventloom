@@ -1,6 +1,6 @@
 {
   "name": "@eventloom/runtime",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "type": "module",
   "description": "Append-only event-log runtime for multi-agent AI systems",
   "main": "./dist/index.js",
@@ -9,6 +9,10 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./export/halo": {
+      "types": "./dist/export/halo.d.ts",
+      "import": "./dist/export/halo.js"
     },
     "./export/pathlight": {
       "types": "./dist/export/pathlight.d.ts",
@@ -24,6 +28,7 @@
     "docs/cli-reference.md",
     "docs/user-guide.md",
     "docs/pathlight-integration.md",
+    "docs/halo-integration.md",
     "fixtures/sample.jsonl"
   ],
   "scripts": {
@@ -48,7 +53,8 @@
     "runtime",
     "multi-agent",
     "observability",
-    "pathlight"
+    "pathlight",
+    "halo"
   ],
   "repository": {
     "type": "git",

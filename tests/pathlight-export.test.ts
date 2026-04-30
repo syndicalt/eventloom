@@ -38,9 +38,9 @@ describe("Pathlight export", () => {
     });
 
     expect(result.traceId).toBe("trace_1");
-    expect(result.spanCount).toBe(5);
+    expect(result.spanCount).toBe(21);
     expect(calls.filter((call) => call.url === "http://pathlight.test/v1/traces")).toHaveLength(1);
-    expect(calls.filter((call) => call.url === "http://pathlight.test/v1/spans")).toHaveLength(5);
+    expect(calls.filter((call) => call.url === "http://pathlight.test/v1/spans")).toHaveLength(21);
     expect(calls.some((call) => call.url === "http://pathlight.test/v1/traces/trace_1")).toBe(true);
 
     const traceCreate = JSON.parse(String(calls[0].init.body));
@@ -58,12 +58,21 @@ describe("Pathlight export", () => {
       call.init.method === "PATCH" &&
       call.url.startsWith("http://pathlight.test/v1/spans/span_")
     ));
-    expect(spanPatches).toHaveLength(5);
+    expect(spanPatches).toHaveLength(21);
     for (const call of spanPatches) {
       const body = JSON.parse(String(call.init.body));
       expect(body.output.rejectedEvents).toBeUndefined();
       expect(body.output.rejectionEventIds).toBeUndefined();
     }
+
+    const spanCreates = calls
+      .filter((call) => call.url === "http://pathlight.test/v1/spans")
+      .map((call) => JSON.parse(String(call.init.body)));
+    expect(spanCreates.filter((span) => span.metadata.exportKind === "actor_turn")).toHaveLength(5);
+    expect(spanCreates.filter((span) => span.metadata.exportKind === "model_invocation")).toHaveLength(5);
+    expect(spanCreates.filter((span) => span.metadata.exportKind === "tool_invocation")).toHaveLength(5);
+    expect(spanCreates.filter((span) => span.metadata.exportKind === "reasoning_summary")).toHaveLength(5);
+    expect(spanCreates.filter((span) => span.metadata.exportKind === "journal_fact")).toHaveLength(1);
   });
 
   it("maps external task journals to task lifecycle spans when actor turns are absent", async () => {
@@ -90,22 +99,26 @@ describe("Pathlight export", () => {
       },
     });
 
-    expect(result).toMatchObject({ traceId: "trace_tasks", spanCount: 2, eventCount: 5 });
-    expect(calls.filter((call) => call.url === "http://pathlight.test/v1/spans")).toHaveLength(2);
+    expect(result).toMatchObject({ traceId: "trace_tasks", spanCount: 4, eventCount: 7 });
+    expect(calls.filter((call) => call.url === "http://pathlight.test/v1/spans")).toHaveLength(4);
 
     const spanCreates = calls
       .filter((call) => call.url === "http://pathlight.test/v1/spans")
       .map((call) => JSON.parse(String(call.init.body)));
-    expect(spanCreates).toMatchObject([
+    expect(spanCreates.slice(0, 2)).toMatchObject([
       { name: "task.task_docs", metadata: { exportKind: "task_lifecycle", taskStatus: "claimed" } },
       { name: "task.task_runtime", metadata: { exportKind: "task_lifecycle", taskStatus: "completed" } },
+    ]);
+    expect(spanCreates.slice(2)).toMatchObject([
+      { name: "goal.created", metadata: { exportKind: "journal_fact" } },
+      { name: "verification.completed", metadata: { exportKind: "journal_fact" } },
     ]);
 
     const spanPatches = calls.filter((call) => (
       call.init.method === "PATCH" &&
       call.url.startsWith("http://pathlight.test/v1/spans/task_span_")
     ));
-    expect(spanPatches).toHaveLength(2);
+    expect(spanPatches).toHaveLength(4);
     const output = JSON.parse(String(spanPatches[0].init.body)).output;
     expect(output).toMatchObject({ taskId: "task_docs", status: "claimed" });
   });
