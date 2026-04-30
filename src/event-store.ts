@@ -1,4 +1,4 @@
-import { mkdir, readFile, stat, appendFile } from "node:fs/promises";
+import { mkdir, readFile, stat, appendFile, open, unlink, type FileHandle } from "node:fs/promises";
 import { dirname } from "node:path";
 import { validateEvent, type EventEnvelope } from "./events.js";
 import { sealEvent, verifyEventChain, type IntegrityReport, type SealedEvent } from "./integrity.js";
@@ -11,17 +11,26 @@ export class EventStoreReadError extends Error {
   }
 }
 
+export class EventStoreLockError extends Error {
+  constructor(path: string) {
+    super(`Timed out waiting for event log lock ${path}.lock`);
+    this.name = "EventStoreLockError";
+  }
+}
+
 export class JsonlEventStore {
   constructor(private readonly path: string) {}
 
   async append(event: EventEnvelope): Promise<SealedEvent> {
     const validated = validateEvent(event);
-    const existing = await this.readAll();
-    const previousHash = existing.at(-1)?.integrity?.hash ?? null;
-    const sealed = sealEvent(validated, previousHash);
     await mkdir(dirname(this.path), { recursive: true });
-    await appendFile(this.path, JSON.stringify(sealed) + "\n", "utf8");
-    return sealed;
+    return withEventLogLock(this.path, async () => {
+      const existing = await this.readAll();
+      const previousHash = existing.at(-1)?.integrity?.hash ?? null;
+      const sealed = sealEvent(validated, previousHash);
+      await appendFile(this.path, JSON.stringify(sealed) + "\n", "utf8");
+      return sealed;
+    });
   }
 
   async readAll(): Promise<EventEnvelope[]> {
@@ -56,4 +65,36 @@ async function exists(path: string): Promise<boolean> {
 
 function isNodeError(error: unknown): error is NodeJS.ErrnoException {
   return error instanceof Error && "code" in error;
+}
+
+async function withEventLogLock<T>(path: string, run: () => Promise<T>): Promise<T> {
+  const lockPath = `${path}.lock`;
+  const lock = await acquireLock(lockPath);
+  try {
+    return await run();
+  } finally {
+    await lock.close();
+    await unlink(lockPath).catch((error: unknown) => {
+      if (!isNodeError(error) || error.code !== "ENOENT") throw error;
+    });
+  }
+}
+
+async function acquireLock(lockPath: string): Promise<FileHandle> {
+  const timeoutMs = 5_000;
+  const startedAt = Date.now();
+
+  while (true) {
+    try {
+      return await open(lockPath, "wx");
+    } catch (error) {
+      if (!isNodeError(error) || error.code !== "EEXIST") throw error;
+      if (Date.now() - startedAt > timeoutMs) throw new EventStoreLockError(lockPath.replace(/\.lock$/, ""));
+      await sleep(10);
+    }
+  }
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }

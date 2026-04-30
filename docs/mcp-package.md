@@ -443,6 +443,6 @@ Avoid real network listeners in package tests; sandboxed environments may reject
 
 Remaining adoption work:
 
-- Codex-style local MCP configuration guide.
-- Claude Desktop local MCP configuration guide.
-- Direct MCP inspector smoke-test instructions.
+- Dogfood a fresh editor configuration from the published `@eventloom/mcp` package after each release.
+- Keep Codex, Claude Desktop, and MCP inspector setup snippets current as MCP client conventions change.
+- Add screenshots or transcript excerpts if a client-specific setup step becomes ambiguous.

@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import { describe, expect, it } from "vitest";
 import { JsonlEventStore, EventStoreReadError } from "../src/event-store.js";
 import { createEvent } from "../src/events.js";
+import { verifyEventChain } from "../src/integrity.js";
 
 describe("JsonlEventStore", () => {
   it("appends and reloads validated events", async () => {
@@ -23,6 +24,25 @@ describe("JsonlEventStore", () => {
 
     expect(sealed.integrity.previousHash).toBeNull();
     await expect(store.readAll()).resolves.toEqual([sealed]);
+  });
+
+  it("preserves hash-chain integrity under concurrent appends", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "eventloom-store-"));
+    const store = new JsonlEventStore(join(dir, "events.jsonl"));
+
+    await Promise.all(Array.from({ length: 50 }, (_, index) => store.append(createEvent({
+      id: `evt_concurrent_${index}`,
+      type: "task.proposed",
+      actorId: "codex",
+      threadId: "thread_main",
+      parentEventId: null,
+      timestamp: `2026-04-28T22:00:${String(index).padStart(2, "0")}.000Z`,
+      payload: { taskId: `task_concurrent_${index}`, title: `Concurrent append ${index}` },
+    }))));
+
+    const events = await store.readAll();
+    expect(events).toHaveLength(50);
+    expect(verifyEventChain(events)).toEqual({ ok: true, errors: [] });
   });
 
   it("returns an empty list for a missing log", async () => {

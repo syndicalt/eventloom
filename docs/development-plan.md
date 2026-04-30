@@ -231,32 +231,47 @@ Sprints 0-6 are implemented for the local prototype:
 - Git/project provenance and projection metadata in Pathlight exports.
 - Documented package API around runtime primitives.
 - Agent adoption docs and Codex skill workflow for local Eventloom journaling.
-- MCP package in `packages/mcp` with append, replay, timeline, task explanation, built-in workflow, and Pathlight export tools.
-- MCP package tests for tool adapters, path safety, stdio smoke coverage, and Pathlight export behavior.
+- MCP package in `packages/mcp` with append, replay, timeline, task explanation, built-in workflow, Pathlight export, and HALO export tools.
+- MCP package tests for tool adapters, path safety, stdio smoke coverage, Pathlight export behavior, and HALO JSONL export behavior.
 - Stable built-in workflow mailbox API and MCP `eventloom_mailbox` tool.
+- Runtime telemetry export for model, tool, and reasoning-summary events.
+- Cross-process append locking for local JSONL logs so concurrent clients preserve hash-chain integrity.
 
 ## Next Milestones
 
 ### Phase 4: Client Setup And Adoption
 
-Goal: make the shipped agent and MCP workflows easy to configure in real editors and agent clients.
+Status: implemented.
 
-Deliverables:
+Delivered:
 
 - Codex MCP setup guide that points at `@eventloom/mcp` or a local checkout.
 - Claude Desktop MCP setup guide.
 - Direct MCP inspector smoke-test instructions.
 - Public docs and site updates for the MCP package and agent workflow.
+- Published `@eventloom/mcp@0.1.4` with Pathlight and HALO export tools.
 
 Verification: a fresh local client can append events, replay a log, inspect task state, and run the MCP stdio server using documented setup only.
 
-### Phase 5: Roadmap Selection
+### Phase 5: Dogfood Trace And Handoff Quality
 
-Goal: choose the next runtime or integration milestone now that the local runtime, package API, Pathlight export, agent workflow, and MCP adapter are usable.
+Goal: use Eventloom on real agent work and make the resulting handoff useful without reading raw JSONL.
+
+Deliverables:
+
+- Canonical `.eventloom/agent-work.jsonl` dogfood trace generated through documented CLI or MCP paths.
+- HALO JSONL export and Pathlight export examples from the same trace.
+- Richer handoff summaries over `.eventloom/agent-work.jsonl`.
+- Documentation that explains what HALO and Pathlight each show well for the same Eventloom journal.
+
+Verification: one real dogfood trace can be replayed, summarized, exported to HALO, and exported to Pathlight without integrity errors.
+
+### Phase 6: Storage And UI Decision
+
+Goal: decide whether the next product surface needs indexed storage, a Pathlight dashboard affordance, or another workflow family.
 
 Candidates:
 
-- Richer handoff summaries over `.eventloom/agent-work.jsonl`.
 - SQLite/libSQL store spike for indexed local queries.
 - Pathlight dashboard affordance if generic trace/span views are not enough.
 - Additional workflow families beyond software-work, research-pipeline, and human-ops.

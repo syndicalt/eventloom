@@ -194,3 +194,5 @@ The original prototype roadmap is implemented:
 - Model, tool, and reasoning telemetry export
 - Agent integration workflow and Codex skill
 - MCP stdio server package
+- MCP Pathlight and HALO export tools
+- Cross-process append locking for local JSONL logs
