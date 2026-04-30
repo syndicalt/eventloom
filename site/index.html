@@ -3,22 +3,22 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Eventloom - event-sourced runtime for AI agents</title>
-  <meta name="description" content="Eventloom is a local-first TypeScript runtime for AI agents built around append-only event logs, validated actor intentions, deterministic replay, MCP tooling, Pathlight export, and HALO trace export." />
-  <meta property="og:title" content="Eventloom - event-sourced runtime for AI agents" />
-  <meta property="og:description" content="Append-only logs, validated actor intentions, deterministic replay, MCP tooling, Pathlight export, and HALO trace export for AI agent systems." />
+  <title>Eventloom - replayable logs for AI agents</title>
+  <meta name="description" content="Eventloom is a local-first event log and runtime layer for AI agents. Run it alongside your agents to capture immutable work history, replay state, debug handoffs, and export traces to Pathlight or HALO." />
+  <meta property="og:title" content="Eventloom - replayable logs for AI agents" />
+  <meta property="og:description" content="A local-first black box recorder for AI agents: immutable event logs, deterministic replay, richer handoffs, MCP tooling, Pathlight export, and HALO trace export." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://syndicalt.github.io/eventloom/" />
-  <meta property="og:image" content="https://syndicalt.github.io/eventloom/assets/hero.png" />
+  <meta property="og:image" content="https://syndicalt.github.io/eventloom/assets/hero-product.png" />
   <meta property="og:image:width" content="1920" />
   <meta property="og:image:height" content="1080" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Eventloom - event-sourced runtime for AI agents" />
-  <meta name="twitter:description" content="Append-only logs, validated actor intentions, deterministic replay, MCP tooling, Pathlight export, and HALO trace export for AI agent systems." />
-  <meta name="twitter:image" content="https://syndicalt.github.io/eventloom/assets/hero.png" />
+  <meta name="twitter:title" content="Eventloom - replayable logs for AI agents" />
+  <meta name="twitter:description" content="Run Eventloom alongside agents to capture immutable event logs, replay state, and export debugging traces." />
+  <meta name="twitter:image" content="https://syndicalt.github.io/eventloom/assets/hero-product.png" />
   <link rel="canonical" href="https://syndicalt.github.io/eventloom/" />
-  <link rel="preload" as="image" href="assets/hero.png" />
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 7h16M4 12h16M4 17h16' stroke='%230f172a' stroke-width='2' stroke-linecap='round'/%3E%3Ccircle cx='7' cy='7' r='2' fill='%2314b8a6'/%3E%3Ccircle cx='12' cy='12' r='2' fill='%23f59e0b'/%3E%3Ccircle cx='17' cy='17' r='2' fill='%23ef4444'/%3E%3C/svg%3E" />
+  <link rel="preload" as="image" href="assets/hero-product.png" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 7h16M4 12h16M4 17h16' stroke='%230f172a' stroke-width='2' stroke-linecap='round'/%3E%3Ccircle cx='7' cy='7' r='2' fill='%2314b8a6'/%3E%3Ccircle cx='12' cy='12' r='2' fill='%232563eb'/%3E%3Ccircle cx='17' cy='17' r='2' fill='%23f59e0b'/%3E%3C/svg%3E" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -28,6 +28,8 @@
       Eventloom
     </a>
     <div class="nav-links">
+      <a href="#why">Why</a>
+      <a href="#how">How</a>
       <a href="#install">Install</a>
       <a href="https://github.com/syndicalt/eventloom#readme">Docs</a>
       <a class="nav-cta" href="https://github.com/syndicalt/eventloom">GitHub</a>
@@ -36,170 +38,186 @@
 
   <main>
     <section class="hero" id="top">
-      <div class="hero-bg" aria-hidden="true">
-        <div class="event-lane lane-a">
-          <span>goal.created</span>
-          <span>task.proposed</span>
-          <span>task.claimed</span>
-          <span>task.completed</span>
-        </div>
-        <div class="event-lane lane-b">
-          <span>actor.started</span>
-          <span>intent.accepted</span>
-          <span>review.requested</span>
-          <span>review.approved</span>
-        </div>
-        <div class="event-lane lane-c">
-          <span>research.question</span>
-          <span>source.found</span>
-          <span>claim.extracted</span>
-          <span>report.finalized</span>
-        </div>
-      </div>
-
+      <div class="hero-media" aria-hidden="true"></div>
       <div class="hero-inner">
-        <p class="eyebrow">MIT &middot; local-first &middot; TypeScript</p>
-        <h1>Event-sourced runtime for AI agents.</h1>
+        <p class="eyebrow">Local-first runtime trace layer</p>
+        <h1>Replayable logs <span class="desktop-break">for</span> AI agents.</h1>
         <p class="tagline">
-          Eventloom turns agent execution into an append-only event log with validated actor intentions,
-          deterministic replay, tamper-evident integrity, MCP tooling, and optional Pathlight and HALO export.
+          Eventloom is a black box recorder for agent work. It captures goals, tasks,
+          model calls, tool calls, decisions, verification, and handoffs as an immutable
+          event log you can replay, inspect, and export.
         </p>
+        <div class="answer-row" aria-label="What Eventloom does">
+          <span>Runs beside your agents</span>
+          <span>Writes append-only JSONL</span>
+          <span>Rebuilds state from events</span>
+        </div>
         <div class="cta-row">
-          <a class="btn btn-primary" href="#install">Get started</a>
-          <a class="btn btn-secondary" href="https://www.npmjs.com/package/@eventloom/runtime">npm package</a>
+          <a class="btn btn-primary" href="#install">Start logging locally</a>
+          <a class="btn btn-secondary" href="https://github.com/syndicalt/eventloom/blob/master/docs/agent-integration.md">Agent integration guide</a>
         </div>
       </div>
     </section>
 
     <section class="proof-strip" aria-label="Project links">
       <a href="https://www.npmjs.com/package/@eventloom/runtime">@eventloom/runtime</a>
+      <a href="https://www.npmjs.com/package/@eventloom/mcp">@eventloom/mcp</a>
       <a href="https://github.com/syndicalt/eventloom">syndicalt/eventloom</a>
-      <a href="https://github.com/syndicalt/eventloom/blob/master/LICENSE">MIT licensed</a>
       <a href="https://github.com/syndicalt/eventloom/tree/master/docs">Documentation</a>
     </section>
 
-    <section class="features" aria-label="Features">
-      <article class="feature">
-        <p class="eyebrow">Event log</p>
-        <h2>Tamper-evident agent history</h2>
+    <section class="explain" id="why" aria-label="Why Eventloom">
+      <div class="section-heading">
+        <p class="eyebrow">What it is</p>
+        <h2>A durable work journal for agent systems.</h2>
         <p>
-          Every accepted event is sealed into a JSONL hash chain. You can append external human approvals,
-          replay old runs, and verify that runtime history still matches the recorded contents.
+          Chat transcripts are useful for reading a conversation, but they are a weak
+          source of truth for autonomous work. Eventloom records the operational facts
+          around an agent run so you can answer what happened after the run is over.
+        </p>
+      </div>
+      <div class="value-grid">
+        <article>
+          <h3>What did the agent do?</h3>
+          <p>Goals, task lifecycle, decisions, model calls, tool calls, and verification are typed events instead of loose prose.</p>
+        </article>
+        <article>
+          <h3>Can we trust the history?</h3>
+          <p>Every append is sealed into a hash chain, so replay can detect edits, truncation, or reordered history.</p>
+        </article>
+        <article>
+          <h3>Can another agent resume?</h3>
+          <p>Handoff summaries rebuild active tasks, completed work, evidence, observability gaps, and next actions from the log.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="alongside" aria-label="Run alongside agents">
+      <div class="split-copy">
+        <p class="eyebrow">Why run it alongside agents?</p>
+        <h2>Keep the agent stack you have. Add a replayable source of truth.</h2>
+        <p>
+          Eventloom does not replace your LLM provider, framework, editor, or observability
+          tool. It sits next to them as a small local runtime and event journal. Agents and
+          MCP clients append facts as they work; Eventloom verifies, replays, summarizes, and exports.
+        </p>
+      </div>
+      <div class="flow-panel" aria-label="Agent flow">
+        <div class="flow-step">
+          <span>1</span>
+          <strong>Agent works</strong>
+          <p>Planner, coder, reviewer, or research actor takes a step.</p>
+        </div>
+        <div class="flow-step">
+          <span>2</span>
+          <strong>Eventloom records</strong>
+          <p>Typed events capture task state, tools, models, reasoning summaries, and evidence.</p>
+        </div>
+        <div class="flow-step">
+          <span>3</span>
+          <strong>Replay explains</strong>
+          <p>Projections rebuild current state, mailbox items, handoff summaries, and trace exports.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="benefits" aria-label="Benefits">
+      <article>
+        <p class="eyebrow">Debugging</p>
+        <h2>Stop guessing from the final answer.</h2>
+        <p>
+          Trace the tool calls, model telemetry, verification commands, and decisions that
+          led to a result. Export the same log to Pathlight for visual inspection or HALO
+          for failure-mode analysis.
         </p>
       </article>
-
-      <article class="feature">
-        <p class="eyebrow">Runtime contract</p>
-        <h2>Actors emit intentions, not mutations</h2>
-        <p>
-          Actors receive mailbox items and submit structured intentions. The orchestrator validates them
-          before anything reaches the log, keeping workflow state explainable and auditable.
-        </p>
-      </article>
-
-      <article class="feature">
+      <article>
         <p class="eyebrow">Replay</p>
-        <h2>Deterministic projections</h2>
+        <h2>Rebuild state without rerunning the agent.</h2>
         <p>
-          Task, research, effect, and actor mailbox state rebuild from the log. A replay gives you
-          event counts, integrity status, projections, and a deterministic projection hash for comparison.
+          Deterministic projections rebuild tasks, research state, approvals, effects, and
+          actor mailboxes from the immutable log. That makes handoffs and audits less dependent
+          on a long conversational transcript.
+        </p>
+      </article>
+      <article>
+        <p class="eyebrow">Control</p>
+        <h2>Validate intentions before state changes.</h2>
+        <p>
+          Eventloom's runtime pattern lets actors emit structured intentions. The orchestrator
+          validates those intentions before appending accepted events, keeping workflow state
+          explicit and inspectable.
         </p>
       </article>
     </section>
 
-    <section class="diagram" aria-label="Runtime flow">
-      <div class="diagram-copy">
-        <p class="eyebrow">How it runs</p>
-        <h2>A small runtime loop with inspectable state.</h2>
-        <p>
-          Eventloom is intentionally boring infrastructure: local files, typed events, deterministic
-          reducers, and a CLI you can run before adding databases, queues, or dashboards.
-        </p>
+    <section class="how" id="how" aria-label="How Eventloom works">
+      <div class="section-heading">
+        <p class="eyebrow">How it works</p>
+        <h2>Append facts. Replay projections. Export traces.</h2>
       </div>
       <div class="runtime-flow">
-        <div class="node">Actor</div>
-        <div class="arrow">intent</div>
-        <div class="node">Orchestrator</div>
-        <div class="arrow">event</div>
-        <div class="node">JSONL log</div>
+        <div class="node">Agent step</div>
+        <div class="arrow">append</div>
+        <div class="node">Immutable JSONL</div>
         <div class="arrow">replay</div>
-        <div class="node">Projection</div>
+        <div class="node">Projected state</div>
+        <div class="arrow">export</div>
+        <div class="node">Pathlight / HALO</div>
       </div>
     </section>
 
     <section class="install" id="install">
       <div class="section-heading">
         <p class="eyebrow">Install</p>
-        <h2>Start from npm.</h2>
+        <h2>Start with a local log file.</h2>
+        <p>
+          No hosted service, database, or daemon is required. Use the CLI directly or expose
+          the same operations to agent clients through the MCP package.
+        </p>
       </div>
       <div class="install-grid">
         <article class="install-card">
           <h3>CLI</h3>
           <pre><code>npm install @eventloom/runtime
-npx eventloom run software-work /tmp/eventloom.jsonl
-npx eventloom replay /tmp/eventloom.jsonl</code></pre>
-        </article>
-        <article class="install-card">
-          <h3>TypeScript</h3>
-          <pre><code>import { createRuntime } from "@eventloom/runtime";
-
-const runtime = createRuntime("/tmp/eventloom.jsonl");
-await runtime.runBuiltIn("research-pipeline");
-
-const replay = await runtime.replay();
-console.log(replay.integrity.ok);</code></pre>
-        </article>
-        <article class="install-card">
-          <h3>HALO</h3>
-          <pre><code>npx eventloom export halo .eventloom/agent-work.jsonl \
-  --out eventloom-halo-traces.jsonl \
-  --project-id eventloom</code></pre>
+npx eventloom append .eventloom/agent-work.jsonl \
+  goal.created --actor user \
+  --payload '{"title":"Ship the feature"}'
+npx eventloom handoff .eventloom/agent-work.jsonl</code></pre>
         </article>
         <article class="install-card">
           <h3>MCP</h3>
           <pre><code>npx @eventloom/mcp --root .
 
-# tools include append, replay,
-# timeline, task explanation,
-# mailbox, handoff, workflows,
-# Pathlight, and HALO export</code></pre>
+# tools: append, replay, timeline,
+# explain task, mailbox, handoff,
+# built-in workflows, Pathlight, HALO</code></pre>
+        </article>
+        <article class="install-card">
+          <h3>TypeScript</h3>
+          <pre><code>import { createRuntime } from "@eventloom/runtime";
+
+const runtime = createRuntime(".eventloom/run.jsonl");
+await runtime.runBuiltIn("software-work");
+const replay = await runtime.replay();</code></pre>
         </article>
       </div>
     </section>
 
-    <section class="agents">
+    <section class="exports">
       <div>
-        <p class="eyebrow">Agent integration</p>
-        <h2>Teach coding agents to leave a replayable trail.</h2>
+        <p class="eyebrow">Observability</p>
+        <h2>One journal, multiple inspection surfaces.</h2>
         <p>
-          Eventloom now includes a repo-local Codex skill for recording agent goals, task lifecycle
-          events, handoffs, verification, and replay summaries into a local JSONL log.
-          The MCP package exposes the same local log operations to editors and agent clients over stdio,
-          including rebuilt actor mailboxes through <code>eventloom_mailbox</code> and HALO JSONL export through
-          <code>eventloom_export_halo</code>.
+          Keep the canonical record local, then export when useful. Eventloom can turn
+          agent journals into Pathlight traces or HALO-compatible OpenTelemetry JSONL
+          without mutating the original log.
         </p>
       </div>
       <div class="agent-links">
-        <a class="btn btn-primary" href="https://github.com/syndicalt/eventloom/tree/master/.agents/skills/eventloom">Codex skill</a>
-        <a class="btn btn-secondary" href="https://github.com/syndicalt/eventloom/blob/master/docs/agent-integration.md">Agent guide</a>
-        <a class="btn btn-secondary" href="https://github.com/syndicalt/eventloom/blob/master/docs/mcp-setup.md">MCP setup</a>
-        <a class="btn btn-secondary" href="https://github.com/syndicalt/eventloom/blob/master/docs/mcp-package.md">MCP package</a>
-      </div>
-    </section>
-
-    <section class="pathlight">
-      <div>
-        <p class="eyebrow">Optional bridge</p>
-        <h2>Export runs to Pathlight and HALO.</h2>
-        <p>
-          Eventloom can translate actor turns and related runtime events into Pathlight traces,
-          spans, and span events for visual inspection. It can also project local Eventloom logs
-          into HALO-compatible OpenTelemetry JSONL for agent failure-mode analysis.
-        </p>
-      </div>
-      <div class="agent-links">
-        <a class="btn btn-secondary" href="https://syndicalt.github.io/pathlight/">Open Pathlight</a>
+        <a class="btn btn-secondary" href="https://github.com/syndicalt/eventloom/blob/master/docs/pathlight-integration.md">Pathlight guide</a>
         <a class="btn btn-secondary" href="https://github.com/syndicalt/eventloom/blob/master/docs/halo-integration.md">HALO guide</a>
+        <a class="btn btn-secondary" href="https://github.com/syndicalt/eventloom/blob/master/docs/user-guide.md">User guide</a>
       </div>
     </section>
   </main>
