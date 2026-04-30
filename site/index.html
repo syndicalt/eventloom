@@ -29,6 +29,7 @@
     </a>
     <div class="nav-links">
       <a href="#why">Why</a>
+      <a href="#demo">Demo</a>
       <a href="#how">How</a>
       <a href="#install">Install</a>
       <a href="https://github.com/syndicalt/eventloom#readme">Docs</a>
@@ -54,6 +55,7 @@
         </div>
         <div class="cta-row">
           <a class="btn btn-primary" href="#install">Start logging locally</a>
+          <a class="btn btn-secondary" href="#demo">Watch the demo</a>
           <a class="btn btn-secondary" href="https://github.com/syndicalt/eventloom/blob/master/docs/agent-integration.md">Agent integration guide</a>
         </div>
       </div>
@@ -64,6 +66,96 @@
       <a href="https://www.npmjs.com/package/@eventloom/mcp">@eventloom/mcp</a>
       <a href="https://github.com/syndicalt/eventloom">syndicalt/eventloom</a>
       <a href="https://github.com/syndicalt/eventloom/tree/master/docs">Documentation</a>
+    </section>
+
+    <section class="demo" id="demo" aria-label="Quick product demo">
+      <div class="demo-copy">
+        <p class="eyebrow">Quick demo</p>
+        <h2>See what Eventloom adds to an agent run.</h2>
+        <p>
+          In this example a coding agent is fixing release checks. Eventloom runs beside it,
+          records the operational facts, then turns the log into replay and handoff output
+          another agent or human can inspect.
+        </p>
+        <div class="demo-controls" role="tablist" aria-label="Demo steps">
+          <button class="demo-tab is-active" type="button" role="tab" aria-selected="true" aria-controls="demo-capture" data-demo-tab="capture">
+            Capture
+          </button>
+          <button class="demo-tab" type="button" role="tab" aria-selected="false" aria-controls="demo-replay" data-demo-tab="replay">
+            Replay
+          </button>
+          <button class="demo-tab" type="button" role="tab" aria-selected="false" aria-controls="demo-handoff" data-demo-tab="handoff">
+            Handoff
+          </button>
+        </div>
+      </div>
+
+      <div class="demo-shell">
+        <div class="demo-bar">
+          <span></span>
+          <span></span>
+          <span></span>
+          <strong>.eventloom/agent-work.jsonl</strong>
+        </div>
+
+        <div class="demo-pane is-active" id="demo-capture" role="tabpanel" data-demo-pane="capture">
+          <div class="demo-caption">
+            <strong>1. Capture the work as typed events</strong>
+            <span>Every important step becomes an append-only fact.</span>
+          </div>
+          <div class="event-stream">
+            <div><code>goal.created</code><span>Ship runtime 0.1.6</span></div>
+            <div><code>task.claimed</code><span>Enrich trace logging output</span></div>
+            <div><code>model.completed</code><span>tokens=300 latencyMs=880</span></div>
+            <div><code>tool.completed</code><span>npm test exitCode=0 results=55</span></div>
+            <div><code>verification.completed</code><span>pass=5 fail=0 evidence=tool_tests</span></div>
+          </div>
+        </div>
+
+        <div class="demo-pane" id="demo-replay" role="tabpanel" data-demo-pane="replay" hidden>
+          <div class="demo-caption">
+            <strong>2. Replay without rerunning the agent</strong>
+            <span>Eventloom rebuilds state from the immutable log.</span>
+          </div>
+          <pre class="terminal"><code>$ npx eventloom replay .eventloom/agent-work.jsonl
+{
+  "integrity": { "ok": true },
+  "eventCount": 10,
+  "tasks": {
+    "task_rich_output": {
+      "status": "completed",
+      "lastActor": "codex"
+    }
+  },
+  "projectionHash": "02727f4d..."
+}</code></pre>
+        </div>
+
+        <div class="demo-pane" id="demo-handoff" role="tabpanel" data-demo-pane="handoff" hidden>
+          <div class="demo-caption">
+            <strong>3. Hand off the run with evidence</strong>
+            <span>The next agent sees what changed, what passed, and what is missing.</span>
+          </div>
+          <div class="handoff-card">
+            <div>
+              <span>model telemetry</span>
+              <strong>openai/gpt-test tokens=300 prompt=eventloom.rich-output.v1</strong>
+            </div>
+            <div>
+              <span>tool telemetry</span>
+              <strong>npm test exitCode=0 results=55 decisive=true</strong>
+            </div>
+            <div>
+              <span>verification</span>
+              <strong>runtime tests, MCP tests, build, diff check all passed</strong>
+            </div>
+            <div>
+              <span>observability gaps</span>
+              <strong>none</strong>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <section class="explain" id="why" aria-label="Why Eventloom">
@@ -230,5 +322,22 @@ const replay = await runtime.replay();</code></pre>
       <a href="https://github.com/syndicalt/eventloom/tree/master/docs">Docs</a>
     </span>
   </footer>
+  <script>
+    for (const tab of document.querySelectorAll("[data-demo-tab]")) {
+      tab.addEventListener("click", () => {
+        const selected = tab.getAttribute("data-demo-tab");
+        for (const item of document.querySelectorAll("[data-demo-tab]")) {
+          const isActive = item.getAttribute("data-demo-tab") === selected;
+          item.classList.toggle("is-active", isActive);
+          item.setAttribute("aria-selected", String(isActive));
+        }
+        for (const pane of document.querySelectorAll("[data-demo-pane]")) {
+          const isActive = pane.getAttribute("data-demo-pane") === selected;
+          pane.classList.toggle("is-active", isActive);
+          pane.hidden = !isActive;
+        }
+      });
+    }
+  </script>
 </body>
 </html>

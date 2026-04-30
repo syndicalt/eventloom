@@ -233,12 +233,187 @@ h3 {
 }
 
 .explain,
+.demo,
 .alongside,
 .benefits,
 .how,
 .install,
 .exports {
   padding: 76px clamp(20px, 5vw, 72px);
+}
+
+.demo {
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(420px, 1.18fr);
+  gap: 44px;
+  align-items: center;
+  min-width: 0;
+  background: #fff;
+  border-bottom: 1px solid var(--line);
+}
+
+.demo-copy p {
+  max-width: 650px;
+  color: var(--muted);
+}
+
+.demo-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.demo-tab {
+  min-height: 40px;
+  padding: 9px 13px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--copy);
+  background: #fff;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.demo-tab.is-active {
+  color: #fff;
+  background: var(--ink);
+  border-color: var(--ink);
+}
+
+.demo-shell {
+  overflow: hidden;
+  min-width: 0;
+  max-width: 100%;
+  border: 1px solid #cfd8e6;
+  border-radius: 8px;
+  background: #0f172a;
+  box-shadow: var(--shadow);
+}
+
+.demo-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 0 16px;
+  color: #a8b4c7;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 0.82rem;
+}
+
+.demo-bar span {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--red);
+}
+
+.demo-bar span:nth-child(2) {
+  background: var(--amber);
+}
+
+.demo-bar span:nth-child(3) {
+  background: var(--teal);
+}
+
+.demo-bar strong {
+  margin-left: 8px;
+  font-weight: 700;
+}
+
+.demo-pane {
+  min-height: 420px;
+  padding: 24px;
+  color: #e5edf8;
+}
+
+.demo-caption {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 18px;
+}
+
+.demo-caption strong {
+  color: #fff;
+  font-size: 1.05rem;
+}
+
+.demo-caption span {
+  color: #a8b4c7;
+}
+
+.event-stream {
+  display: grid;
+  gap: 10px;
+}
+
+.event-stream div,
+.handoff-card div {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-left: 5px solid var(--teal);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.event-stream div:nth-child(3),
+.handoff-card div:nth-child(1) {
+  border-left-color: var(--blue);
+}
+
+.event-stream div:nth-child(4),
+.handoff-card div:nth-child(2) {
+  border-left-color: var(--amber);
+}
+
+.event-stream div:nth-child(5),
+.handoff-card div:nth-child(3) {
+  border-left-color: var(--red);
+}
+
+.event-stream code {
+  color: #dbeafe;
+  font-size: 0.84rem;
+}
+
+.event-stream span,
+.handoff-card strong {
+  color: #f8fafc;
+  font-size: 0.92rem;
+}
+
+.terminal {
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 8px;
+  background: rgba(3, 7, 18, 0.58);
+}
+
+.terminal code {
+  color: #e5edf8;
+  font-size: 0.86rem;
+}
+
+.handoff-card {
+  display: grid;
+  gap: 10px;
+}
+
+.handoff-card div {
+  grid-template-columns: 150px minmax(0, 1fr);
+}
+
+.handoff-card span {
+  color: #a8b4c7;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 0.78rem;
 }
 
 .section-heading {
@@ -448,6 +623,7 @@ footer span:last-child {
 
   .proof-strip,
   .value-grid,
+  .demo,
   .alongside,
   .benefits,
   .install-grid {
@@ -508,6 +684,7 @@ footer span:last-child {
 
   .hero-inner,
   .section-heading,
+  .demo-copy,
   .split-copy,
   .exports > div {
     max-width: 330px;
@@ -525,6 +702,17 @@ footer span:last-child {
 
   .flow-step {
     grid-template-columns: 1fr;
+  }
+
+  .demo-pane {
+    min-height: auto;
+    padding: 18px;
+  }
+
+  .event-stream div,
+  .handoff-card div {
+    grid-template-columns: 1fr;
+    gap: 6px;
   }
 
   .flow-step span {
