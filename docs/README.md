@@ -13,7 +13,7 @@ Eventloom is documented in two layers:
 - [Agent Integration](agent-integration.md): use Eventloom as a replayable event journal for coding agents.
 - [MCP Package Design](mcp-package.md): `@eventloom/mcp` package scope, tool contracts, and safety model.
 - [MCP Setup](mcp-setup.md): configure Eventloom MCP in Codex, Claude Desktop, or the MCP inspector.
-- [Pathlight Integration](pathlight-integration.md): export Eventloom runs into Pathlight traces.
+- [Pathlight Integration](pathlight-integration.md): export Eventloom runs into Pathlight traces and view Capture, Replay, and Handoff panels in the Pathlight dashboard.
 - [HALO Integration](halo-integration.md): export Eventloom logs to HALO-compatible OpenTelemetry JSONL traces.
 - [Agent Work Export Case Study](case-studies/agent-work-pathlight.md): export a real agent journal to Pathlight and HALO.
 

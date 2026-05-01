@@ -81,6 +81,8 @@
           This runs entirely in your browser. Drop in an Eventloom JSONL log, paste the JSON output
           from <code>eventloom visualize</code>, or load the sample, and the visualizer projects the same
           story: what was captured, what replay rebuilt, and what a handoff should say next.
+          Export the same log to Pathlight and those Capture, Replay, and Handoff views render
+          directly on the trace detail page above the normal span waterfall.
         </p>
       </div>
 
@@ -206,8 +208,8 @@
         <h2>Stop guessing from the final answer.</h2>
         <p>
           Trace the tool calls, model telemetry, verification commands, and decisions that
-          led to a result. Export the same log to Pathlight for visual inspection or HALO
-          for failure-mode analysis.
+          led to a result. Export the same log to Pathlight for Capture, Replay, and
+          Handoff panels beside the span waterfall, or to HALO for failure-mode analysis.
         </p>
       </article>
       <article>
@@ -290,9 +292,13 @@ const visualizer = await runtime.visualize();</code></pre>
         <h2>One journal, multiple inspection surfaces.</h2>
         <p>
           Keep the canonical record local, then export when useful. Eventloom can turn
-          agent journals into Pathlight traces or HALO-compatible OpenTelemetry JSONL
-          without mutating the original log.
+          agent journals into Pathlight traces with native Eventloom visualizer panels,
+          or HALO-compatible OpenTelemetry JSONL without mutating the original log.
         </p>
+        <pre><code>npm run eventloom -- run software-work /tmp/eventloom-pathlight-viz.jsonl
+npm run eventloom -- export pathlight /tmp/eventloom-pathlight-viz.jsonl \
+  --base-url http://localhost:4100 \
+  --trace-name eventloom-pathlight-viz</code></pre>
       </div>
       <div class="agent-links">
         <a class="btn btn-secondary" href="https://github.com/syndicalt/eventloom/blob/master/docs/pathlight-integration.md">Pathlight guide</a>

@@ -80,7 +80,45 @@ Expected result:
 - The local `visualize` command prints top-level `capture`, `replay`, and `handoff` keys.
 - The Pathlight trace metadata includes `visualizer.version: "eventloom.pathlight.visualizer.v1"`.
 - The final Pathlight trace output includes `visualizer.capture`, `visualizer.replay`, and `visualizer.handoff`.
+- The Pathlight trace detail page renders an Eventloom panel above Trace Input and Trace Output with Capture, Replay, and Handoff tabs.
 - The Eventloom JSONL file is unchanged by both commands.
+
+## View In Pathlight
+
+Start Pathlight first. With Docker:
+
+```bash
+cd /path/to/pathlight
+docker compose up -d
+```
+
+Or with local dev servers:
+
+```bash
+cd /path/to/pathlight
+npm run dev -w packages/collector
+npm run dev -w apps/web
+```
+
+Then export an Eventloom run:
+
+```bash
+cd /path/to/eventloom
+npm run eventloom -- run software-work /tmp/eventloom-pathlight-viz.jsonl
+npm run eventloom -- export pathlight /tmp/eventloom-pathlight-viz.jsonl \
+  --base-url http://localhost:4100 \
+  --trace-name eventloom-pathlight-viz
+```
+
+Open <http://localhost:3100>, then open the `eventloom-pathlight-viz` trace. You should see:
+
+- An Eventloom panel with `Events`, `Integrity`, and `Active` summary counters.
+- A Capture tab with ordered event facts and event type counts.
+- A Replay tab with hash-chain integrity, projection state, and projection hash.
+- A Handoff tab with active/completed tasks, model/tool/reasoning telemetry, verification, observability gaps, and next actions.
+- The standard Pathlight waterfall below the Eventloom panel for actor, model, tool, reasoning, and journal-fact spans.
+
+Pathlight intentionally skips keyword-only issue detection for Eventloom structured spans. Eventloom spans still show as issues when the span status is `failed` or the span has a real error field.
 
 ## Trace Metadata
 

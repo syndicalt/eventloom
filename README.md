@@ -50,6 +50,8 @@ npx eventloom export pathlight .eventloom/agent-work.jsonl \
   --trace-name eventloom-agent-work
 ```
 
+Pathlight now renders Eventloom exports as a dedicated visualizer panel on the trace detail page. The panel shows the same Capture, Replay, and Handoff views produced by `eventloom visualize`, while the normal Pathlight waterfall remains available for span-level timing and inspection.
+
 Optional HALO export for agent failure-mode analysis:
 
 ```bash
