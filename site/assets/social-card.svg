@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Eventloom social card</title>
+  <desc id="desc">Dark Eventloom runtime trace layer card with event rows, replay state, and export labels.</desc>
+  <rect width="1200" height="630" fill="#05070b"/>
+  <g opacity="0.16" stroke="#becee2" stroke-width="1">
+    <path d="M88 0v630M232 0v630M376 0v630M520 0v630M664 0v630M808 0v630M952 0v630M1096 0v630"/>
+    <path d="M0 84h1200M0 228h1200M0 372h1200M0 516h1200"/>
+  </g>
+  <rect x="70" y="74" width="1060" height="482" rx="18" fill="#0b111b" stroke="#344257"/>
+  <g transform="translate(104 108)">
+    <rect width="458" height="332" rx="12" fill="#111827" stroke="#334155"/>
+    <rect width="458" height="54" rx="12" fill="#151c2a"/>
+    <circle cx="28" cy="27" r="8" fill="#ef6461"/>
+    <circle cx="54" cy="27" r="8" fill="#f6c453"/>
+    <circle cx="80" cy="27" r="8" fill="#2dd4bf"/>
+    <text x="108" y="33" fill="#7d8b9f" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="18">.eventloom/session.jsonl</text>
+    <g font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="17">
+      <rect x="24" y="82" width="410" height="58" rx="8" fill="#0b111b" stroke="#2dd4bf" stroke-opacity="0.55"/>
+      <text x="44" y="118" fill="#2dd4bf">evt_041</text>
+      <text x="146" y="118" fill="#f7fafc">intention.accepted</text>
+      <rect x="24" y="156" width="410" height="58" rx="8" fill="#0b111b" stroke="#7ddc84" stroke-opacity="0.55"/>
+      <text x="44" y="192" fill="#7ddc84">evt_042</text>
+      <text x="146" y="192" fill="#f7fafc">task.projected</text>
+      <rect x="24" y="230" width="410" height="58" rx="8" fill="#0b111b" stroke="#f6c453" stroke-opacity="0.55"/>
+      <text x="44" y="266" fill="#f6c453">evt_043</text>
+      <text x="146" y="266" fill="#f7fafc">handoff.generated</text>
+    </g>
+  </g>
+  <g transform="translate(622 114)">
+    <text x="0" y="60" fill="#f7fafc" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="84" font-weight="800">Eventloom</text>
+    <text x="2" y="112" fill="#c9d3df" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="30" font-weight="650">Runtime trace layer for</text>
+    <text x="2" y="150" fill="#c9d3df" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="30" font-weight="650">agent systems</text>
+    <g transform="translate(0 162)" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="20" font-weight="700">
+      <rect width="142" height="54" rx="9" fill="#2dd4bf"/>
+      <text x="28" y="35" fill="#05070b">Capture</text>
+      <rect x="164" width="122" height="54" rx="9" fill="#7ddc84"/>
+      <text x="193" y="35" fill="#05070b">Replay</text>
+      <rect x="308" width="118" height="54" rx="9" fill="#f6c453"/>
+      <text x="336" y="35" fill="#05070b">Export</text>
+    </g>
+    <g transform="translate(0 264)" fill="none" stroke="#344257" stroke-width="2">
+      <path d="M0 0h404"/>
+      <path d="M0 44h404"/>
+      <path d="M0 88h404"/>
+    </g>
+    <g transform="translate(0 248)" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="18">
+      <text x="0" y="10" fill="#7d8b9f">hash=8f2b... previous=19ad...</text>
+      <text x="0" y="54" fill="#7d8b9f">projection=mailbox rebuilt</text>
+      <text x="0" y="98" fill="#7d8b9f">exports=Pathlight HALO OTLP</text>
+    </g>
+  </g>
+  <rect x="70" y="74" width="1060" height="482" rx="18" fill="none" stroke="#becee2" stroke-opacity="0.18"/>
+</svg>
