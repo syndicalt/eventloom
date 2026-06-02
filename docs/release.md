@@ -12,7 +12,7 @@ npm run ci:mcp-v1
 npm run ci:full-v1
 ```
 
-The repository CI workflow at `.github/workflows/ci.yml` runs the runtime-first release gate and the staged MCP v1 local preflight on Node.js 20, 22, and 24. After the runtime gate passes, CI writes `.eventloom-ci/golden-fixtures-node-<node-version>.json`, `.eventloom-ci/export-fixtures-node-<node-version>.json`, `.eventloom-ci/benchmark-smoke-node-<node-version>.json`, `.eventloom-ci/pack-manifests-node-<node-version>.json`, and `.eventloom-ci/artifact-bundle-verify-node-<node-version>.json`, then uploads them as `runtime-release-evidence-node-<node-version>`. The staged MCP preflight runs with `npm run --silent release:preflight:mcp-v1-staged:local -- --json`, writes versioned `eventloom.release-preflight.v1` reports to `.eventloom-ci/staged-mcp-v1-preflight-node-<node-version>.json`, and uploads that file with `actions/upload-artifact@v4` so release reviewers get parseable reports per matrix entry. Treat a matrix failure as release-blocking even if the local development Node version passes.
+The repository CI workflow at `.github/workflows/ci.yml` runs the runtime-first release gate and the staged MCP v1 local preflight on Node.js 20, 22, and 24. The job sets `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true` so GitHub JavaScript actions run on the current action runtime while the package itself is still tested across the supported Node matrix. After the runtime gate passes, CI writes `.eventloom-ci/golden-fixtures-node-<node-version>.json`, `.eventloom-ci/export-fixtures-node-<node-version>.json`, `.eventloom-ci/benchmark-smoke-node-<node-version>.json`, `.eventloom-ci/pack-manifests-node-<node-version>.json`, and `.eventloom-ci/artifact-bundle-verify-node-<node-version>.json`, then uploads them as `runtime-release-evidence-node-<node-version>`. The staged MCP preflight runs with `npm run --silent release:preflight:mcp-v1-staged:local -- --json`, writes versioned `eventloom.release-preflight.v1` reports to `.eventloom-ci/staged-mcp-v1-preflight-node-<node-version>.json`, and uploads that file with `actions/upload-artifact@v4` so release reviewers get parseable reports per matrix entry. Treat a matrix failure as release-blocking even if the local development Node version passes.
 
 After the coordinated version bump for the v1 release candidate, run:
 
@@ -55,6 +55,7 @@ This executable preflight verifies that:
 - MCP v1 publication uses `--check-published-runtime` after the runtime package has been published
 - the runtime package ships the migration guide and selected runtime-user docs; repo-only release, planning, MCP, and contributor docs stay linked from GitHub
 - `.github/workflows/ci.yml` runs the release gate on Node.js 20, 22, and 24 with `fail-fast: false`
+- `.github/workflows/ci.yml` sets `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true` so GitHub JavaScript actions do not run on the deprecated Node 20 action runtime
 - `.github/workflows/ci.yml` writes and uploads parseable fixture, benchmark smoke, package-manifest, artifact-bundle verification, and staged MCP preflight evidence reports
 
 The runtime-first release gate runs:

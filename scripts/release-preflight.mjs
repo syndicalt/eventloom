@@ -125,6 +125,7 @@ export async function buildReleasePreflightReport(options = {}) {
   checks.push(containsCheck("release doc references v1 migration", releaseDoc, "Migrating To Eventloom v1.0.0"));
   checks.push(containsCheck("release doc references CI workflow", releaseDoc, ".github/workflows/ci.yml"));
   checks.push(containsCheck("release doc references supported Node matrix", releaseDoc, "Node.js 20, 22, and 24"));
+  checks.push(containsCheck("release doc references GitHub Actions Node 24 runtime opt-in", releaseDoc, "FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true"));
   checks.push(containsCheck("release doc references benchmark evidence report", releaseDoc, ".eventloom-ci/benchmark-smoke-node-<node-version>.json"));
   checks.push(containsCheck("release doc references full benchmark evidence report", releaseDoc, ".eventloom-ci/benchmark-full-node-<node-major>.json"));
   checks.push(containsCheck("release doc references export benchmark evidence report", releaseDoc, ".eventloom-ci/benchmark-export-node-<node-major>.json"));
@@ -516,6 +517,7 @@ function releaseWorkflowChecks(workflow) {
     workflowStructuralCheck("workflow has matrix strategy", isRecord(job?.strategy), "strategy:"),
     workflowStructuralCheck("workflow keeps matrix fail-fast disabled", job?.strategy?.["fail-fast"] === false, "fail-fast: false"),
     workflowStructuralCheck("workflow tests supported Node versions", sameStringArray(job?.strategy?.matrix?.["node-version"], ["20.x", "22.x", "24.x"]), "node-version: [20.x, 22.x, 24.x]"),
+    workflowStructuralCheck("workflow runs JavaScript actions on Node 24", job?.env?.FORCE_JAVASCRIPT_ACTIONS_TO_NODE24 === "true", "FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true"),
     workflowStructuralCheck("workflow uses matrix Node version", setupNodeStep?.with?.["node-version"] === "${{ matrix.node-version }}", "node-version: ${{ matrix.node-version }}"),
     workflowStructuralCheck("workflow uses setup-node v4", Boolean(setupNodeStep), "actions/setup-node@v4"),
     workflowStructuralCheck("workflow caches runtime lockfile", setupNodeText.includes("package-lock.json"), "package-lock.json"),

@@ -778,6 +778,12 @@ describe("release preflight", () => {
         actual: "missing",
       },
       {
+        name: "workflow runs JavaScript actions on Node 24",
+        ok: false,
+        expected: "FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true",
+        actual: "missing",
+      },
+      {
         name: "workflow uploads artifacts with upload-artifact v4",
         ok: false,
         expected: "actions/upload-artifact@v4",
@@ -1811,6 +1817,8 @@ Migrating To Eventloom v1.0.0
 
 The repository CI workflow at .github/workflows/ci.yml runs the runtime-first release gate and the staged MCP v1 local preflight on Node.js 20, 22, and 24.
 
+The workflow sets FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true so GitHub JavaScript actions use the current action runtime while the package matrix still tests supported Node versions.
+
 Runtime release evidence includes .eventloom-ci/benchmark-smoke-node-<node-version>.json.
 
 Release-candidate benchmark evidence includes .eventloom-ci/benchmark-full-node-<node-major>.json and .eventloom-ci/benchmark-export-node-<node-major>.json with EVENTLOOM_BENCH_HARDWARE.
@@ -1993,6 +2001,8 @@ function releaseWorkflow(): string {
 
 jobs:
   release-gates:
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
     strategy:
       fail-fast: false
       matrix:

@@ -1918,6 +1918,7 @@ describe("release contract", () => {
     expect(workflow).toContain("strategy:");
     expect(workflow).toContain("fail-fast: false");
     expect(workflow).toContain("node-version: [20.x, 22.x, 24.x]");
+    expect(workflow).toContain("FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: \"true\"");
     expect(workflow).toContain("node-version: ${{ matrix.node-version }}");
     expect(workflow).toContain("actions/setup-node@v4");
     expect(workflow).toContain("package-lock.json");
@@ -1947,6 +1948,7 @@ describe("release contract", () => {
     expect(workflow).toContain("if-no-files-found: error");
     expect(release).toContain(".github/workflows/ci.yml");
     expect(release).toContain("Node.js 20, 22, and 24");
+    expect(release).toContain("FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true");
     expect(release).toContain("runtime-first release gate and the staged MCP v1 local preflight");
     expect(release).toContain(".eventloom-ci/golden-fixtures-node-<node-version>.json");
     expect(release).toContain(".eventloom-ci/export-fixtures-node-<node-version>.json");
@@ -1963,6 +1965,7 @@ describe("release contract", () => {
 
     const preflight = readFileSync(join(root, "scripts", "release-preflight.mjs"), "utf8");
     expect(preflight).toContain("workflow uses setup-node v4");
+    expect(preflight).toContain("workflow runs JavaScript actions on Node 24");
     expect(preflight).toContain("workflow caches runtime lockfile");
     expect(preflight).toContain("workflow caches MCP lockfile");
     expect(preflight).toContain("workflow installs runtime dependencies from lockfile");
