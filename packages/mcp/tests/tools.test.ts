@@ -1,8 +1,10 @@
 import { spawnSync } from "node:child_process";
+import { existsSync } from "node:fs";
 import { access, mkdir, mkdtemp, readdir, readFile, symlink, unlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { basename, join } from "node:path";
+import { basename, dirname, join } from "node:path";
 import { PassThrough } from "node:stream";
+import { fileURLToPath } from "node:url";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import type { Transport } from "@modelcontextprotocol/sdk/shared/transport.js";
@@ -13,6 +15,13 @@ import { createEventloomMcpServer, parseServerCliOptions, ServerCliOptionsError 
 import { appendEvent, diffLogs, explainTask, exportHalo, exportOtlp, exportPathlight, handoff, inspectLog, mailbox, queryLog, recoverLog, replayLog, runBuiltIn, stats, timeline, verifyLog, visualize, verifyArtifacts, writeArtifacts } from "../src/tools.js";
 import { EVENTLOOM_MCP_VERSION } from "../src/version.js";
 import packageJson from "../package.json" with { type: "json" };
+
+const packageRoot = join(dirname(fileURLToPath(import.meta.url)), "..");
+const repoRoot = join(packageRoot, "..", "..");
+const tsxBinName = process.platform === "win32" ? "tsx.cmd" : "tsx";
+const packageTsxBin = join(packageRoot, "node_modules", ".bin", tsxBinName);
+const repoTsxBin = join(repoRoot, "node_modules", ".bin", tsxBinName);
+const tsxBin = existsSync(packageTsxBin) ? packageTsxBin : repoTsxBin;
 
 describe("Eventloom MCP tools", () => {
   it("keeps server metadata version in sync with the package", () => {
@@ -66,8 +75,8 @@ describe("Eventloom MCP tools", () => {
   });
 
   it("prints structured MCP CLI startup diagnostics before stdio starts", () => {
-    const result = spawnSync("npx", ["tsx", "src/cli.ts", "--unknown"], {
-      cwd: process.cwd(),
+    const result = spawnSync(tsxBin, ["src/cli.ts", "--unknown"], {
+      cwd: packageRoot,
       encoding: "utf8",
     });
 
