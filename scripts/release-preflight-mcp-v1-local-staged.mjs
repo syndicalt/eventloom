@@ -7,6 +7,10 @@ import { buildReleasePreflightReport } from "./release-preflight.mjs";
 
 const root = resolve(new URL("..", import.meta.url).pathname);
 const targetVersion = "1.0.0";
+const npmMutationEnv = {
+  ...process.env,
+  npm_config_dry_run: "false",
+};
 
 class StagedMcpPreflightOptionsError extends Error {
   code = "invalid_staged_mcp_preflight_option";
@@ -36,6 +40,7 @@ async function main(argv) {
     stageReleaseTree(stagedRoot, runtimeTarball);
     execFileSync("npm", ["install", "--package-lock-only", "--ignore-scripts"], {
       cwd: stagedMcpRoot,
+      env: npmMutationEnv,
       stdio: args.json ? ["ignore", "ignore", "pipe"] : "inherit",
     });
     const stagedPackageChecks = runStagedMcpPackageChecks(stagedMcpRoot, args.json);
@@ -75,6 +80,7 @@ function parseArgs(argv) {
 function packRuntime(tempRoot) {
   const output = execFileSync("npm", ["pack", "--json", "--ignore-scripts", "--pack-destination", tempRoot], {
     cwd: root,
+    env: npmMutationEnv,
     encoding: "utf8",
   });
   const parsed = JSON.parse(output);
@@ -162,6 +168,7 @@ function commandCheck(name, expected, command, args, cwd, json) {
   try {
     execFileSync(command, args, {
       cwd,
+      env: npmMutationEnv,
       stdio: json ? ["ignore", "ignore", "pipe"] : "inherit",
     });
     return {
@@ -194,6 +201,7 @@ function stagedMcpPackDryRunChecks(stagedMcpRoot) {
   try {
     const output = execFileSync("npm", ["pack", "--dry-run", "--ignore-scripts", "--json"], {
       cwd: stagedMcpRoot,
+      env: npmMutationEnv,
       encoding: "utf8",
       stdio: ["ignore", "pipe", "pipe"],
     });

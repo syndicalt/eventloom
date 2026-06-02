@@ -1463,6 +1463,10 @@ describe("release contract", () => {
     ], {
       cwd: root,
       encoding: "utf8",
+      env: {
+        ...process.env,
+        npm_config_dry_run: "true",
+      },
     });
 
     expect(result.status).toBe(0);
@@ -1514,7 +1518,7 @@ describe("release contract", () => {
         },
       ]),
     });
-  });
+  }, 45_000);
 
   it("rejects option-like missing values in release support scripts", () => {
     const cases = [
