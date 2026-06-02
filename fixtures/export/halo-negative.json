@@ -1,0 +1,187 @@
+{
+  "version": "eventloom.export-fixture.v1",
+  "id": "halo-negative",
+  "kind": "halo",
+  "scenario": "negative",
+  "source": {
+    "log": "synthetic-negative-path",
+    "eventCount": 2
+  },
+  "result": {
+    "version": "eventloom.export.halo.v1",
+    "projectId": "eventloom-halo-negative",
+    "traceId": "4206afb54289d88b90be3578a1c47f49",
+    "traceCount": 1,
+    "spanCount": 3,
+    "exportedEventCount": 2,
+    "validPrefixCount": 2,
+    "integrity": {
+      "ok": false,
+      "errors": [
+        {
+          "code": "previous_hash_mismatch",
+          "eventId": "evt_export_negative_started",
+          "line": 2,
+          "expected": "sha256:d7e951b687a7cc281a0a4e4c3dc7a10a6d723a71190fbf956df22815b306aa26",
+          "actual": "sha256:not-the-previous-hash",
+          "message": "Expected previous hash sha256:d7e951b687a7cc281a0a4e4c3dc7a10a6d723a71190fbf956df22815b306aa26 but found sha256:not-the-previous-hash"
+        }
+      ]
+    }
+  },
+  "spans": [
+    {
+      "trace_id": "4206afb54289d88b90be3578a1c47f49",
+      "span_id": "d856e6c92579d6ff4ccc66c9",
+      "parent_span_id": "",
+      "trace_state": "",
+      "name": "eventloom-halo-negative",
+      "kind": "SPAN_KIND_INTERNAL",
+      "start_time": "2026-06-01T00:00:00.000000000Z",
+      "end_time": "2026-06-01T00:00:01.000000000Z",
+      "status": {
+        "code": "STATUS_CODE_ERROR",
+        "message": "Eventloom integrity verification failed"
+      },
+      "resource": {
+        "attributes": {
+          "service.name": "eventloom-fixtures",
+          "service.version": "1.0.0",
+          "deployment.environment": "local"
+        }
+      },
+      "scope": {
+        "name": "@eventloom/runtime",
+        "version": "1.0.0"
+      },
+      "attributes": {
+        "openinference.span.kind": "CHAIN",
+        "inference.export.schema_version": 1,
+        "inference.project_id": "eventloom-halo-negative",
+        "inference.observation_kind": "SPAN",
+        "inference.llm.provider": null,
+        "inference.llm.model_name": null,
+        "inference.llm.input_tokens": null,
+        "inference.llm.output_tokens": null,
+        "inference.llm.cost.total": null,
+        "inference.user_id": null,
+        "inference.session_id": null,
+        "inference.agent_name": "eventloom",
+        "eventloom.event_count": 2,
+        "eventloom.event_types": {
+          "goal.created": 1,
+          "actor.started": 1
+        },
+        "eventloom.integrity.ok": false,
+        "eventloom.integrity.error_count": 1,
+        "eventloom.valid_prefix_count": 2,
+        "eventloom.integrity.diagnostics": "[{\"code\":\"previous_hash_mismatch\",\"eventId\":\"evt_export_negative_started\",\"line\":2,\"expected\":\"sha256:d7e951b687a7cc281a0a4e4c3dc7a10a6d723a71190fbf956df22815b306aa26\",\"actual\":\"sha256:not-the-previous-hash\",\"message\":\"Expected previous hash sha256:d7e951b687a7cc281a0a4e4c3dc7a10a6d723a71190fbf956df22815b306aa26 but found sha256:not-the-previous-hash\"}]",
+        "eventloom.projection_hash": "392674eab468cd14ad5eefcdafb06479641ae052a5628af05b590a103be1e179",
+        "eventloom.thread_ids": [
+          "thread_negative"
+        ],
+        "eventloom.git.commit": null,
+        "eventloom.git.branch": null,
+        "eventloom.git.dirty": null
+      }
+    },
+    {
+      "trace_id": "4206afb54289d88b90be3578a1c47f49",
+      "span_id": "1add942f68d7b090af0aa455",
+      "parent_span_id": "d856e6c92579d6ff4ccc66c9",
+      "trace_state": "",
+      "name": "eventloom.actor.worker.turn",
+      "kind": "SPAN_KIND_INTERNAL",
+      "start_time": "2026-06-01T00:00:01.000000000Z",
+      "end_time": "2026-06-01T00:00:01.000000000Z",
+      "status": {
+        "code": "STATUS_CODE_ERROR",
+        "message": "Missing actor.completed event"
+      },
+      "resource": {
+        "attributes": {
+          "service.name": "eventloom-fixtures",
+          "service.version": "1.0.0",
+          "deployment.environment": "local"
+        }
+      },
+      "scope": {
+        "name": "@eventloom/runtime",
+        "version": "1.0.0"
+      },
+      "attributes": {
+        "openinference.span.kind": "AGENT",
+        "inference.export.schema_version": 1,
+        "inference.project_id": "eventloom-halo-negative",
+        "inference.observation_kind": "AGENT",
+        "inference.llm.provider": null,
+        "inference.llm.model_name": null,
+        "inference.llm.input_tokens": null,
+        "inference.llm.output_tokens": null,
+        "inference.llm.cost.total": null,
+        "inference.user_id": null,
+        "inference.session_id": null,
+        "inference.agent_name": "worker",
+        "agent.name": "worker",
+        "agent.workflow.name": "Eventloom actor turn",
+        "eventloom.turn.id": "turn_negative",
+        "eventloom.actor_id": "worker",
+        "eventloom.source_event_id": "evt_export_negative_goal",
+        "eventloom.mailbox_event_type": "goal.created",
+        "eventloom.accepted_event_ids": [],
+        "eventloom.rejected_event_ids": [],
+        "eventloom.processed_event_id": null,
+        "input.value": "{\"sourceEventId\":\"evt_export_negative_goal\",\"mailboxEventType\":\"goal.created\"}",
+        "output.value": "{\"completedEventId\":null,\"processedEventId\":null,\"acceptedEvents\":[],\"rejectedEvents\":[]}"
+      }
+    },
+    {
+      "trace_id": "4206afb54289d88b90be3578a1c47f49",
+      "span_id": "7b8bfdcb28c4cfc183a5af47",
+      "parent_span_id": "d856e6c92579d6ff4ccc66c9",
+      "trace_state": "",
+      "name": "eventloom.event.goal.created",
+      "kind": "SPAN_KIND_INTERNAL",
+      "start_time": "2026-06-01T00:00:00.000000000Z",
+      "end_time": "2026-06-01T00:00:00.000000000Z",
+      "status": {
+        "code": "STATUS_CODE_OK",
+        "message": ""
+      },
+      "resource": {
+        "attributes": {
+          "service.name": "eventloom-fixtures",
+          "service.version": "1.0.0",
+          "deployment.environment": "local"
+        }
+      },
+      "scope": {
+        "name": "@eventloom/runtime",
+        "version": "1.0.0"
+      },
+      "attributes": {
+        "openinference.span.kind": "CHAIN",
+        "inference.export.schema_version": 1,
+        "inference.project_id": "eventloom-halo-negative",
+        "inference.observation_kind": "SPAN",
+        "inference.llm.provider": null,
+        "inference.llm.model_name": null,
+        "inference.llm.input_tokens": null,
+        "inference.llm.output_tokens": null,
+        "inference.llm.cost.total": null,
+        "inference.user_id": null,
+        "inference.session_id": null,
+        "inference.agent_name": "user",
+        "agent.workflow.name": "Eventloom event journal",
+        "eventloom.event.id": "evt_export_negative_goal",
+        "eventloom.event.type": "goal.created",
+        "eventloom.actor_id": "user",
+        "eventloom.thread_id": "thread_negative",
+        "eventloom.parent_event_id": null,
+        "eventloom.caused_by": [],
+        "input.value": "{\"title\":\"Demonstrate failed export diagnostics\"}"
+      }
+    }
+  ],
+  "jsonl": "{\"trace_id\":\"4206afb54289d88b90be3578a1c47f49\",\"span_id\":\"d856e6c92579d6ff4ccc66c9\",\"parent_span_id\":\"\",\"trace_state\":\"\",\"name\":\"eventloom-halo-negative\",\"kind\":\"SPAN_KIND_INTERNAL\",\"start_time\":\"2026-06-01T00:00:00.000000000Z\",\"end_time\":\"2026-06-01T00:00:01.000000000Z\",\"status\":{\"code\":\"STATUS_CODE_ERROR\",\"message\":\"Eventloom integrity verification failed\"},\"resource\":{\"attributes\":{\"service.name\":\"eventloom-fixtures\",\"service.version\":\"1.0.0\",\"deployment.environment\":\"local\"}},\"scope\":{\"name\":\"@eventloom/runtime\",\"version\":\"1.0.0\"},\"attributes\":{\"openinference.span.kind\":\"CHAIN\",\"inference.export.schema_version\":1,\"inference.project_id\":\"eventloom-halo-negative\",\"inference.observation_kind\":\"SPAN\",\"inference.llm.provider\":null,\"inference.llm.model_name\":null,\"inference.llm.input_tokens\":null,\"inference.llm.output_tokens\":null,\"inference.llm.cost.total\":null,\"inference.user_id\":null,\"inference.session_id\":null,\"inference.agent_name\":\"eventloom\",\"eventloom.event_count\":2,\"eventloom.event_types\":{\"goal.created\":1,\"actor.started\":1},\"eventloom.integrity.ok\":false,\"eventloom.integrity.error_count\":1,\"eventloom.valid_prefix_count\":2,\"eventloom.integrity.diagnostics\":\"[{\\\"code\\\":\\\"previous_hash_mismatch\\\",\\\"eventId\\\":\\\"evt_export_negative_started\\\",\\\"line\\\":2,\\\"expected\\\":\\\"sha256:d7e951b687a7cc281a0a4e4c3dc7a10a6d723a71190fbf956df22815b306aa26\\\",\\\"actual\\\":\\\"sha256:not-the-previous-hash\\\",\\\"message\\\":\\\"Expected previous hash sha256:d7e951b687a7cc281a0a4e4c3dc7a10a6d723a71190fbf956df22815b306aa26 but found sha256:not-the-previous-hash\\\"}]\",\"eventloom.projection_hash\":\"392674eab468cd14ad5eefcdafb06479641ae052a5628af05b590a103be1e179\",\"eventloom.thread_ids\":[\"thread_negative\"],\"eventloom.git.commit\":null,\"eventloom.git.branch\":null,\"eventloom.git.dirty\":null}}\n{\"trace_id\":\"4206afb54289d88b90be3578a1c47f49\",\"span_id\":\"1add942f68d7b090af0aa455\",\"parent_span_id\":\"d856e6c92579d6ff4ccc66c9\",\"trace_state\":\"\",\"name\":\"eventloom.actor.worker.turn\",\"kind\":\"SPAN_KIND_INTERNAL\",\"start_time\":\"2026-06-01T00:00:01.000000000Z\",\"end_time\":\"2026-06-01T00:00:01.000000000Z\",\"status\":{\"code\":\"STATUS_CODE_ERROR\",\"message\":\"Missing actor.completed event\"},\"resource\":{\"attributes\":{\"service.name\":\"eventloom-fixtures\",\"service.version\":\"1.0.0\",\"deployment.environment\":\"local\"}},\"scope\":{\"name\":\"@eventloom/runtime\",\"version\":\"1.0.0\"},\"attributes\":{\"openinference.span.kind\":\"AGENT\",\"inference.export.schema_version\":1,\"inference.project_id\":\"eventloom-halo-negative\",\"inference.observation_kind\":\"AGENT\",\"inference.llm.provider\":null,\"inference.llm.model_name\":null,\"inference.llm.input_tokens\":null,\"inference.llm.output_tokens\":null,\"inference.llm.cost.total\":null,\"inference.user_id\":null,\"inference.session_id\":null,\"inference.agent_name\":\"worker\",\"agent.name\":\"worker\",\"agent.workflow.name\":\"Eventloom actor turn\",\"eventloom.turn.id\":\"turn_negative\",\"eventloom.actor_id\":\"worker\",\"eventloom.source_event_id\":\"evt_export_negative_goal\",\"eventloom.mailbox_event_type\":\"goal.created\",\"eventloom.accepted_event_ids\":[],\"eventloom.rejected_event_ids\":[],\"eventloom.processed_event_id\":null,\"input.value\":\"{\\\"sourceEventId\\\":\\\"evt_export_negative_goal\\\",\\\"mailboxEventType\\\":\\\"goal.created\\\"}\",\"output.value\":\"{\\\"completedEventId\\\":null,\\\"processedEventId\\\":null,\\\"acceptedEvents\\\":[],\\\"rejectedEvents\\\":[]}\"}}\n{\"trace_id\":\"4206afb54289d88b90be3578a1c47f49\",\"span_id\":\"7b8bfdcb28c4cfc183a5af47\",\"parent_span_id\":\"d856e6c92579d6ff4ccc66c9\",\"trace_state\":\"\",\"name\":\"eventloom.event.goal.created\",\"kind\":\"SPAN_KIND_INTERNAL\",\"start_time\":\"2026-06-01T00:00:00.000000000Z\",\"end_time\":\"2026-06-01T00:00:00.000000000Z\",\"status\":{\"code\":\"STATUS_CODE_OK\",\"message\":\"\"},\"resource\":{\"attributes\":{\"service.name\":\"eventloom-fixtures\",\"service.version\":\"1.0.0\",\"deployment.environment\":\"local\"}},\"scope\":{\"name\":\"@eventloom/runtime\",\"version\":\"1.0.0\"},\"attributes\":{\"openinference.span.kind\":\"CHAIN\",\"inference.export.schema_version\":1,\"inference.project_id\":\"eventloom-halo-negative\",\"inference.observation_kind\":\"SPAN\",\"inference.llm.provider\":null,\"inference.llm.model_name\":null,\"inference.llm.input_tokens\":null,\"inference.llm.output_tokens\":null,\"inference.llm.cost.total\":null,\"inference.user_id\":null,\"inference.session_id\":null,\"inference.agent_name\":\"user\",\"agent.workflow.name\":\"Eventloom event journal\",\"eventloom.event.id\":\"evt_export_negative_goal\",\"eventloom.event.type\":\"goal.created\",\"eventloom.actor_id\":\"user\",\"eventloom.thread_id\":\"thread_negative\",\"eventloom.parent_event_id\":null,\"eventloom.caused_by\":[],\"input.value\":\"{\\\"title\\\":\\\"Demonstrate failed export diagnostics\\\"}\"}}\n"
+}

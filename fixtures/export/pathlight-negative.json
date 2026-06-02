@@ -1,0 +1,254 @@
+{
+  "version": "eventloom.export-fixture.v1",
+  "id": "pathlight-negative",
+  "kind": "pathlight",
+  "scenario": "negative",
+  "source": {
+    "log": "synthetic-negative-path",
+    "eventCount": 2
+  },
+  "result": {
+    "version": "eventloom.export.pathlight.v1",
+    "traceId": "pathlight-negative-trace",
+    "spanCount": 2,
+    "eventCount": 2,
+    "exportedEventCount": 2,
+    "validPrefixCount": 2,
+    "integrity": {
+      "ok": false,
+      "errors": [
+        {
+          "code": "previous_hash_mismatch",
+          "eventId": "evt_export_negative_started",
+          "line": 2,
+          "expected": "sha256:d7e951b687a7cc281a0a4e4c3dc7a10a6d723a71190fbf956df22815b306aa26",
+          "actual": "sha256:not-the-previous-hash",
+          "message": "Expected previous hash sha256:d7e951b687a7cc281a0a4e4c3dc7a10a6d723a71190fbf956df22815b306aa26 but found sha256:not-the-previous-hash"
+        }
+      ]
+    }
+  },
+  "trace": {
+    "id": "pathlight-negative-trace",
+    "status": "failed",
+    "metadata": {
+      "source": "eventloom",
+      "integrity": {
+        "ok": false,
+        "errors": [
+          {
+            "code": "previous_hash_mismatch",
+            "eventId": "evt_export_negative_started",
+            "line": 2,
+            "expected": "sha256:d7e951b687a7cc281a0a4e4c3dc7a10a6d723a71190fbf956df22815b306aa26",
+            "actual": "sha256:not-the-previous-hash",
+            "message": "Expected previous hash sha256:d7e951b687a7cc281a0a4e4c3dc7a10a6d723a71190fbf956df22815b306aa26 but found sha256:not-the-previous-hash"
+          }
+        ]
+      },
+      "projectionHash": "74a46185ccdf4b2b5f95842e7ccc23d595d741f72a4727de089a70f6bdd9c05b",
+      "projectionKinds": [],
+      "runtime": {
+        "name": "eventloom",
+        "version": "1.0.0"
+      },
+      "threadIds": [
+        "thread_negative"
+      ],
+      "visualizer": {
+        "version": "eventloom.pathlight.visualizer.v1",
+        "outputPath": "visualizer",
+        "panels": [
+          {
+            "id": "capture",
+            "title": "Capture",
+            "outputPath": "visualizer.capture",
+            "summary": "2 captured events across 2 event types."
+          },
+          {
+            "id": "replay",
+            "title": "Replay",
+            "outputPath": "visualizer.replay",
+            "summary": "Replay found integrity errors that need inspection."
+          },
+          {
+            "id": "handoff",
+            "title": "Handoff",
+            "outputPath": "visualizer.handoff",
+            "summary": "0 active tasks, 0 completed tasks, and 3 observability gaps."
+          }
+        ]
+      }
+    },
+    "output": {
+      "spanCount": 2,
+      "eventCount": 2,
+      "visualizer": {
+        "version": "eventloom.visualizer.v1",
+        "capture": {
+          "eventCount": 2,
+          "eventTypes": {
+            "goal.created": 1,
+            "actor.started": 1
+          },
+          "events": [
+            {
+              "id": "evt_export_negative_goal",
+              "type": "goal.created",
+              "actorId": "user",
+              "threadId": "thread_negative",
+              "timestamp": "2026-06-01T00:00:00.000Z",
+              "parentEventId": null,
+              "causedBy": [],
+              "summary": "Demonstrate failed export diagnostics",
+              "hash": "sha256:d7e951b687a7cc281a0a4e4c3dc7a10a6d723a71190fbf956df22815b306aa26",
+              "previousHash": null
+            },
+            {
+              "id": "evt_export_negative_started",
+              "type": "actor.started",
+              "actorId": "worker",
+              "threadId": "thread_negative",
+              "timestamp": "2026-06-01T00:00:01.000Z",
+              "parentEventId": "evt_export_negative_goal",
+              "causedBy": [
+                "evt_export_negative_goal"
+              ],
+              "summary": "actor=worker",
+              "hash": "sha256:0acd4917f960762efec139edb080923770ad60e00a908516c2c1aee54c4575fa",
+              "previousHash": "sha256:not-the-previous-hash"
+            }
+          ]
+        },
+        "replay": {
+          "eventCount": 2,
+          "integrity": {
+            "ok": false,
+            "errors": [
+              {
+                "code": "previous_hash_mismatch",
+                "eventId": "evt_export_negative_started",
+                "line": 2,
+                "expected": "sha256:d7e951b687a7cc281a0a4e4c3dc7a10a6d723a71190fbf956df22815b306aa26",
+                "actual": "sha256:not-the-previous-hash",
+                "message": "Expected previous hash sha256:d7e951b687a7cc281a0a4e4c3dc7a10a6d723a71190fbf956df22815b306aa26 but found sha256:not-the-previous-hash"
+              }
+            ]
+          },
+          "projection": {
+            "eventTypes": {
+              "goal.created": 1,
+              "actor.started": 1
+            },
+            "effects": {
+              "effects": {},
+              "errors": []
+            },
+            "research": {
+              "questions": {},
+              "errors": []
+            },
+            "tasks": {
+              "tasks": {},
+              "errors": []
+            }
+          },
+          "projectionHash": "74a46185ccdf4b2b5f95842e7ccc23d595d741f72a4727de089a70f6bdd9c05b"
+        },
+        "handoff": {
+          "eventCount": 2,
+          "eventTypes": {
+            "goal.created": 1,
+            "actor.started": 1
+          },
+          "integrity": {
+            "ok": false,
+            "errors": [
+              {
+                "code": "previous_hash_mismatch",
+                "eventId": "evt_export_negative_started",
+                "line": 2,
+                "expected": "sha256:d7e951b687a7cc281a0a4e4c3dc7a10a6d723a71190fbf956df22815b306aa26",
+                "actual": "sha256:not-the-previous-hash",
+                "message": "Expected previous hash sha256:d7e951b687a7cc281a0a4e4c3dc7a10a6d723a71190fbf956df22815b306aa26 but found sha256:not-the-previous-hash"
+              }
+            ]
+          },
+          "goals": [
+            {
+              "id": "evt_export_negative_goal",
+              "actorId": "user",
+              "title": "Demonstrate failed export diagnostics",
+              "timestamp": "2026-06-01T00:00:00.000Z"
+            }
+          ],
+          "tasks": {
+            "active": [],
+            "completed": []
+          },
+          "projectionErrors": [],
+          "decisions": [],
+          "verification": [],
+          "releases": [],
+          "risks": [],
+          "recentFacts": [],
+          "telemetry": {
+            "models": [],
+            "tools": [],
+            "reasoning": []
+          },
+          "observabilityGaps": [
+            "No model telemetry events recorded.",
+            "No tool telemetry events recorded.",
+            "No reasoning.summary events recorded."
+          ],
+          "nextActions": [
+            "Fix event log integrity before continuing or exporting.",
+            "Add missing observability evidence before treating this as a debugging-ready agent trace."
+          ]
+        }
+      }
+    },
+    "error": "Eventloom integrity verification failed"
+  },
+  "spans": [
+    {
+      "id": "pathlight-negative-span-1",
+      "name": "worker.turn",
+      "type": "agent",
+      "metadata": {
+        "source": "eventloom",
+        "exportKind": "actor_turn",
+        "turnId": "turn_negative",
+        "actorId": "worker",
+        "startedEventId": "evt_export_negative_started",
+        "completedEventId": null,
+        "acceptedEventIds": [],
+        "rejectedEventIds": []
+      },
+      "status": "failed",
+      "output": null,
+      "error": "Missing actor.completed event"
+    },
+    {
+      "id": "pathlight-negative-span-2",
+      "name": "goal.created",
+      "type": "event",
+      "metadata": {
+        "source": "eventloom",
+        "exportKind": "journal_fact",
+        "eventId": "evt_export_negative_goal",
+        "eventType": "goal.created",
+        "actorId": "user",
+        "threadId": "thread_negative",
+        "parentEventId": null,
+        "causedBy": []
+      },
+      "status": "completed",
+      "output": {
+        "title": "Demonstrate failed export diagnostics"
+      },
+      "error": null
+    }
+  ]
+}

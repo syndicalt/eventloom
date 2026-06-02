@@ -1,0 +1,229 @@
+# Pathlight Integration
+
+Eventloom can export event logs to a Pathlight collector for visual inspection.
+
+Pathlight is optional. Eventloom does not require Docker Compose, a collector, or a database to run locally.
+
+## Export Command
+
+```bash
+npx eventloom export pathlight <events.jsonl> --base-url http://localhost:4100 --trace-name eventloom-run
+```
+
+`--base-url` must be an absolute `http://` or `https://` URL. The CLI validates this before reading the log or attempting export requests.
+
+Example:
+
+```bash
+npx eventloom run human-ops /tmp/eventloom-human-ops.jsonl
+npx eventloom append /tmp/eventloom-human-ops.jsonl approval.granted --actor human --thread thread_ops --payload '{"effectId":"effect_runtime_mitigation","approvalId":"approval_runtime_mitigation"}'
+npx eventloom run human-ops /tmp/eventloom-human-ops.jsonl --resume
+npx eventloom export pathlight /tmp/eventloom-human-ops.jsonl --base-url http://localhost:4100 --trace-name eventloom-human-ops
+```
+
+## Mapping
+
+Eventloom maps runtime history to Pathlight like this:
+
+| Eventloom | Pathlight |
+|---|---|
+| Runtime event log | Trace |
+| Actor turn | Agent span |
+| Model invocation telemetry | LLM span |
+| Tool invocation telemetry | Tool span |
+| Reasoning summary telemetry | Chain span |
+| Runtime event related to a turn | Span event |
+| Goal, decision, verification, release, and risk facts | Journal fact spans |
+| Integrity and projection data | Trace metadata |
+| Git/package provenance | Native trace fields and metadata |
+| Capture, Replay, and Handoff visualizer model | Trace output under `visualizer` |
+| Visualizer display contract | Trace metadata under `visualizer` |
+
+For external agent journals that do not contain `actor.started` / `actor.completed` runtime turns, Eventloom exports projected task lifecycles as Pathlight agent spans. Eventloom also exports high-signal journal facts as first-class spans so goals, decisions, verification, release notes, and risks remain visible even when they are not part of a task history.
+
+## Visualizer Contract
+
+Every Pathlight export includes a trace-level display contract for the Eventloom visualizer:
+
+```json
+{
+  "version": "eventloom.pathlight.visualizer.v1",
+  "outputPath": "visualizer",
+  "panels": [
+    { "id": "capture", "title": "Capture", "outputPath": "visualizer.capture" },
+    { "id": "replay", "title": "Replay", "outputPath": "visualizer.replay" },
+    { "id": "handoff", "title": "Handoff", "outputPath": "visualizer.handoff" }
+  ]
+}
+```
+
+Pathlight can render those panels from the final trace output without reading or mutating the source JSONL log:
+
+- `visualizer.capture` contains ordered captured facts, event type counts, actor ids, thread ids, causality links, and hash-chain links.
+- `visualizer.replay` contains integrity status, projection state, projection errors, and a projection hash.
+- `visualizer.handoff` contains goals, active/completed tasks, model/tool/reasoning telemetry, verification evidence, observability gaps, and next actions.
+
+This is intentionally trace-level data. Existing Pathlight spans still show actor turns, model calls, tool calls, task lifecycles, and journal facts. The visualizer contract gives a Pathlight UI a deterministic product affordance over the same exported trace.
+
+## Visualizer Smoke Flow
+
+Generate one local workflow, inspect the same model locally, then export it to Pathlight:
+
+```bash
+npx eventloom run software-work /tmp/eventloom-pathlight-viz.jsonl
+npx eventloom visualize /tmp/eventloom-pathlight-viz.jsonl
+npx eventloom export pathlight /tmp/eventloom-pathlight-viz.jsonl \
+  --base-url http://localhost:4100 \
+  --trace-name eventloom-pathlight-viz
+```
+
+Expected result:
+
+- The local `visualize` command prints top-level `capture`, `replay`, and `handoff` keys.
+- The Pathlight trace metadata includes `visualizer.version: "eventloom.pathlight.visualizer.v1"`.
+- The final Pathlight trace output includes `visualizer.capture`, `visualizer.replay`, and `visualizer.handoff`.
+- The Pathlight trace detail page renders an Eventloom panel above Trace Input and Trace Output with Capture, Replay, and Handoff tabs.
+- The Eventloom JSONL file is unchanged by both commands.
+
+## Offline Fixtures
+
+The package ships deterministic Pathlight export fixtures under `fixtures/export/`:
+
+- `pathlight-success.json`: a successful export captured from `fixtures/golden/software-work.jsonl`.
+- `pathlight-negative.json`: a failed export with hash-chain diagnostics and a failed actor span.
+
+These fixtures capture fake-collector request state, including trace metadata, final trace output, span metadata, span output, span errors, and exporter results. Fixture `result` objects are versioned as `eventloom.export.pathlight.v1` and include `exportedEventCount`, `validPrefixCount`, and `integrity`. The same `fixtures/export/` directory also contains HALO and OTLP fixtures for comparing the offline export contracts across adapters. They let tests and downstream integrations inspect the Pathlight contract without running a Pathlight collector:
+
+```bash
+npm run fixtures:export
+npm test -- tests/export-fixtures.test.ts
+```
+
+Regenerate fixtures only when the exporter contract intentionally changes.
+
+## View In Pathlight
+
+Start Pathlight first. With Docker:
+
+```bash
+cd /path/to/pathlight
+docker compose up -d
+```
+
+Or with local dev servers:
+
+```bash
+cd /path/to/pathlight
+npm run dev -w packages/collector
+npm run dev -w apps/web
+```
+
+Then export an Eventloom run:
+
+```bash
+cd /path/to/eventloom
+npx eventloom run software-work /tmp/eventloom-pathlight-viz.jsonl
+npx eventloom export pathlight /tmp/eventloom-pathlight-viz.jsonl \
+  --base-url http://localhost:4100 \
+  --trace-name eventloom-pathlight-viz
+```
+
+Open <http://localhost:3100>, then open the `eventloom-pathlight-viz` trace. You should see:
+
+- An Eventloom panel with `Events`, `Integrity`, and `Active` summary counters.
+- A Capture tab with ordered event facts and event type counts.
+- A Replay tab with hash-chain integrity, projection state, and projection hash.
+- A Handoff tab with active/completed tasks, model/tool/reasoning telemetry, verification, observability gaps, and next actions.
+- The standard Pathlight waterfall below the Eventloom panel for actor, model, tool, reasoning, and journal-fact spans.
+
+Pathlight intentionally skips keyword-only issue detection for Eventloom structured spans. Eventloom spans still show as issues when the span status is `failed` or the span has a real error field.
+
+Runtime, CLI, and MCP Pathlight exports return the versioned `eventloom.export.pathlight.v1` result. The versioned result is separate from the trace metadata and lets scripts distinguish export-result contract changes from Pathlight collector schema changes.
+
+## Trace Metadata
+
+Eventloom trace metadata includes:
+
+- `source: "eventloom"`
+- `integrity`
+- `projectionHash`
+- `projectionKinds`
+- `runtime.name`
+- `runtime.version`
+- `threadIds`
+- `visualizer`
+
+When git metadata is available, Eventloom also sends:
+
+- `gitCommit`
+- `gitBranch`
+- `gitDirty`
+
+## Span Metadata
+
+Each actor turn span includes:
+
+- `source: "eventloom"`
+- `exportKind: "actor_turn"`
+- `turnId`
+- `actorId`
+- `startedEventId`
+- `completedEventId`
+- `acceptedEventIds`
+- `rejectedEventIds`
+
+Span input includes:
+
+- `sourceEventId`
+- `mailboxEventType`
+
+Span output includes:
+
+- `turnId`
+- `sourceEventId`
+- `intentions`
+- `acceptedEvents`
+- `rejectionEventIds` only when there are actual rejections
+
+Empty rejection arrays are intentionally omitted because Pathlight's issue heuristics flag span output containing words such as `rejected`.
+
+Journal fact spans include the source event id, event type, actor id, thread id, parent event id, and caused-by ids in metadata. The original Eventloom event is also attached as a span event.
+
+Model and tool telemetry spans include model/provider names, prompt versions, input/output summaries, token counts, cost, latency, tool names, inputs, outputs, exit codes, result counts, result excerpts, decisive flags, errors, and related turn ids when the Eventloom log contains those fields. Pathlight task lifecycle output also includes task-scoped model calls, tool calls, and reasoning summaries so external journals remain inspectable even when they were not produced by Eventloom's actor loop.
+
+## Package API Export
+
+```ts
+import { createRuntime } from "@eventloom/runtime";
+
+const runtime = createRuntime("/tmp/eventloom-human-ops.jsonl");
+
+await runtime.exportPathlight({
+  baseUrl: "http://localhost:4100",
+  traceName: "eventloom-human-ops",
+});
+```
+
+`runtime.exportPathlight()` reads the verified prefix of the log. If a source file has a corrupt tail, the returned result includes `integrity.ok: false`, `validPrefixCount`, and `exportedEventCount`, and the Pathlight trace metadata and visualizer output preserve the same diagnostics.
+
+## Collector Availability
+
+If the collector is unavailable, export fails with a request error. The event log is not modified by export.
+
+## Docker Compose
+
+Eventloom itself is not a Compose service. Use Compose only to run optional infrastructure such as Pathlight collector and dashboard.
+
+A typical local setup is:
+
+1. Start Pathlight separately.
+2. Run Eventloom locally with `npm run eventloom`.
+3. Export a log to the collector.
+
+This keeps the runtime simple and preserves the local JSONL development model.
+
+## Bridge Decision
+
+See [Pathlight Bridge Spike](decisions/pathlight-bridge-spike.md) for the decision to keep Eventloom as a separate runtime prototype and integrate through an export adapter.
+
+See [Agent Work Log Pathlight Case Study](case-studies/agent-work-pathlight.md) for an example of exporting a real `.eventloom/agent-work.jsonl` journal.

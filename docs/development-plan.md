@@ -1,0 +1,338 @@
+# Development Plan
+
+## Positioning
+
+Eventloom should start as a clean runtime prototype, then graduate into Pathlight if the model proves useful. Pathlight observes agent runs after or during execution. Eventloom coordinates execution through an append-only event log, named actors, validated intentions, deterministic projections, and replay.
+
+The product promise is: agents become debuggable because their runtime state is built from explicit events, not hidden conversation state.
+
+## Development Pipeline
+
+Use a narrow, verification-heavy pipeline:
+
+1. Specify the event contract before implementation.
+2. Implement the smallest local runtime that can append, replay, and project events.
+3. Add actors only after replay is deterministic.
+4. Add orchestration only after actor intentions are schema-validated.
+5. Add UI or Pathlight integration only after the CLI can explain state from the log.
+
+Every sprint should produce:
+
+- A runnable example.
+- Tests for replay determinism.
+- A short demo script.
+- A decision note for any architecture choice that affects Pathlight integration.
+
+## Core Stack
+
+Use TypeScript first. Pathlight already uses TypeScript, Hono, Drizzle, SQLite/libSQL, Vitest, and a dashboard/collector split. Reusing that ecosystem reduces integration risk.
+
+Initial stack:
+
+- Runtime: TypeScript on Node.js.
+- CLI/dev runner: `tsx`.
+- Tests: Vitest.
+- Event store: JSONL file for Sprint 1.
+- Schema validation: Zod or JSON Schema.
+- IDs: `nanoid`.
+- Projections: deterministic pure TypeScript reducers.
+
+Pathlight integration stack:
+
+- Collector API: Hono.
+- Storage: SQLite/libSQL through Drizzle.
+- Dashboard: reuse Pathlight's trace/timeline concepts where possible.
+
+Avoid Temporal, Kafka, LangGraph, and distributed actors until the local model is proven. They are scale tools, not MVP requirements.
+
+## Target Use Cases
+
+### 1. Agentic Software Work Tracking
+
+Actors plan, claim, complete, and review tasks. This is the first target because it exercises causality, task state, actor identity, replay, and auditability without needing external systems.
+
+Key events:
+
+- `goal.created`
+- `task.proposed`
+- `task.claimed`
+- `task.completed`
+- `review.requested`
+- `issue.reported`
+- `review.approved`
+
+### 2. Multi-Agent Research Pipeline
+
+Actors gather sources, extract claims, critique evidence, and produce a report. This tests parallel threads and provenance.
+
+Key events:
+
+- `research.question.created`
+- `source.found`
+- `claim.extracted`
+- `claim.challenged`
+- `report.section.drafted`
+- `report.finalized`
+
+### 3. Human-in-the-Loop Operations
+
+External events enter the log, agents propose actions, and humans approve or reject effects. This tests external triggers, safety boundaries, and audit history.
+
+Key events:
+
+- `external.alert.received`
+- `actor.intention.emitted`
+- `approval.requested`
+- `approval.granted`
+- `effect.applied`
+- `effect.rejected`
+
+### 4. Pathlight Runtime Trace Bridge
+
+Runtime events are exported into Pathlight as inspectable traces/spans. This validates whether the new event model can become a Pathlight product surface.
+
+Key mapping:
+
+- Runtime thread -> Pathlight trace.
+- Actor turn -> Pathlight span.
+- Runtime event -> Pathlight event row or future Eventloom event table.
+- Projection hash -> trace metadata.
+
+## Initial Sprints
+
+### Sprint 0: Repository Bootstrap
+
+Goal: create the project skeleton and executable test loop.
+
+Deliverables:
+
+- `package.json`, TypeScript config, Vitest config.
+- `src/` and `tests/` layout.
+- Basic CLI entrypoint.
+- Documentation for local commands.
+
+Verification: `npm test` runs successfully from a fresh checkout.
+
+### Sprint 1: Append-Only Event Store
+
+Goal: make immutable local events real.
+
+Deliverables:
+
+- Event envelope type.
+- JSONL append and read operations.
+- Canonical event ordering.
+- Validation for required envelope fields.
+- Projection hash helper.
+
+Verification: tests append sample events, reload them, replay them, and produce the same projection hash.
+
+### Sprint 2: Projections and Causal Queries
+
+Goal: prove state can be rebuilt from the log.
+
+Deliverables:
+
+- Task projection.
+- Actor projection.
+- Thread projection.
+- Query helpers for parent/child causal chains.
+
+Verification: a test can answer why a task is in its current state using only events.
+
+### Sprint 3: Actors and Intentions
+
+Goal: separate actor proposals from accepted state changes.
+
+Deliverables:
+
+- Actor registry.
+- Subscription matching.
+- Mailbox construction from event history.
+- Intention schemas.
+- Valid and invalid intention handling.
+
+Verification: valid intentions become accepted events; invalid intentions become explicit rejection events.
+
+### Sprint 4: Orchestrated Sample Workflow
+
+Goal: run the software-work tracking use case end to end.
+
+Deliverables:
+
+- `planner`, `worker`, and `reviewer` sample actors.
+- CLI command to run the sample workflow.
+- Replay command.
+- Event log fixture for demos.
+
+Verification: live run and replay produce identical task, actor, and thread projections.
+
+### Sprint 5: Inspection Surface
+
+Goal: make the event log understandable without reading JSONL manually.
+
+Deliverables:
+
+- CLI timeline view.
+- CLI task-state explanation view.
+- CLI actor activity view.
+- Export format compatible with Pathlight ingestion experiments.
+
+Verification: a developer can inspect a task and see the causal chain from goal to final state.
+
+### Sprint 6: Pathlight Bridge Spike
+
+Goal: determine whether this should merge into Pathlight or remain separate.
+
+Deliverables:
+
+- Export runtime events into Pathlight traces/spans.
+- Prototype schema extension if Pathlight's trace/span/event model is insufficient.
+- Comparison document covering reuse, migration, and product naming.
+
+Verification: one runtime workflow appears in Pathlight with useful actor, event, and projection context.
+
+## Key Decisions
+
+### TypeScript Before Python
+
+TypeScript matches Pathlight and keeps the bridge cheap. Python can come later as an SDK or actor host.
+
+### JSONL Before SQLite
+
+JSONL makes append-only semantics obvious and easy to inspect. SQLite should replace it only when queries, indexes, or Pathlight integration need it.
+
+### Parent IDs Before Vector Clocks
+
+Start with `parentEventId` and `causedBy`. Vector clocks are only needed once true concurrent writes create ambiguity that simple causal links cannot explain.
+
+### CLI Before UI
+
+A CLI proves the runtime semantics faster than a dashboard. Pathlight already provides the long-term UI direction.
+
+## Open Risks
+
+- The runtime may duplicate Pathlight concepts unless the boundary stays clear: Pathlight observes, this coordinates.
+- If actors execute nondeterministic LLM calls during replay, replay must separate historical outputs from new execution.
+- Event schemas can become too generic. Keep the first use case concrete.
+- Effects need a safety model before filesystem or API mutation is allowed.
+
+## Current Status
+
+Sprints 0-6 are implemented for the local prototype:
+
+- JSONL event storage, validation, replay, and projection hashing.
+- Task, actor, thread, mailbox, and causal inspection surfaces.
+- Actor registry, intention validation, orchestrated software-work runtime, and processed markers.
+- External event ingestion and tamper-evident event-chain verification.
+- Pathlight export adapter verified against a local collector.
+- Multi-agent research pipeline as a second deterministic workflow.
+- Human-in-the-loop effect approvals with external approval ingestion and resume.
+- Git/project provenance and projection metadata in Pathlight exports.
+- Documented package API around runtime primitives.
+- Agent adoption docs and Codex skill workflow for local Eventloom journaling.
+- MCP package in `packages/mcp` with append, replay, timeline, task explanation, built-in workflow, artifact bundle, Pathlight export, HALO export, and OTLP export tools.
+- MCP package tests for tool adapters, path safety, stdio smoke coverage, Pathlight export behavior, HALO JSONL export behavior, OTLP JSON export behavior, and artifact bundle behavior.
+- Stable built-in workflow mailbox API and MCP `eventloom_mailbox` tool.
+- Runtime telemetry export for model, tool, and reasoning-summary events.
+- Cross-process append locking for local JSONL logs so concurrent clients preserve hash-chain integrity.
+- Runtime, CLI, MCP, and browser visualizer support for Capture, Replay, and Handoff views.
+
+## Next Milestones
+
+### Integration Backlog
+
+High-value integrations to evaluate after the v1 Eventloom release:
+
+- External collector smoke tests for the implemented generic OTLP export, especially Langfuse, Arize Phoenix, generic OTEL collectors, and other trace backends.
+- Deeper Pathlight dashboard affordances for the existing `eventloom.pathlight.visualizer.v1` contract.
+
+### Phase 4: Client Setup And Adoption
+
+Status: implemented.
+
+Delivered:
+
+- Codex MCP setup guide that points at `@eventloom/mcp` or a local checkout.
+- Claude Desktop MCP setup guide.
+- Direct MCP inspector smoke-test instructions.
+- Public docs and site updates for the MCP package and agent workflow.
+- Published `@eventloom/mcp@0.1.6` with Pathlight and HALO export tools.
+
+Verification: a fresh local client can append events, replay a log, inspect task state, and run the MCP stdio server using documented setup only.
+
+### Phase 5: Dogfood Trace And Handoff Quality
+
+Status: implemented.
+
+Goal: use Eventloom on real agent work and make the resulting handoff useful without reading raw JSONL.
+
+Delivered:
+
+- Canonical `.eventloom/agent-work.jsonl` dogfood trace generated through documented CLI or MCP paths.
+- HALO JSONL, generic OTLP JSON, and Pathlight export examples from the same trace.
+- Richer handoff summaries over `.eventloom/agent-work.jsonl`, including model/tool telemetry, reasoning summaries, verification evidence, and observability gaps.
+- Documentation that explains what Pathlight, HALO, and OTLP each show well for the same Eventloom journal.
+- Runtime `visualize()` API, `eventloom visualize` CLI command, `eventloom_visualize` MCP tool, and browser visualizer support for JSONL and visualizer JSON.
+- Published `@eventloom/runtime@0.1.7` and `@eventloom/mcp@0.1.6` with visualizer support.
+
+Verification: one real dogfood trace can be replayed, summarized, exported to HALO, exported to OTLP, and exported to Pathlight without integrity errors.
+
+### Phase 6: Pathlight Visualizer Affordance
+
+Status: implemented for Eventloom.
+
+Goal: turn the visualizer model into a Pathlight-facing export contract so Eventloom runs are easier to inspect than generic trace/span lists.
+
+Delivered:
+
+- Define the Pathlight display contract for `VisualizerModel.capture`, `VisualizerModel.replay`, and `VisualizerModel.handoff`.
+- Map Eventloom Pathlight exports to Capture, Replay, and Handoff panels without mutating the source JSONL log.
+- Add a documented smoke flow from `eventloom_visualize` to Pathlight inspection.
+- Write a decision note covering whether the UI remains a Pathlight affordance, a standalone Eventloom app, or both.
+
+External follow-up:
+
+- Pathlight dashboard affordance that detects `eventloom.pathlight.visualizer.v1` and renders the trace output panels.
+
+Verification: one exported Eventloom workflow carries the versioned Pathlight visualizer contract and final trace output for Capture, Replay, and Handoff views, with integrity status, projected task state, telemetry, observability gaps, and next actions preserved for a Pathlight UI.
+
+Deferred candidates:
+
+- SQLite/libSQL store spike for indexed local queries once log size or query latency justifies it.
+- Additional workflow families beyond software-work, research-pipeline, and human-ops after the inspection surface is clearer.
+
+### Phase 7: Portable Observability Export
+
+Status: implemented for generic OTLP HTTP delivery.
+
+Goal: make Eventloom logs portable across common LLM observability stacks without adding bespoke exporters for every vendor.
+
+Candidates:
+
+- Phoenix smoke test using OTLP/OpenInference-compatible traces.
+- Langfuse smoke test using its OpenTelemetry ingestion endpoint.
+
+Delivered:
+
+- Runtime `exportToOtlp()` and `EventloomRuntime.exportOtlp()` produce generic OpenTelemetry trace JSON with `resourceSpans`, task/fact/telemetry spans, integrity diagnostics, and runtime provenance attributes.
+- CLI `eventloom export otlp <events.jsonl> [--out <traces.json>] [--endpoint <url>]` writes a local OTLP trace payload from the verified prefix and can POST the same payload to a generic OTLP HTTP traces endpoint.
+- Package API `pushOtlpJson()` sends an already-generated OTLP result to an HTTP traces endpoint and reports typed delivery errors with endpoint and status metadata.
+- OTLP export results are versioned as `eventloom.export.otlp.v1`, and OTLP HTTP delivery results are versioned as `eventloom.export.otlp-push.v1`.
+- `docs/otlp-integration.md` documents the OTLP CLI, package API, MCP tool, artifact bundle output, verified-prefix behavior, and offline fixtures.
+
+Verification: one Eventloom workflow can be exported through OTLP JSON, preserved as a local artifact, and delivered to a generic OpenTelemetry HTTP traces endpoint with model/tool telemetry and task context preserved.
+
+### Phase 8: GitHub Workflow Artifacts
+
+Status: implemented.
+
+Goal: make Eventloom useful in CI for agentic coding, review, and release workflows.
+
+Delivered:
+
+- GitHub Actions example in `docs/github-actions-artifacts.md` that uploads the raw `.eventloom/agent-work.jsonl` log.
+- Artifact upload guidance for `eventloom artifacts`, including verification JSON, stats JSON, visualizer JSON/HTML, HALO JSONL, OTLP trace JSON, handoff Markdown, and manifest output.
+- Agent journal cookbook guidance for using Eventloom artifacts in pull request reviews and release handoffs.
+
+Verification: the documented workflow runs `eventloom artifacts`, verifies `.eventloom/artifacts/manifest.json` with `eventloom artifacts verify .eventloom/artifacts/manifest.json`, and uploads both `.eventloom/agent-work.jsonl` and `.eventloom/artifacts/` as downloadable artifacts that can be replayed or inspected locally.

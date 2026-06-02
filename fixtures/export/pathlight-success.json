@@ -1,0 +1,1775 @@
+{
+  "version": "eventloom.export-fixture.v1",
+  "id": "pathlight-success",
+  "kind": "pathlight",
+  "scenario": "success",
+  "source": {
+    "log": "fixtures/golden/software-work.jsonl",
+    "eventCount": 46
+  },
+  "result": {
+    "version": "eventloom.export.pathlight.v1",
+    "traceId": "pathlight-success-trace",
+    "spanCount": 21,
+    "eventCount": 41,
+    "exportedEventCount": 46,
+    "validPrefixCount": 46,
+    "integrity": {
+      "ok": true,
+      "errors": []
+    }
+  },
+  "trace": {
+    "id": "pathlight-success-trace",
+    "status": "completed",
+    "metadata": {
+      "source": "eventloom",
+      "integrity": {
+        "ok": true,
+        "errors": []
+      },
+      "projectionHash": "e77e70910ee7c6aaf4b3a191f573a2f7719a1b678bfe844a7a0be2328c37a440",
+      "projectionKinds": [
+        "tasks"
+      ],
+      "runtime": {
+        "name": "eventloom",
+        "version": "1.0.0"
+      },
+      "threadIds": [
+        "thread_main"
+      ],
+      "visualizer": {
+        "version": "eventloom.pathlight.visualizer.v1",
+        "outputPath": "visualizer",
+        "panels": [
+          {
+            "id": "capture",
+            "title": "Capture",
+            "outputPath": "visualizer.capture",
+            "summary": "46 captured events across 14 event types."
+          },
+          {
+            "id": "replay",
+            "title": "Replay",
+            "outputPath": "visualizer.replay",
+            "summary": "Replay rebuilt projections with a valid hash chain."
+          },
+          {
+            "id": "handoff",
+            "title": "Handoff",
+            "outputPath": "visualizer.handoff",
+            "summary": "0 active tasks, 1 completed task, and 0 observability gaps."
+          }
+        ]
+      }
+    },
+    "output": {
+      "spanCount": 21,
+      "eventCount": 41,
+      "visualizer": {
+        "version": "eventloom.visualizer.v1",
+        "capture": {
+          "eventCount": 46,
+          "eventTypes": {
+            "goal.created": 1,
+            "actor.started": 5,
+            "tool.started": 5,
+            "tool.completed": 5,
+            "model.started": 5,
+            "reasoning.summary": 5,
+            "model.completed": 5,
+            "task.proposed": 1,
+            "actor.completed": 5,
+            "actor.processed": 5,
+            "task.claimed": 1,
+            "task.completed": 1,
+            "review.requested": 1,
+            "review.approved": 1
+          },
+          "events": [
+            {
+              "id": "evt_runtime_goal",
+              "type": "goal.created",
+              "actorId": "user",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.000Z",
+              "parentEventId": null,
+              "causedBy": [],
+              "summary": "Build deterministic actor runners",
+              "hash": "sha256:bf1bf58eb338ea723db38fc5a0fa36479d5c6ee004c07ce970d8e5f929f61eed",
+              "previousHash": null
+            },
+            {
+              "id": "evt_software_work_000002",
+              "type": "actor.started",
+              "actorId": "planner",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.001Z",
+              "parentEventId": "evt_runtime_goal",
+              "causedBy": [
+                "evt_runtime_goal"
+              ],
+              "summary": "actor=planner",
+              "hash": "sha256:196a640412504113623fd59f2a11a99995b672c12fa46c9e6db9ae4b7d10855c",
+              "previousHash": "sha256:bf1bf58eb338ea723db38fc5a0fa36479d5c6ee004c07ce970d8e5f929f61eed"
+            },
+            {
+              "id": "evt_software_work_000003",
+              "type": "tool.started",
+              "actorId": "planner",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.002Z",
+              "parentEventId": "evt_software_work_000002",
+              "causedBy": [
+                "evt_software_work_000002",
+                "evt_runtime_goal"
+              ],
+              "summary": "Read one mailbox item for planner.",
+              "hash": "sha256:b93980514ee6c3102ee97a409121af6b4a75600a3fcc7b135cdbb592b2bfb12c",
+              "previousHash": "sha256:196a640412504113623fd59f2a11a99995b672c12fa46c9e6db9ae4b7d10855c"
+            },
+            {
+              "id": "evt_software_work_000004",
+              "type": "tool.completed",
+              "actorId": "planner",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.003Z",
+              "parentEventId": "evt_software_work_000002",
+              "causedBy": [
+                "evt_software_work_000002",
+                "evt_runtime_goal"
+              ],
+              "summary": "Read 1 mailbox item (goal.created).",
+              "hash": "sha256:d393a3560138ec96793671b3ffbd2de0a6c99d04d68f785e5c1071764daf0415",
+              "previousHash": "sha256:b93980514ee6c3102ee97a409121af6b4a75600a3fcc7b135cdbb592b2bfb12c"
+            },
+            {
+              "id": "evt_software_work_000005",
+              "type": "model.started",
+              "actorId": "planner",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.004Z",
+              "parentEventId": "evt_software_work_000002",
+              "causedBy": [
+                "evt_software_work_000002",
+                "evt_runtime_goal"
+              ],
+              "summary": "Actor planner handling goal.created.",
+              "hash": "sha256:5cc2604a512c7f2ec6c4bcca39dc10ad3d23a728c6efc1da89e2b5981fa1d8f2",
+              "previousHash": "sha256:d393a3560138ec96793671b3ffbd2de0a6c99d04d68f785e5c1071764daf0415"
+            },
+            {
+              "id": "evt_software_work_000006",
+              "type": "reasoning.summary",
+              "actorId": "planner",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.005Z",
+              "parentEventId": "evt_software_work_000002",
+              "causedBy": [
+                "evt_software_work_000002",
+                "evt_runtime_goal"
+              ],
+              "summary": "planner handled goal.created as Break goals into tasks and emitted task.propose.",
+              "hash": "sha256:5725256e2f4c298aaea0aa3cc1fd90aac397b921dd0868085d21e9f0f0731098",
+              "previousHash": "sha256:5cc2604a512c7f2ec6c4bcca39dc10ad3d23a728c6efc1da89e2b5981fa1d8f2"
+            },
+            {
+              "id": "evt_software_work_000007",
+              "type": "model.completed",
+              "actorId": "planner",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.006Z",
+              "parentEventId": "evt_software_work_000002",
+              "causedBy": [
+                "evt_software_work_000002",
+                "evt_runtime_goal"
+              ],
+              "summary": "Emitted intentions: task.propose.",
+              "hash": "sha256:d705401d45ccae6b15b2782bd80aaa5d2ff8d70469171bdeccbe3f09a4e7aca1",
+              "previousHash": "sha256:5725256e2f4c298aaea0aa3cc1fd90aac397b921dd0868085d21e9f0f0731098"
+            },
+            {
+              "id": "evt_software_work_000008",
+              "type": "task.proposed",
+              "actorId": "planner",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.007Z",
+              "parentEventId": "evt_runtime_goal",
+              "causedBy": [
+                "evt_runtime_goal"
+              ],
+              "summary": "Run actors from rebuilt mailboxes",
+              "hash": "sha256:133e75cb4274740538439be72c69fe81e513105c02980e4dcbfbc9c9de2ec15f",
+              "previousHash": "sha256:d705401d45ccae6b15b2782bd80aaa5d2ff8d70469171bdeccbe3f09a4e7aca1"
+            },
+            {
+              "id": "evt_software_work_000009",
+              "type": "actor.completed",
+              "actorId": "planner",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.008Z",
+              "parentEventId": "evt_software_work_000002",
+              "causedBy": [
+                "evt_software_work_000002",
+                "evt_software_work_000008"
+              ],
+              "summary": "actor=planner",
+              "hash": "sha256:94f50b53af6fd34a3396c99f2567f2421e956fe999380d85c40754eb475d835a",
+              "previousHash": "sha256:133e75cb4274740538439be72c69fe81e513105c02980e4dcbfbc9c9de2ec15f"
+            },
+            {
+              "id": "evt_software_work_000010",
+              "type": "actor.processed",
+              "actorId": "planner",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.009Z",
+              "parentEventId": "evt_software_work_000009",
+              "causedBy": [
+                "evt_software_work_000009"
+              ],
+              "summary": "actor=planner",
+              "hash": "sha256:a2080ecf9eb6857fbdf0d2ff20605b526b86e8f13d298c2d15da0eb7fdc69925",
+              "previousHash": "sha256:94f50b53af6fd34a3396c99f2567f2421e956fe999380d85c40754eb475d835a"
+            },
+            {
+              "id": "evt_software_work_000011",
+              "type": "actor.started",
+              "actorId": "worker",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.010Z",
+              "parentEventId": "evt_software_work_000008",
+              "causedBy": [
+                "evt_software_work_000008"
+              ],
+              "summary": "actor=worker",
+              "hash": "sha256:48168efdbad0e1a802dd724280864ecee1fc9111cf4abc36fd3d577ca53afa76",
+              "previousHash": "sha256:a2080ecf9eb6857fbdf0d2ff20605b526b86e8f13d298c2d15da0eb7fdc69925"
+            },
+            {
+              "id": "evt_software_work_000012",
+              "type": "tool.started",
+              "actorId": "worker",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.011Z",
+              "parentEventId": "evt_software_work_000011",
+              "causedBy": [
+                "evt_software_work_000011",
+                "evt_software_work_000008"
+              ],
+              "summary": "Read one mailbox item for worker.",
+              "hash": "sha256:53432d9d069b43f57daadfd5f96fda11f3351b05f33258300cc5c81b3140fa87",
+              "previousHash": "sha256:48168efdbad0e1a802dd724280864ecee1fc9111cf4abc36fd3d577ca53afa76"
+            },
+            {
+              "id": "evt_software_work_000013",
+              "type": "tool.completed",
+              "actorId": "worker",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.012Z",
+              "parentEventId": "evt_software_work_000011",
+              "causedBy": [
+                "evt_software_work_000011",
+                "evt_software_work_000008"
+              ],
+              "summary": "Read 1 mailbox item (task.proposed).",
+              "hash": "sha256:e9ec1bb48a971e426a13201b807cfa9f12c33c051050855ceaf964a663ee3ed3",
+              "previousHash": "sha256:53432d9d069b43f57daadfd5f96fda11f3351b05f33258300cc5c81b3140fa87"
+            },
+            {
+              "id": "evt_software_work_000014",
+              "type": "model.started",
+              "actorId": "worker",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.013Z",
+              "parentEventId": "evt_software_work_000011",
+              "causedBy": [
+                "evt_software_work_000011",
+                "evt_software_work_000008"
+              ],
+              "summary": "Actor worker handling task.proposed.",
+              "hash": "sha256:0b7f682c422498a6a3772dc49d680fe0047a0b553f0d6111211006c25f89bc53",
+              "previousHash": "sha256:e9ec1bb48a971e426a13201b807cfa9f12c33c051050855ceaf964a663ee3ed3"
+            },
+            {
+              "id": "evt_software_work_000015",
+              "type": "reasoning.summary",
+              "actorId": "worker",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.014Z",
+              "parentEventId": "evt_software_work_000011",
+              "causedBy": [
+                "evt_software_work_000011",
+                "evt_software_work_000008"
+              ],
+              "summary": "worker handled task.proposed as Claim and complete tasks and emitted task.claim.",
+              "hash": "sha256:20b58c06c11bd460b04d6298426910402f8b77efbb98a40add93224f365f47e7",
+              "previousHash": "sha256:0b7f682c422498a6a3772dc49d680fe0047a0b553f0d6111211006c25f89bc53"
+            },
+            {
+              "id": "evt_software_work_000016",
+              "type": "model.completed",
+              "actorId": "worker",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.015Z",
+              "parentEventId": "evt_software_work_000011",
+              "causedBy": [
+                "evt_software_work_000011",
+                "evt_software_work_000008"
+              ],
+              "summary": "Emitted intentions: task.claim.",
+              "hash": "sha256:39316d3231adf8fde4a661b0812f2f00e90ac57895065fd9b705168bc6473bdb",
+              "previousHash": "sha256:20b58c06c11bd460b04d6298426910402f8b77efbb98a40add93224f365f47e7"
+            },
+            {
+              "id": "evt_software_work_000017",
+              "type": "task.claimed",
+              "actorId": "worker",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.016Z",
+              "parentEventId": "evt_software_work_000008",
+              "causedBy": [
+                "evt_software_work_000008"
+              ],
+              "summary": "task_actor_runtime",
+              "hash": "sha256:d401049b49b19d4ccac92944673275c3358145fb376baad9c90f58a5cb69b95d",
+              "previousHash": "sha256:39316d3231adf8fde4a661b0812f2f00e90ac57895065fd9b705168bc6473bdb"
+            },
+            {
+              "id": "evt_software_work_000018",
+              "type": "actor.completed",
+              "actorId": "worker",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.017Z",
+              "parentEventId": "evt_software_work_000011",
+              "causedBy": [
+                "evt_software_work_000011",
+                "evt_software_work_000017"
+              ],
+              "summary": "actor=worker",
+              "hash": "sha256:4cc2d8dbc5ed452982db7b3566f18695a7734f328fe3442ba6792a329531ced7",
+              "previousHash": "sha256:d401049b49b19d4ccac92944673275c3358145fb376baad9c90f58a5cb69b95d"
+            },
+            {
+              "id": "evt_software_work_000019",
+              "type": "actor.processed",
+              "actorId": "worker",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.018Z",
+              "parentEventId": "evt_software_work_000018",
+              "causedBy": [
+                "evt_software_work_000018"
+              ],
+              "summary": "actor=worker",
+              "hash": "sha256:c0b02ea1c56e5e93097c51497ded7322910893cb45403df558f45e1f773ac206",
+              "previousHash": "sha256:4cc2d8dbc5ed452982db7b3566f18695a7734f328fe3442ba6792a329531ced7"
+            },
+            {
+              "id": "evt_software_work_000020",
+              "type": "actor.started",
+              "actorId": "worker",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.019Z",
+              "parentEventId": "evt_software_work_000017",
+              "causedBy": [
+                "evt_software_work_000017"
+              ],
+              "summary": "actor=worker",
+              "hash": "sha256:dcc4b3a0e6517b98092a93b71914fee425fe3e018297bd95186c70d951ec9cdb",
+              "previousHash": "sha256:c0b02ea1c56e5e93097c51497ded7322910893cb45403df558f45e1f773ac206"
+            },
+            {
+              "id": "evt_software_work_000021",
+              "type": "tool.started",
+              "actorId": "worker",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.020Z",
+              "parentEventId": "evt_software_work_000020",
+              "causedBy": [
+                "evt_software_work_000020",
+                "evt_software_work_000017"
+              ],
+              "summary": "Read one mailbox item for worker.",
+              "hash": "sha256:8892f269066f05940377e580d4668cb1af7113084b0e89f2e12901b0e766d807",
+              "previousHash": "sha256:dcc4b3a0e6517b98092a93b71914fee425fe3e018297bd95186c70d951ec9cdb"
+            },
+            {
+              "id": "evt_software_work_000022",
+              "type": "tool.completed",
+              "actorId": "worker",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.021Z",
+              "parentEventId": "evt_software_work_000020",
+              "causedBy": [
+                "evt_software_work_000020",
+                "evt_software_work_000017"
+              ],
+              "summary": "Read 1 mailbox item (task.claimed).",
+              "hash": "sha256:7f155830089d757619c074ef62ff8eb271c86d38e4ae27d32dc4684729f312f2",
+              "previousHash": "sha256:8892f269066f05940377e580d4668cb1af7113084b0e89f2e12901b0e766d807"
+            },
+            {
+              "id": "evt_software_work_000023",
+              "type": "model.started",
+              "actorId": "worker",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.022Z",
+              "parentEventId": "evt_software_work_000020",
+              "causedBy": [
+                "evt_software_work_000020",
+                "evt_software_work_000017"
+              ],
+              "summary": "Actor worker handling task.claimed.",
+              "hash": "sha256:68e47105a72163f2126af6d6c1925549768b78144c4dbcc653b8b33f70ec1392",
+              "previousHash": "sha256:7f155830089d757619c074ef62ff8eb271c86d38e4ae27d32dc4684729f312f2"
+            },
+            {
+              "id": "evt_software_work_000024",
+              "type": "reasoning.summary",
+              "actorId": "worker",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.023Z",
+              "parentEventId": "evt_software_work_000020",
+              "causedBy": [
+                "evt_software_work_000020",
+                "evt_software_work_000017"
+              ],
+              "summary": "worker handled task.claimed as Claim and complete tasks and emitted task.complete.",
+              "hash": "sha256:8f656f97d6c35fa889f03b1430f14f314326a8b54febefe2395f15c5214a88a9",
+              "previousHash": "sha256:68e47105a72163f2126af6d6c1925549768b78144c4dbcc653b8b33f70ec1392"
+            },
+            {
+              "id": "evt_software_work_000025",
+              "type": "model.completed",
+              "actorId": "worker",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.024Z",
+              "parentEventId": "evt_software_work_000020",
+              "causedBy": [
+                "evt_software_work_000020",
+                "evt_software_work_000017"
+              ],
+              "summary": "Emitted intentions: task.complete.",
+              "hash": "sha256:7ca3d4087c81e169571af8a9ca702734e2bbc821c4c21e47f9ce379e7ed7cfde",
+              "previousHash": "sha256:8f656f97d6c35fa889f03b1430f14f314326a8b54febefe2395f15c5214a88a9"
+            },
+            {
+              "id": "evt_software_work_000026",
+              "type": "task.completed",
+              "actorId": "worker",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.025Z",
+              "parentEventId": "evt_software_work_000017",
+              "causedBy": [
+                "evt_software_work_000017"
+              ],
+              "summary": "task_actor_runtime",
+              "hash": "sha256:389d58365bdef202bfd58cd919eed42bf830e7997d76cd1e2534eb4d661da4b8",
+              "previousHash": "sha256:7ca3d4087c81e169571af8a9ca702734e2bbc821c4c21e47f9ce379e7ed7cfde"
+            },
+            {
+              "id": "evt_software_work_000027",
+              "type": "actor.completed",
+              "actorId": "worker",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.026Z",
+              "parentEventId": "evt_software_work_000020",
+              "causedBy": [
+                "evt_software_work_000020",
+                "evt_software_work_000026"
+              ],
+              "summary": "actor=worker",
+              "hash": "sha256:2963db5c729bd092111d39b3f0393575954d0da5c171eadc985ac6a4d56ad471",
+              "previousHash": "sha256:389d58365bdef202bfd58cd919eed42bf830e7997d76cd1e2534eb4d661da4b8"
+            },
+            {
+              "id": "evt_software_work_000028",
+              "type": "actor.processed",
+              "actorId": "worker",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.027Z",
+              "parentEventId": "evt_software_work_000027",
+              "causedBy": [
+                "evt_software_work_000027"
+              ],
+              "summary": "actor=worker",
+              "hash": "sha256:68452604210acbbaa7f9b9407dec328582f8662bc2d80d6671fc4c92db0794ed",
+              "previousHash": "sha256:2963db5c729bd092111d39b3f0393575954d0da5c171eadc985ac6a4d56ad471"
+            },
+            {
+              "id": "evt_software_work_000029",
+              "type": "actor.started",
+              "actorId": "worker",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.028Z",
+              "parentEventId": "evt_software_work_000026",
+              "causedBy": [
+                "evt_software_work_000026"
+              ],
+              "summary": "actor=worker",
+              "hash": "sha256:e1a11b6bcd357dbfc8c22d40402a735864552a69921556d73e952cc23261a2be",
+              "previousHash": "sha256:68452604210acbbaa7f9b9407dec328582f8662bc2d80d6671fc4c92db0794ed"
+            },
+            {
+              "id": "evt_software_work_000030",
+              "type": "tool.started",
+              "actorId": "worker",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.029Z",
+              "parentEventId": "evt_software_work_000029",
+              "causedBy": [
+                "evt_software_work_000029",
+                "evt_software_work_000026"
+              ],
+              "summary": "Read one mailbox item for worker.",
+              "hash": "sha256:1c329b1625faed1e9b406df247ed6c8360d4d05afd9768b2489162b1069e349e",
+              "previousHash": "sha256:e1a11b6bcd357dbfc8c22d40402a735864552a69921556d73e952cc23261a2be"
+            },
+            {
+              "id": "evt_software_work_000031",
+              "type": "tool.completed",
+              "actorId": "worker",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.030Z",
+              "parentEventId": "evt_software_work_000029",
+              "causedBy": [
+                "evt_software_work_000029",
+                "evt_software_work_000026"
+              ],
+              "summary": "Read 1 mailbox item (task.completed).",
+              "hash": "sha256:1652e544f36ae13d7ff919ec76ec77676800cbe8970bd5e2ede27b1b3d4ff4a2",
+              "previousHash": "sha256:1c329b1625faed1e9b406df247ed6c8360d4d05afd9768b2489162b1069e349e"
+            },
+            {
+              "id": "evt_software_work_000032",
+              "type": "model.started",
+              "actorId": "worker",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.031Z",
+              "parentEventId": "evt_software_work_000029",
+              "causedBy": [
+                "evt_software_work_000029",
+                "evt_software_work_000026"
+              ],
+              "summary": "Actor worker handling task.completed.",
+              "hash": "sha256:6581ea159b10e29d50a3e5d87054d6819204834e81fbb1fd30c834461b6f6ee2",
+              "previousHash": "sha256:1652e544f36ae13d7ff919ec76ec77676800cbe8970bd5e2ede27b1b3d4ff4a2"
+            },
+            {
+              "id": "evt_software_work_000033",
+              "type": "reasoning.summary",
+              "actorId": "worker",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.032Z",
+              "parentEventId": "evt_software_work_000029",
+              "causedBy": [
+                "evt_software_work_000029",
+                "evt_software_work_000026"
+              ],
+              "summary": "worker handled task.completed as Claim and complete tasks and emitted review.request.",
+              "hash": "sha256:fc39df817ed973e0449704e5e5516a6d510672a9ba7a2deff40701cd4d031238",
+              "previousHash": "sha256:6581ea159b10e29d50a3e5d87054d6819204834e81fbb1fd30c834461b6f6ee2"
+            },
+            {
+              "id": "evt_software_work_000034",
+              "type": "model.completed",
+              "actorId": "worker",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.033Z",
+              "parentEventId": "evt_software_work_000029",
+              "causedBy": [
+                "evt_software_work_000029",
+                "evt_software_work_000026"
+              ],
+              "summary": "Emitted intentions: review.request.",
+              "hash": "sha256:e7c9886156b7c891e369aaa16a60d8335874136ddc859824b9476f1863611d1c",
+              "previousHash": "sha256:fc39df817ed973e0449704e5e5516a6d510672a9ba7a2deff40701cd4d031238"
+            },
+            {
+              "id": "evt_software_work_000035",
+              "type": "review.requested",
+              "actorId": "worker",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.034Z",
+              "parentEventId": "evt_software_work_000026",
+              "causedBy": [
+                "evt_software_work_000026"
+              ],
+              "summary": "task_actor_runtime",
+              "hash": "sha256:ae05ab82c7a4f214bb89d7f6c0eb2f854b1fbf412b8e1bee3e963f2e8bdf88ed",
+              "previousHash": "sha256:e7c9886156b7c891e369aaa16a60d8335874136ddc859824b9476f1863611d1c"
+            },
+            {
+              "id": "evt_software_work_000036",
+              "type": "actor.completed",
+              "actorId": "worker",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.035Z",
+              "parentEventId": "evt_software_work_000029",
+              "causedBy": [
+                "evt_software_work_000029",
+                "evt_software_work_000035"
+              ],
+              "summary": "actor=worker",
+              "hash": "sha256:4637c635059ae50dd19f402eccf731939227060b269e6b2ddbecdc6358b88e0b",
+              "previousHash": "sha256:ae05ab82c7a4f214bb89d7f6c0eb2f854b1fbf412b8e1bee3e963f2e8bdf88ed"
+            },
+            {
+              "id": "evt_software_work_000037",
+              "type": "actor.processed",
+              "actorId": "worker",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.036Z",
+              "parentEventId": "evt_software_work_000036",
+              "causedBy": [
+                "evt_software_work_000036"
+              ],
+              "summary": "actor=worker",
+              "hash": "sha256:d081ce3420463b89ff37ead3bd5641f0d7a2069bf8c7cc8370f21a99ee9075a4",
+              "previousHash": "sha256:4637c635059ae50dd19f402eccf731939227060b269e6b2ddbecdc6358b88e0b"
+            },
+            {
+              "id": "evt_software_work_000038",
+              "type": "actor.started",
+              "actorId": "reviewer",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.037Z",
+              "parentEventId": "evt_software_work_000035",
+              "causedBy": [
+                "evt_software_work_000035"
+              ],
+              "summary": "actor=reviewer",
+              "hash": "sha256:3d4ca407ed022d9d14be32dc1a9ca903a74519f4d308a079d270ef99e82244bf",
+              "previousHash": "sha256:d081ce3420463b89ff37ead3bd5641f0d7a2069bf8c7cc8370f21a99ee9075a4"
+            },
+            {
+              "id": "evt_software_work_000039",
+              "type": "tool.started",
+              "actorId": "reviewer",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.038Z",
+              "parentEventId": "evt_software_work_000038",
+              "causedBy": [
+                "evt_software_work_000038",
+                "evt_software_work_000035"
+              ],
+              "summary": "Read one mailbox item for reviewer.",
+              "hash": "sha256:21ba2cdaedc2270367bdca8b19eab64bca413f4e69c198f8256992d52392b129",
+              "previousHash": "sha256:3d4ca407ed022d9d14be32dc1a9ca903a74519f4d308a079d270ef99e82244bf"
+            },
+            {
+              "id": "evt_software_work_000040",
+              "type": "tool.completed",
+              "actorId": "reviewer",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.039Z",
+              "parentEventId": "evt_software_work_000038",
+              "causedBy": [
+                "evt_software_work_000038",
+                "evt_software_work_000035"
+              ],
+              "summary": "Read 1 mailbox item (review.requested).",
+              "hash": "sha256:27dcc6e60ddbd6c38889bdef88f178736baaf8d9ed32a7cbee81a558f39fce2e",
+              "previousHash": "sha256:21ba2cdaedc2270367bdca8b19eab64bca413f4e69c198f8256992d52392b129"
+            },
+            {
+              "id": "evt_software_work_000041",
+              "type": "model.started",
+              "actorId": "reviewer",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.040Z",
+              "parentEventId": "evt_software_work_000038",
+              "causedBy": [
+                "evt_software_work_000038",
+                "evt_software_work_000035"
+              ],
+              "summary": "Actor reviewer handling review.requested.",
+              "hash": "sha256:3f281f938dd288730fbd1a03719373ad99dd369f294772a10a4c582f791a4131",
+              "previousHash": "sha256:27dcc6e60ddbd6c38889bdef88f178736baaf8d9ed32a7cbee81a558f39fce2e"
+            },
+            {
+              "id": "evt_software_work_000042",
+              "type": "reasoning.summary",
+              "actorId": "reviewer",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.041Z",
+              "parentEventId": "evt_software_work_000038",
+              "causedBy": [
+                "evt_software_work_000038",
+                "evt_software_work_000035"
+              ],
+              "summary": "reviewer handled review.requested as Approve or report issues and emitted review.approve.",
+              "hash": "sha256:0f236094f71f1fb30587e5ea7d308d4ade2bf93421b33330507c39459b36e3c7",
+              "previousHash": "sha256:3f281f938dd288730fbd1a03719373ad99dd369f294772a10a4c582f791a4131"
+            },
+            {
+              "id": "evt_software_work_000043",
+              "type": "model.completed",
+              "actorId": "reviewer",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.042Z",
+              "parentEventId": "evt_software_work_000038",
+              "causedBy": [
+                "evt_software_work_000038",
+                "evt_software_work_000035"
+              ],
+              "summary": "Emitted intentions: review.approve.",
+              "hash": "sha256:5630700f65addb5bc409615f159f0096dd6bc83567e674712b5cee186f3850c2",
+              "previousHash": "sha256:0f236094f71f1fb30587e5ea7d308d4ade2bf93421b33330507c39459b36e3c7"
+            },
+            {
+              "id": "evt_software_work_000044",
+              "type": "review.approved",
+              "actorId": "reviewer",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.043Z",
+              "parentEventId": "evt_software_work_000035",
+              "causedBy": [
+                "evt_software_work_000035"
+              ],
+              "summary": "task_actor_runtime",
+              "hash": "sha256:5da2b7e5064ce46c7e46bd2891c77363327fbfe35f9579c223f5afa8e839139a",
+              "previousHash": "sha256:5630700f65addb5bc409615f159f0096dd6bc83567e674712b5cee186f3850c2"
+            },
+            {
+              "id": "evt_software_work_000045",
+              "type": "actor.completed",
+              "actorId": "reviewer",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.044Z",
+              "parentEventId": "evt_software_work_000038",
+              "causedBy": [
+                "evt_software_work_000038",
+                "evt_software_work_000044"
+              ],
+              "summary": "actor=reviewer",
+              "hash": "sha256:6d884dbec615b29ec74d616aa3afc0c7bf97586dd6c3edc95d81a333dd08bf45",
+              "previousHash": "sha256:5da2b7e5064ce46c7e46bd2891c77363327fbfe35f9579c223f5afa8e839139a"
+            },
+            {
+              "id": "evt_software_work_000046",
+              "type": "actor.processed",
+              "actorId": "reviewer",
+              "threadId": "thread_main",
+              "timestamp": "2026-04-28T22:00:00.045Z",
+              "parentEventId": "evt_software_work_000045",
+              "causedBy": [
+                "evt_software_work_000045"
+              ],
+              "summary": "actor=reviewer",
+              "hash": "sha256:50d37db17a5460654dc27c3bb2b261bdab0bbf848f4f67aa8a884c1f30c1eb3f",
+              "previousHash": "sha256:6d884dbec615b29ec74d616aa3afc0c7bf97586dd6c3edc95d81a333dd08bf45"
+            }
+          ]
+        },
+        "replay": {
+          "eventCount": 46,
+          "integrity": {
+            "ok": true,
+            "errors": []
+          },
+          "projection": {
+            "eventTypes": {
+              "goal.created": 1,
+              "actor.started": 5,
+              "tool.started": 5,
+              "tool.completed": 5,
+              "model.started": 5,
+              "reasoning.summary": 5,
+              "model.completed": 5,
+              "task.proposed": 1,
+              "actor.completed": 5,
+              "actor.processed": 5,
+              "task.claimed": 1,
+              "task.completed": 1,
+              "review.requested": 1,
+              "review.approved": 1
+            },
+            "effects": {
+              "effects": {},
+              "errors": []
+            },
+            "research": {
+              "questions": {},
+              "errors": []
+            },
+            "tasks": {
+              "tasks": {
+                "task_actor_runtime": {
+                  "id": "task_actor_runtime",
+                  "status": "approved",
+                  "actorId": "reviewer",
+                  "lastEventId": "evt_software_work_000044",
+                  "history": [
+                    "evt_software_work_000008",
+                    "evt_software_work_000017",
+                    "evt_software_work_000026",
+                    "evt_software_work_000035",
+                    "evt_software_work_000044"
+                  ],
+                  "title": "Run actors from rebuilt mailboxes"
+                }
+              },
+              "errors": []
+            }
+          },
+          "projectionHash": "e77e70910ee7c6aaf4b3a191f573a2f7719a1b678bfe844a7a0be2328c37a440"
+        },
+        "handoff": {
+          "eventCount": 46,
+          "eventTypes": {
+            "goal.created": 1,
+            "actor.started": 5,
+            "tool.started": 5,
+            "tool.completed": 5,
+            "model.started": 5,
+            "reasoning.summary": 5,
+            "model.completed": 5,
+            "task.proposed": 1,
+            "actor.completed": 5,
+            "actor.processed": 5,
+            "task.claimed": 1,
+            "task.completed": 1,
+            "review.requested": 1,
+            "review.approved": 1
+          },
+          "integrity": {
+            "ok": true,
+            "errors": []
+          },
+          "goals": [
+            {
+              "id": "evt_runtime_goal",
+              "actorId": "user",
+              "title": "Build deterministic actor runners",
+              "timestamp": "2026-04-28T22:00:00.000Z"
+            }
+          ],
+          "tasks": {
+            "active": [],
+            "completed": [
+              {
+                "id": "task_actor_runtime",
+                "title": "Run actors from rebuilt mailboxes",
+                "status": "approved",
+                "actorId": "reviewer",
+                "lastEventId": "evt_software_work_000044"
+              }
+            ]
+          },
+          "projectionErrors": [],
+          "decisions": [],
+          "verification": [],
+          "releases": [],
+          "risks": [],
+          "recentFacts": [],
+          "telemetry": {
+            "models": [
+              {
+                "callId": "model_turn_000001",
+                "actorId": "planner",
+                "provider": "eventloom",
+                "modelName": "deterministic-runner",
+                "status": "completed",
+                "promptVersion": "eventloom.deterministic-runner.v1",
+                "inputSummary": "Actor planner handling goal.created.",
+                "outputSummary": "Emitted intentions: task.propose.",
+                "parameters": {
+                  "temperature": 0,
+                  "toolChoice": "none"
+                },
+                "inputTokens": 7,
+                "outputTokens": 2,
+                "totalTokens": 9,
+                "cost": 0,
+                "latencyMs": 1
+              },
+              {
+                "callId": "model_turn_000002",
+                "actorId": "worker",
+                "provider": "eventloom",
+                "modelName": "deterministic-runner",
+                "status": "completed",
+                "promptVersion": "eventloom.deterministic-runner.v1",
+                "inputSummary": "Actor worker handling task.proposed.",
+                "outputSummary": "Emitted intentions: task.claim.",
+                "parameters": {
+                  "temperature": 0,
+                  "toolChoice": "none"
+                },
+                "inputTokens": 7,
+                "outputTokens": 2,
+                "totalTokens": 9,
+                "cost": 0,
+                "latencyMs": 1
+              },
+              {
+                "callId": "model_turn_000003",
+                "actorId": "worker",
+                "provider": "eventloom",
+                "modelName": "deterministic-runner",
+                "status": "completed",
+                "promptVersion": "eventloom.deterministic-runner.v1",
+                "inputSummary": "Actor worker handling task.claimed.",
+                "outputSummary": "Emitted intentions: task.complete.",
+                "parameters": {
+                  "temperature": 0,
+                  "toolChoice": "none"
+                },
+                "inputTokens": 7,
+                "outputTokens": 2,
+                "totalTokens": 9,
+                "cost": 0,
+                "latencyMs": 1
+              },
+              {
+                "callId": "model_turn_000004",
+                "actorId": "worker",
+                "provider": "eventloom",
+                "modelName": "deterministic-runner",
+                "status": "completed",
+                "promptVersion": "eventloom.deterministic-runner.v1",
+                "inputSummary": "Actor worker handling task.completed.",
+                "outputSummary": "Emitted intentions: review.request.",
+                "parameters": {
+                  "temperature": 0,
+                  "toolChoice": "none"
+                },
+                "inputTokens": 7,
+                "outputTokens": 2,
+                "totalTokens": 9,
+                "cost": 0,
+                "latencyMs": 1
+              },
+              {
+                "callId": "model_turn_000005",
+                "actorId": "reviewer",
+                "provider": "eventloom",
+                "modelName": "deterministic-runner",
+                "status": "completed",
+                "promptVersion": "eventloom.deterministic-runner.v1",
+                "inputSummary": "Actor reviewer handling review.requested.",
+                "outputSummary": "Emitted intentions: review.approve.",
+                "parameters": {
+                  "temperature": 0,
+                  "toolChoice": "none"
+                },
+                "inputTokens": 7,
+                "outputTokens": 2,
+                "totalTokens": 9,
+                "cost": 0,
+                "latencyMs": 1
+              }
+            ],
+            "tools": [
+              {
+                "callId": "tool_turn_000001",
+                "actorId": "planner",
+                "toolName": "eventloom.mailbox.read",
+                "status": "completed",
+                "inputSummary": "Read one mailbox item for planner.",
+                "outputSummary": "Read 1 mailbox item (goal.created).",
+                "exitCode": 0,
+                "resultCount": 1,
+                "resultExcerpt": "evt_runtime_goal",
+                "decisive": true,
+                "latencyMs": 1
+              },
+              {
+                "callId": "tool_turn_000002",
+                "actorId": "worker",
+                "toolName": "eventloom.mailbox.read",
+                "status": "completed",
+                "inputSummary": "Read one mailbox item for worker.",
+                "outputSummary": "Read 1 mailbox item (task.proposed).",
+                "exitCode": 0,
+                "resultCount": 1,
+                "resultExcerpt": "evt_software_work_000008",
+                "decisive": true,
+                "latencyMs": 1
+              },
+              {
+                "callId": "tool_turn_000003",
+                "actorId": "worker",
+                "toolName": "eventloom.mailbox.read",
+                "status": "completed",
+                "inputSummary": "Read one mailbox item for worker.",
+                "outputSummary": "Read 1 mailbox item (task.claimed).",
+                "exitCode": 0,
+                "resultCount": 1,
+                "resultExcerpt": "evt_software_work_000017",
+                "decisive": true,
+                "latencyMs": 1
+              },
+              {
+                "callId": "tool_turn_000004",
+                "actorId": "worker",
+                "toolName": "eventloom.mailbox.read",
+                "status": "completed",
+                "inputSummary": "Read one mailbox item for worker.",
+                "outputSummary": "Read 1 mailbox item (task.completed).",
+                "exitCode": 0,
+                "resultCount": 1,
+                "resultExcerpt": "evt_software_work_000026",
+                "decisive": true,
+                "latencyMs": 1
+              },
+              {
+                "callId": "tool_turn_000005",
+                "actorId": "reviewer",
+                "toolName": "eventloom.mailbox.read",
+                "status": "completed",
+                "inputSummary": "Read one mailbox item for reviewer.",
+                "outputSummary": "Read 1 mailbox item (review.requested).",
+                "exitCode": 0,
+                "resultCount": 1,
+                "resultExcerpt": "evt_software_work_000035",
+                "decisive": true,
+                "latencyMs": 1
+              }
+            ],
+            "reasoning": [
+              {
+                "id": "evt_software_work_000006",
+                "actorId": "planner",
+                "summary": "planner handled goal.created as Break goals into tasks and emitted task.propose.",
+                "confidence": 1,
+                "evidenceEventIds": [
+                  "evt_runtime_goal"
+                ]
+              },
+              {
+                "id": "evt_software_work_000015",
+                "actorId": "worker",
+                "summary": "worker handled task.proposed as Claim and complete tasks and emitted task.claim.",
+                "confidence": 1,
+                "evidenceEventIds": [
+                  "evt_software_work_000008"
+                ]
+              },
+              {
+                "id": "evt_software_work_000024",
+                "actorId": "worker",
+                "summary": "worker handled task.claimed as Claim and complete tasks and emitted task.complete.",
+                "confidence": 1,
+                "evidenceEventIds": [
+                  "evt_software_work_000017"
+                ]
+              },
+              {
+                "id": "evt_software_work_000033",
+                "actorId": "worker",
+                "summary": "worker handled task.completed as Claim and complete tasks and emitted review.request.",
+                "confidence": 1,
+                "evidenceEventIds": [
+                  "evt_software_work_000026"
+                ]
+              },
+              {
+                "id": "evt_software_work_000042",
+                "actorId": "reviewer",
+                "summary": "reviewer handled review.requested as Approve or report issues and emitted review.approve.",
+                "confidence": 1,
+                "evidenceEventIds": [
+                  "evt_software_work_000035"
+                ]
+              }
+            ]
+          },
+          "observabilityGaps": [],
+          "nextActions": [
+            "No active tasks remain."
+          ]
+        }
+      }
+    },
+    "error": null
+  },
+  "spans": [
+    {
+      "id": "pathlight-success-span-1",
+      "name": "planner.turn",
+      "type": "agent",
+      "metadata": {
+        "source": "eventloom",
+        "exportKind": "actor_turn",
+        "turnId": "turn_000001",
+        "actorId": "planner",
+        "startedEventId": "evt_software_work_000002",
+        "completedEventId": "evt_software_work_000009",
+        "acceptedEventIds": [
+          "evt_software_work_000008"
+        ],
+        "rejectedEventIds": []
+      },
+      "status": "completed",
+      "output": {
+        "turnId": "turn_000001",
+        "sourceEventId": "evt_runtime_goal",
+        "intentions": [
+          "task.propose"
+        ],
+        "acceptedEvents": [
+          "evt_software_work_000008"
+        ],
+        "modelCalls": [
+          {
+            "modelProvider": "eventloom",
+            "modelName": "deterministic-runner",
+            "promptVersion": "eventloom.deterministic-runner.v1",
+            "inputSummary": "Actor planner handling goal.created.",
+            "outputSummary": "Emitted intentions: task.propose.",
+            "inputTokens": 7,
+            "outputTokens": 2,
+            "totalTokens": 9,
+            "cost": 0
+          }
+        ],
+        "toolCalls": [
+          {
+            "toolName": "eventloom.mailbox.read",
+            "inputSummary": "Read one mailbox item for planner.",
+            "outputSummary": "Read 1 mailbox item (goal.created).",
+            "exitCode": 0,
+            "resultCount": 1,
+            "resultExcerpt": "evt_runtime_goal",
+            "decisive": true,
+            "latencyMs": 1
+          }
+        ],
+        "reasoning": [
+          "planner handled goal.created as Break goals into tasks and emitted task.propose."
+        ]
+      },
+      "error": null
+    },
+    {
+      "id": "pathlight-success-span-2",
+      "name": "worker.turn",
+      "type": "agent",
+      "metadata": {
+        "source": "eventloom",
+        "exportKind": "actor_turn",
+        "turnId": "turn_000002",
+        "actorId": "worker",
+        "startedEventId": "evt_software_work_000011",
+        "completedEventId": "evt_software_work_000018",
+        "acceptedEventIds": [
+          "evt_software_work_000017"
+        ],
+        "rejectedEventIds": []
+      },
+      "status": "completed",
+      "output": {
+        "turnId": "turn_000002",
+        "sourceEventId": "evt_software_work_000008",
+        "intentions": [
+          "task.claim"
+        ],
+        "acceptedEvents": [
+          "evt_software_work_000017"
+        ],
+        "modelCalls": [
+          {
+            "modelProvider": "eventloom",
+            "modelName": "deterministic-runner",
+            "promptVersion": "eventloom.deterministic-runner.v1",
+            "inputSummary": "Actor worker handling task.proposed.",
+            "outputSummary": "Emitted intentions: task.claim.",
+            "inputTokens": 7,
+            "outputTokens": 2,
+            "totalTokens": 9,
+            "cost": 0
+          }
+        ],
+        "toolCalls": [
+          {
+            "toolName": "eventloom.mailbox.read",
+            "inputSummary": "Read one mailbox item for worker.",
+            "outputSummary": "Read 1 mailbox item (task.proposed).",
+            "exitCode": 0,
+            "resultCount": 1,
+            "resultExcerpt": "evt_software_work_000008",
+            "decisive": true,
+            "latencyMs": 1
+          }
+        ],
+        "reasoning": [
+          "worker handled task.proposed as Claim and complete tasks and emitted task.claim."
+        ]
+      },
+      "error": null
+    },
+    {
+      "id": "pathlight-success-span-3",
+      "name": "worker.turn",
+      "type": "agent",
+      "metadata": {
+        "source": "eventloom",
+        "exportKind": "actor_turn",
+        "turnId": "turn_000003",
+        "actorId": "worker",
+        "startedEventId": "evt_software_work_000020",
+        "completedEventId": "evt_software_work_000027",
+        "acceptedEventIds": [
+          "evt_software_work_000026"
+        ],
+        "rejectedEventIds": []
+      },
+      "status": "completed",
+      "output": {
+        "turnId": "turn_000003",
+        "sourceEventId": "evt_software_work_000017",
+        "intentions": [
+          "task.complete"
+        ],
+        "acceptedEvents": [
+          "evt_software_work_000026"
+        ],
+        "modelCalls": [
+          {
+            "modelProvider": "eventloom",
+            "modelName": "deterministic-runner",
+            "promptVersion": "eventloom.deterministic-runner.v1",
+            "inputSummary": "Actor worker handling task.claimed.",
+            "outputSummary": "Emitted intentions: task.complete.",
+            "inputTokens": 7,
+            "outputTokens": 2,
+            "totalTokens": 9,
+            "cost": 0
+          }
+        ],
+        "toolCalls": [
+          {
+            "toolName": "eventloom.mailbox.read",
+            "inputSummary": "Read one mailbox item for worker.",
+            "outputSummary": "Read 1 mailbox item (task.claimed).",
+            "exitCode": 0,
+            "resultCount": 1,
+            "resultExcerpt": "evt_software_work_000017",
+            "decisive": true,
+            "latencyMs": 1
+          }
+        ],
+        "reasoning": [
+          "worker handled task.claimed as Claim and complete tasks and emitted task.complete."
+        ]
+      },
+      "error": null
+    },
+    {
+      "id": "pathlight-success-span-4",
+      "name": "worker.turn",
+      "type": "agent",
+      "metadata": {
+        "source": "eventloom",
+        "exportKind": "actor_turn",
+        "turnId": "turn_000004",
+        "actorId": "worker",
+        "startedEventId": "evt_software_work_000029",
+        "completedEventId": "evt_software_work_000036",
+        "acceptedEventIds": [
+          "evt_software_work_000035"
+        ],
+        "rejectedEventIds": []
+      },
+      "status": "completed",
+      "output": {
+        "turnId": "turn_000004",
+        "sourceEventId": "evt_software_work_000026",
+        "intentions": [
+          "review.request"
+        ],
+        "acceptedEvents": [
+          "evt_software_work_000035"
+        ],
+        "modelCalls": [
+          {
+            "modelProvider": "eventloom",
+            "modelName": "deterministic-runner",
+            "promptVersion": "eventloom.deterministic-runner.v1",
+            "inputSummary": "Actor worker handling task.completed.",
+            "outputSummary": "Emitted intentions: review.request.",
+            "inputTokens": 7,
+            "outputTokens": 2,
+            "totalTokens": 9,
+            "cost": 0
+          }
+        ],
+        "toolCalls": [
+          {
+            "toolName": "eventloom.mailbox.read",
+            "inputSummary": "Read one mailbox item for worker.",
+            "outputSummary": "Read 1 mailbox item (task.completed).",
+            "exitCode": 0,
+            "resultCount": 1,
+            "resultExcerpt": "evt_software_work_000026",
+            "decisive": true,
+            "latencyMs": 1
+          }
+        ],
+        "reasoning": [
+          "worker handled task.completed as Claim and complete tasks and emitted review.request."
+        ]
+      },
+      "error": null
+    },
+    {
+      "id": "pathlight-success-span-5",
+      "name": "reviewer.turn",
+      "type": "agent",
+      "metadata": {
+        "source": "eventloom",
+        "exportKind": "actor_turn",
+        "turnId": "turn_000005",
+        "actorId": "reviewer",
+        "startedEventId": "evt_software_work_000038",
+        "completedEventId": "evt_software_work_000045",
+        "acceptedEventIds": [
+          "evt_software_work_000044"
+        ],
+        "rejectedEventIds": []
+      },
+      "status": "completed",
+      "output": {
+        "turnId": "turn_000005",
+        "sourceEventId": "evt_software_work_000035",
+        "intentions": [
+          "review.approve"
+        ],
+        "acceptedEvents": [
+          "evt_software_work_000044"
+        ],
+        "modelCalls": [
+          {
+            "modelProvider": "eventloom",
+            "modelName": "deterministic-runner",
+            "promptVersion": "eventloom.deterministic-runner.v1",
+            "inputSummary": "Actor reviewer handling review.requested.",
+            "outputSummary": "Emitted intentions: review.approve.",
+            "inputTokens": 7,
+            "outputTokens": 2,
+            "totalTokens": 9,
+            "cost": 0
+          }
+        ],
+        "toolCalls": [
+          {
+            "toolName": "eventloom.mailbox.read",
+            "inputSummary": "Read one mailbox item for reviewer.",
+            "outputSummary": "Read 1 mailbox item (review.requested).",
+            "exitCode": 0,
+            "resultCount": 1,
+            "resultExcerpt": "evt_software_work_000035",
+            "decisive": true,
+            "latencyMs": 1
+          }
+        ],
+        "reasoning": [
+          "reviewer handled review.requested as Approve or report issues and emitted review.approve."
+        ]
+      },
+      "error": null
+    },
+    {
+      "id": "pathlight-success-span-6",
+      "name": "eventloom.deterministic-runner",
+      "type": "llm",
+      "metadata": {
+        "source": "eventloom",
+        "exportKind": "model_invocation",
+        "actorId": "planner",
+        "modelCallId": "model_turn_000001",
+        "turnId": "turn_000001",
+        "modelProvider": "eventloom",
+        "modelName": "deterministic-runner"
+      },
+      "status": "completed",
+      "output": {
+        "outputText": "Emitted 1 intention(s): task.propose.",
+        "outputSummary": "Emitted intentions: task.propose.",
+        "inputTokens": 7,
+        "outputTokens": 2,
+        "totalTokens": 9,
+        "cost": 0,
+        "latencyMs": 1,
+        "error": null
+      },
+      "error": null
+    },
+    {
+      "id": "pathlight-success-span-7",
+      "name": "eventloom.deterministic-runner",
+      "type": "llm",
+      "metadata": {
+        "source": "eventloom",
+        "exportKind": "model_invocation",
+        "actorId": "worker",
+        "modelCallId": "model_turn_000002",
+        "turnId": "turn_000002",
+        "modelProvider": "eventloom",
+        "modelName": "deterministic-runner"
+      },
+      "status": "completed",
+      "output": {
+        "outputText": "Emitted 1 intention(s): task.claim.",
+        "outputSummary": "Emitted intentions: task.claim.",
+        "inputTokens": 7,
+        "outputTokens": 2,
+        "totalTokens": 9,
+        "cost": 0,
+        "latencyMs": 1,
+        "error": null
+      },
+      "error": null
+    },
+    {
+      "id": "pathlight-success-span-8",
+      "name": "eventloom.deterministic-runner",
+      "type": "llm",
+      "metadata": {
+        "source": "eventloom",
+        "exportKind": "model_invocation",
+        "actorId": "worker",
+        "modelCallId": "model_turn_000003",
+        "turnId": "turn_000003",
+        "modelProvider": "eventloom",
+        "modelName": "deterministic-runner"
+      },
+      "status": "completed",
+      "output": {
+        "outputText": "Emitted 1 intention(s): task.complete.",
+        "outputSummary": "Emitted intentions: task.complete.",
+        "inputTokens": 7,
+        "outputTokens": 2,
+        "totalTokens": 9,
+        "cost": 0,
+        "latencyMs": 1,
+        "error": null
+      },
+      "error": null
+    },
+    {
+      "id": "pathlight-success-span-9",
+      "name": "eventloom.deterministic-runner",
+      "type": "llm",
+      "metadata": {
+        "source": "eventloom",
+        "exportKind": "model_invocation",
+        "actorId": "worker",
+        "modelCallId": "model_turn_000004",
+        "turnId": "turn_000004",
+        "modelProvider": "eventloom",
+        "modelName": "deterministic-runner"
+      },
+      "status": "completed",
+      "output": {
+        "outputText": "Emitted 1 intention(s): review.request.",
+        "outputSummary": "Emitted intentions: review.request.",
+        "inputTokens": 7,
+        "outputTokens": 2,
+        "totalTokens": 9,
+        "cost": 0,
+        "latencyMs": 1,
+        "error": null
+      },
+      "error": null
+    },
+    {
+      "id": "pathlight-success-span-10",
+      "name": "eventloom.deterministic-runner",
+      "type": "llm",
+      "metadata": {
+        "source": "eventloom",
+        "exportKind": "model_invocation",
+        "actorId": "reviewer",
+        "modelCallId": "model_turn_000005",
+        "turnId": "turn_000005",
+        "modelProvider": "eventloom",
+        "modelName": "deterministic-runner"
+      },
+      "status": "completed",
+      "output": {
+        "outputText": "Emitted 1 intention(s): review.approve.",
+        "outputSummary": "Emitted intentions: review.approve.",
+        "inputTokens": 7,
+        "outputTokens": 2,
+        "totalTokens": 9,
+        "cost": 0,
+        "latencyMs": 1,
+        "error": null
+      },
+      "error": null
+    },
+    {
+      "id": "pathlight-success-span-11",
+      "name": "eventloom.mailbox.read",
+      "type": "tool",
+      "metadata": {
+        "source": "eventloom",
+        "exportKind": "tool_invocation",
+        "actorId": "planner",
+        "toolCallId": "tool_turn_000001",
+        "turnId": "turn_000001",
+        "toolName": "eventloom.mailbox.read"
+      },
+      "status": "completed",
+      "output": {
+        "output": {
+          "itemCount": 1,
+          "taskId": null,
+          "taskStatus": null
+        },
+        "outputSummary": "Read 1 mailbox item (goal.created).",
+        "exitCode": 0,
+        "resultCount": 1,
+        "resultExcerpt": "evt_runtime_goal",
+        "decisive": true,
+        "latencyMs": 1
+      },
+      "error": null
+    },
+    {
+      "id": "pathlight-success-span-12",
+      "name": "eventloom.mailbox.read",
+      "type": "tool",
+      "metadata": {
+        "source": "eventloom",
+        "exportKind": "tool_invocation",
+        "actorId": "worker",
+        "toolCallId": "tool_turn_000002",
+        "turnId": "turn_000002",
+        "toolName": "eventloom.mailbox.read"
+      },
+      "status": "completed",
+      "output": {
+        "output": {
+          "itemCount": 1,
+          "taskId": "task_actor_runtime",
+          "taskStatus": "proposed"
+        },
+        "outputSummary": "Read 1 mailbox item (task.proposed).",
+        "exitCode": 0,
+        "resultCount": 1,
+        "resultExcerpt": "evt_software_work_000008",
+        "decisive": true,
+        "latencyMs": 1
+      },
+      "error": null
+    },
+    {
+      "id": "pathlight-success-span-13",
+      "name": "eventloom.mailbox.read",
+      "type": "tool",
+      "metadata": {
+        "source": "eventloom",
+        "exportKind": "tool_invocation",
+        "actorId": "worker",
+        "toolCallId": "tool_turn_000003",
+        "turnId": "turn_000003",
+        "toolName": "eventloom.mailbox.read"
+      },
+      "status": "completed",
+      "output": {
+        "output": {
+          "itemCount": 1,
+          "taskId": "task_actor_runtime",
+          "taskStatus": "claimed"
+        },
+        "outputSummary": "Read 1 mailbox item (task.claimed).",
+        "exitCode": 0,
+        "resultCount": 1,
+        "resultExcerpt": "evt_software_work_000017",
+        "decisive": true,
+        "latencyMs": 1
+      },
+      "error": null
+    },
+    {
+      "id": "pathlight-success-span-14",
+      "name": "eventloom.mailbox.read",
+      "type": "tool",
+      "metadata": {
+        "source": "eventloom",
+        "exportKind": "tool_invocation",
+        "actorId": "worker",
+        "toolCallId": "tool_turn_000004",
+        "turnId": "turn_000004",
+        "toolName": "eventloom.mailbox.read"
+      },
+      "status": "completed",
+      "output": {
+        "output": {
+          "itemCount": 1,
+          "taskId": "task_actor_runtime",
+          "taskStatus": "completed"
+        },
+        "outputSummary": "Read 1 mailbox item (task.completed).",
+        "exitCode": 0,
+        "resultCount": 1,
+        "resultExcerpt": "evt_software_work_000026",
+        "decisive": true,
+        "latencyMs": 1
+      },
+      "error": null
+    },
+    {
+      "id": "pathlight-success-span-15",
+      "name": "eventloom.mailbox.read",
+      "type": "tool",
+      "metadata": {
+        "source": "eventloom",
+        "exportKind": "tool_invocation",
+        "actorId": "reviewer",
+        "toolCallId": "tool_turn_000005",
+        "turnId": "turn_000005",
+        "toolName": "eventloom.mailbox.read"
+      },
+      "status": "completed",
+      "output": {
+        "output": {
+          "itemCount": 1,
+          "taskId": "task_actor_runtime",
+          "taskStatus": "review_requested"
+        },
+        "outputSummary": "Read 1 mailbox item (review.requested).",
+        "exitCode": 0,
+        "resultCount": 1,
+        "resultExcerpt": "evt_software_work_000035",
+        "decisive": true,
+        "latencyMs": 1
+      },
+      "error": null
+    },
+    {
+      "id": "pathlight-success-span-16",
+      "name": "reasoning.summary",
+      "type": "chain",
+      "metadata": {
+        "source": "eventloom",
+        "exportKind": "reasoning_summary",
+        "actorId": "planner",
+        "turnId": "turn_000001"
+      },
+      "status": "completed",
+      "output": {
+        "turnId": "turn_000001",
+        "summary": "planner handled goal.created as Break goals into tasks and emitted task.propose.",
+        "alternativesConsidered": [],
+        "evidenceEventIds": [
+          "evt_runtime_goal"
+        ],
+        "confidence": 1
+      },
+      "error": null
+    },
+    {
+      "id": "pathlight-success-span-17",
+      "name": "reasoning.summary",
+      "type": "chain",
+      "metadata": {
+        "source": "eventloom",
+        "exportKind": "reasoning_summary",
+        "actorId": "worker",
+        "turnId": "turn_000002"
+      },
+      "status": "completed",
+      "output": {
+        "turnId": "turn_000002",
+        "summary": "worker handled task.proposed as Claim and complete tasks and emitted task.claim.",
+        "alternativesConsidered": [],
+        "evidenceEventIds": [
+          "evt_software_work_000008"
+        ],
+        "confidence": 1
+      },
+      "error": null
+    },
+    {
+      "id": "pathlight-success-span-18",
+      "name": "reasoning.summary",
+      "type": "chain",
+      "metadata": {
+        "source": "eventloom",
+        "exportKind": "reasoning_summary",
+        "actorId": "worker",
+        "turnId": "turn_000003"
+      },
+      "status": "completed",
+      "output": {
+        "turnId": "turn_000003",
+        "summary": "worker handled task.claimed as Claim and complete tasks and emitted task.complete.",
+        "alternativesConsidered": [],
+        "evidenceEventIds": [
+          "evt_software_work_000017"
+        ],
+        "confidence": 1
+      },
+      "error": null
+    },
+    {
+      "id": "pathlight-success-span-19",
+      "name": "reasoning.summary",
+      "type": "chain",
+      "metadata": {
+        "source": "eventloom",
+        "exportKind": "reasoning_summary",
+        "actorId": "worker",
+        "turnId": "turn_000004"
+      },
+      "status": "completed",
+      "output": {
+        "turnId": "turn_000004",
+        "summary": "worker handled task.completed as Claim and complete tasks and emitted review.request.",
+        "alternativesConsidered": [],
+        "evidenceEventIds": [
+          "evt_software_work_000026"
+        ],
+        "confidence": 1
+      },
+      "error": null
+    },
+    {
+      "id": "pathlight-success-span-20",
+      "name": "reasoning.summary",
+      "type": "chain",
+      "metadata": {
+        "source": "eventloom",
+        "exportKind": "reasoning_summary",
+        "actorId": "reviewer",
+        "turnId": "turn_000005"
+      },
+      "status": "completed",
+      "output": {
+        "turnId": "turn_000005",
+        "summary": "reviewer handled review.requested as Approve or report issues and emitted review.approve.",
+        "alternativesConsidered": [],
+        "evidenceEventIds": [
+          "evt_software_work_000035"
+        ],
+        "confidence": 1
+      },
+      "error": null
+    },
+    {
+      "id": "pathlight-success-span-21",
+      "name": "goal.created",
+      "type": "event",
+      "metadata": {
+        "source": "eventloom",
+        "exportKind": "journal_fact",
+        "eventId": "evt_runtime_goal",
+        "eventType": "goal.created",
+        "actorId": "user",
+        "threadId": "thread_main",
+        "parentEventId": null,
+        "causedBy": []
+      },
+      "status": "completed",
+      "output": {
+        "title": "Build deterministic actor runners"
+      },
+      "error": null
+    }
+  ]
+}

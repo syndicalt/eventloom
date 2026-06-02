@@ -1,0 +1,67 @@
+{
+  "name": "@eventloom/mcp",
+  "version": "0.1.6",
+  "type": "module",
+  "description": "MCP server for Eventloom local event logs",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "eventloom-mcp": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "node -e \"import('node:fs/promises').then(({ rm }) => rm('dist', { recursive: true, force: true }))\" && tsc && node ../../scripts/chmod-cli-bins.mjs dist/cli.js",
+    "smoke:installed-bin": "node scripts/smoke-installed-bin.mjs",
+    "smoke:v1-local-runtime-bin": "node scripts/smoke-v1-local-runtime-bin.mjs",
+    "prepack": "npm test && npm run build",
+    "test": "vitest run"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "eventloom",
+    "mcp",
+    "agents",
+    "event-log",
+    "workflow",
+    "halo",
+    "otlp",
+    "opentelemetry"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/syndicalt/eventloom.git",
+    "directory": "packages/mcp"
+  },
+  "bugs": {
+    "url": "https://github.com/syndicalt/eventloom/issues"
+  },
+  "homepage": "https://github.com/syndicalt/eventloom#readme",
+  "author": "Nicholas Blanchard <syndicalt@gmail.com>",
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@eventloom/runtime": "^0.1.7",
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "typescript": "^5.7.2",
+    "vitest": "^4.1.7"
+  }
+}

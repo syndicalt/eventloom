@@ -1,0 +1,85 @@
+{
+  "version": 1,
+  "fixtures": [
+    {
+      "id": "pathlight-success",
+      "kind": "pathlight",
+      "scenario": "success",
+      "path": "pathlight-success.json",
+      "expected": {
+        "result": {
+          "traceId": "pathlight-success-trace",
+          "spanCount": 21
+        },
+        "trace": {
+          "status": "completed"
+        }
+      }
+    },
+    {
+      "id": "pathlight-negative",
+      "kind": "pathlight",
+      "scenario": "negative",
+      "path": "pathlight-negative.json",
+      "expected": {
+        "result": {
+          "traceId": "pathlight-negative-trace",
+          "spanCount": 2
+        },
+        "trace": {
+          "status": "failed"
+        }
+      }
+    },
+    {
+      "id": "halo-success",
+      "kind": "halo",
+      "scenario": "success",
+      "path": "halo-success.json",
+      "expected": {
+        "result": {
+          "projectId": "eventloom-halo-success",
+          "traceCount": 1,
+          "spanCount": 23
+        }
+      }
+    },
+    {
+      "id": "halo-negative",
+      "kind": "halo",
+      "scenario": "negative",
+      "path": "halo-negative.json",
+      "expected": {
+        "result": {
+          "projectId": "eventloom-halo-negative",
+          "traceCount": 1,
+          "spanCount": 3
+        }
+      }
+    },
+    {
+      "id": "otlp-success",
+      "kind": "otlp",
+      "scenario": "success",
+      "path": "otlp-success.json",
+      "expected": {
+        "result": {
+          "traceCount": 1,
+          "spanCount": 23
+        }
+      }
+    },
+    {
+      "id": "otlp-negative",
+      "kind": "otlp",
+      "scenario": "negative",
+      "path": "otlp-negative.json",
+      "expected": {
+        "result": {
+          "traceCount": 1,
+          "spanCount": 3
+        }
+      }
+    }
+  ]
+}

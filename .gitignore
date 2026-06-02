@@ -1,0 +1,16 @@
+node_modules/
+dist/
+packages/*/node_modules/
+packages/*/dist/
+
+.eventloom/
+.eventloom-ci/
+.zaxy/
+
+.DS_Store
+*.log
+*.tmp
+*.tsbuildinfo
+
+eventloom-otlp-traces.json
+=20

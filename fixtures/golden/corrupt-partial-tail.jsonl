@@ -1,0 +1,2 @@
+{"id":"evt_corrupt_valid_prefix","type":"goal.created","actorId":"user","threadId":"thread_corrupt","parentEventId":null,"causedBy":[],"timestamp":"2026-04-28T22:00:00.000Z","payload":{"title":"Valid prefix before partial tail"},"integrity":{"hash":"sha256:1716409f4318b376d99aa8d934269ea21c02f933be05e152a018f50e1a4cdffc","previousHash":null}}
+{"id":"evt_corrupt_partial

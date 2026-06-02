@@ -1,0 +1,91 @@
+{
+  "version": 1,
+  "fixtures": [
+    {
+      "id": "software-work",
+      "path": "software-work.jsonl",
+      "eventCount": 46,
+      "projectionHash": "e77e70910ee7c6aaf4b3a191f573a2f7719a1b678bfe844a7a0be2328c37a440",
+      "visualizerHash": "7f33551138118a2c38695b5dd0bf01474b710523b38ed49933649e85033c4d1f",
+      "telemetry": {
+        "model.started": 5,
+        "model.completed": 5,
+        "tool.started": 5,
+        "tool.completed": 5,
+        "reasoning.summary": 5
+      },
+      "tasks": {
+        "task_actor_runtime": {
+          "status": "approved"
+        }
+      }
+    },
+    {
+      "id": "research-pipeline",
+      "path": "research-pipeline.jsonl",
+      "eventCount": 46,
+      "projectionHash": "3e24a88817c049b4b65970dfdeaffe9eb180e1c807771db80589a4b9a2a6c41b",
+      "visualizerHash": "e083e6aeb570e1e7fa31e3841d2bb8d6243efecffcdf92917028d86ba182af77",
+      "research": {
+        "finalizedQuestions": [
+          "question_evented_runtime"
+        ]
+      }
+    },
+    {
+      "id": "human-ops",
+      "path": "human-ops.jsonl",
+      "eventCount": 19,
+      "projectionHash": "ac7e4823e304f3ec91f66faf592cbf51f1bdedae2daa2d3f813ebaf3ca9248ee",
+      "visualizerHash": "f783d124f9e9fc380b56a02933ea7ac0d216317879482523a6a261332ee8009f",
+      "effects": {
+        "effect_runtime_mitigation": {
+          "status": "approval_requested"
+        }
+      }
+    },
+    {
+      "id": "human-ops-approved",
+      "path": "human-ops-approved.jsonl",
+      "eventCount": 29,
+      "projectionHash": "3261820bf91aed54f642283eef5ea5a09ce186707e28f9c5baa83b96e56f21de",
+      "visualizerHash": "9b8e1e85a5b977c8813ab201248148f733b21decd17fdc83ca62abbf15a849f9",
+      "effects": {
+        "effect_runtime_mitigation": {
+          "status": "applied"
+        }
+      }
+    },
+    {
+      "id": "rejection-path",
+      "path": "rejection-path.jsonl",
+      "eventCount": 2,
+      "projectionHash": "ba6c71b4f6e76dc0c423d6079d8a4a7ab351d30023d59c9dbd94f8f3b75862d2",
+      "visualizerHash": "55a1430347cbf61e903459be26bde30b1d6eeb6582ccb2cf440926802986bf01",
+      "eventTypes": {
+        "intention.invalid": 1,
+        "intention.rejected": 1
+      }
+    }
+  ],
+  "corruptFixtures": [
+    {
+      "id": "partial-tail",
+      "path": "corrupt-partial-tail.jsonl",
+      "ok": false,
+      "validPrefixCount": 1,
+      "diagnosticCodes": [
+        "partial_trailing_line"
+      ]
+    },
+    {
+      "id": "hash-mismatch-tail",
+      "path": "corrupt-hash-mismatch-tail.jsonl",
+      "ok": false,
+      "validPrefixCount": 1,
+      "diagnosticCodes": [
+        "hash_mismatch"
+      ]
+    }
+  ]
+}

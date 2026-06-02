@@ -1,0 +1,80 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+      - main
+  pull_request:
+
+jobs:
+  release-gates:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [20.x, 22.x, 24.x]
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            packages/mcp/package-lock.json
+
+      - name: Install runtime dependencies
+        run: npm ci
+
+      - name: Install MCP dependencies
+        run: npm --prefix packages/mcp ci
+
+      - name: Run release gates
+        run: npm run ci:runtime-v1
+
+      - name: Write runtime release evidence reports
+        shell: bash
+        run: |
+          mkdir -p .eventloom-ci
+          node scripts/check-golden-fixtures.mjs --json > ".eventloom-ci/golden-fixtures-node-${{ matrix.node-version }}.json"
+          node scripts/check-export-fixtures.mjs --json > ".eventloom-ci/export-fixtures-node-${{ matrix.node-version }}.json"
+          npm run --silent bench:smoke -- --out ".eventloom-ci/benchmark-smoke-node-${{ matrix.node-version }}.json" > /dev/null
+          node scripts/check-pack-manifests.mjs --json > ".eventloom-ci/pack-manifests-node-${{ matrix.node-version }}.json"
+          npm run --silent eventloom -- append .eventloom/agent-work.jsonl goal.created --actor ci --payload '{"title":"Run Eventloom v1 runtime release gate"}'
+          npm run --silent eventloom -- append .eventloom/agent-work.jsonl verification.completed --actor ci --payload '{"summary":"Runtime release gate passed","command":"npm run ci:runtime-v1","checks":["runtime v1 gate"],"assertions":["release gate completed"],"evidenceEventIds":[],"artifactIds":["github-actions:${{ github.run_id }}"],"passCount":1,"failCount":0}'
+          npm run --silent eventloom -- artifacts .eventloom/agent-work.jsonl --out .eventloom/artifacts --title "Runtime Release Evidence"
+          npm run --silent eventloom -- artifacts verify .eventloom/artifacts/manifest.json > ".eventloom-ci/artifact-bundle-verify-node-${{ matrix.node-version }}.json"
+
+      - name: Upload runtime release evidence reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: runtime-release-evidence-node-${{ matrix.node-version }}
+          if-no-files-found: error
+          path: |
+            .eventloom-ci/golden-fixtures-node-${{ matrix.node-version }}.json
+            .eventloom-ci/export-fixtures-node-${{ matrix.node-version }}.json
+            .eventloom-ci/benchmark-smoke-node-${{ matrix.node-version }}.json
+            .eventloom-ci/pack-manifests-node-${{ matrix.node-version }}.json
+            .eventloom-ci/artifact-bundle-verify-node-${{ matrix.node-version }}.json
+            .eventloom/agent-work.jsonl
+            .eventloom/artifacts/
+
+      - name: Run staged MCP v1 preflight
+        shell: bash
+        run: |
+          mkdir -p .eventloom-ci
+          npm run --silent release:preflight:mcp-v1-staged:local -- --json \
+            | tee ".eventloom-ci/staged-mcp-v1-preflight-node-${{ matrix.node-version }}.json"
+
+      - name: Upload staged MCP v1 preflight report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: staged-mcp-v1-preflight-node-${{ matrix.node-version }}
+          if-no-files-found: error
+          path: .eventloom-ci/staged-mcp-v1-preflight-node-${{ matrix.node-version }}.json

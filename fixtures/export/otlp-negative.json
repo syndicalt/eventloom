@@ -1,0 +1,534 @@
+{
+  "version": "eventloom.export-fixture.v1",
+  "id": "otlp-negative",
+  "kind": "otlp",
+  "scenario": "negative",
+  "source": {
+    "log": "synthetic-negative-path",
+    "eventCount": 2
+  },
+  "result": {
+    "version": "eventloom.export.otlp.v1",
+    "traceCount": 1,
+    "spanCount": 3,
+    "exportedEventCount": 2,
+    "validPrefixCount": 2,
+    "integrity": {
+      "ok": false,
+      "errors": [
+        {
+          "code": "previous_hash_mismatch",
+          "eventId": "evt_export_negative_started",
+          "line": 2,
+          "expected": "sha256:d7e951b687a7cc281a0a4e4c3dc7a10a6d723a71190fbf956df22815b306aa26",
+          "actual": "sha256:not-the-previous-hash",
+          "message": "Expected previous hash sha256:d7e951b687a7cc281a0a4e4c3dc7a10a6d723a71190fbf956df22815b306aa26 but found sha256:not-the-previous-hash"
+        }
+      ]
+    }
+  },
+  "resourceSpans": [
+    {
+      "resource": {
+        "attributes": [
+          {
+            "key": "deployment.environment",
+            "value": {
+              "stringValue": "local"
+            }
+          },
+          {
+            "key": "service.name",
+            "value": {
+              "stringValue": "eventloom-fixtures"
+            }
+          },
+          {
+            "key": "service.version",
+            "value": {
+              "stringValue": "1.0.0"
+            }
+          }
+        ]
+      },
+      "scopeSpans": [
+        {
+          "scope": {
+            "name": "@eventloom/runtime",
+            "version": "1.0.0"
+          },
+          "spans": [
+            {
+              "traceId": "4206afb54289d88b90be3578a1c47f49",
+              "spanId": "e4609a7c9b6572a8",
+              "parentSpanId": "",
+              "name": "eventloom-otlp-negative",
+              "kind": "SPAN_KIND_INTERNAL",
+              "startTimeUnixNano": "1780272000000000000",
+              "endTimeUnixNano": "1780272001000000000",
+              "status": {
+                "code": "STATUS_CODE_ERROR",
+                "message": "Eventloom integrity verification failed"
+              },
+              "attributes": [
+                {
+                  "key": "eventloom.event_count",
+                  "value": {
+                    "intValue": "2"
+                  }
+                },
+                {
+                  "key": "eventloom.event_types",
+                  "value": {
+                    "kvlistValue": {
+                      "values": [
+                        {
+                          "key": "actor.started",
+                          "value": {
+                            "intValue": "1"
+                          }
+                        },
+                        {
+                          "key": "goal.created",
+                          "value": {
+                            "intValue": "1"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "key": "eventloom.git.branch",
+                  "value": {
+                    "stringValue": "null"
+                  }
+                },
+                {
+                  "key": "eventloom.git.commit",
+                  "value": {
+                    "stringValue": "null"
+                  }
+                },
+                {
+                  "key": "eventloom.git.dirty",
+                  "value": {
+                    "stringValue": "null"
+                  }
+                },
+                {
+                  "key": "eventloom.integrity.diagnostics",
+                  "value": {
+                    "stringValue": "[{\"code\":\"previous_hash_mismatch\",\"eventId\":\"evt_export_negative_started\",\"line\":2,\"expected\":\"sha256:d7e951b687a7cc281a0a4e4c3dc7a10a6d723a71190fbf956df22815b306aa26\",\"actual\":\"sha256:not-the-previous-hash\",\"message\":\"Expected previous hash sha256:d7e951b687a7cc281a0a4e4c3dc7a10a6d723a71190fbf956df22815b306aa26 but found sha256:not-the-previous-hash\"}]"
+                  }
+                },
+                {
+                  "key": "eventloom.integrity.error_count",
+                  "value": {
+                    "intValue": "1"
+                  }
+                },
+                {
+                  "key": "eventloom.integrity.ok",
+                  "value": {
+                    "boolValue": false
+                  }
+                },
+                {
+                  "key": "eventloom.projection_hash",
+                  "value": {
+                    "stringValue": "392674eab468cd14ad5eefcdafb06479641ae052a5628af05b590a103be1e179"
+                  }
+                },
+                {
+                  "key": "eventloom.thread_ids",
+                  "value": {
+                    "arrayValue": {
+                      "values": [
+                        {
+                          "stringValue": "thread_negative"
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "key": "eventloom.valid_prefix_count",
+                  "value": {
+                    "intValue": "2"
+                  }
+                },
+                {
+                  "key": "inference.agent_name",
+                  "value": {
+                    "stringValue": "eventloom"
+                  }
+                },
+                {
+                  "key": "inference.export.schema_version",
+                  "value": {
+                    "intValue": "1"
+                  }
+                },
+                {
+                  "key": "inference.llm.cost.total",
+                  "value": {
+                    "stringValue": "null"
+                  }
+                },
+                {
+                  "key": "inference.llm.input_tokens",
+                  "value": {
+                    "stringValue": "null"
+                  }
+                },
+                {
+                  "key": "inference.llm.model_name",
+                  "value": {
+                    "stringValue": "null"
+                  }
+                },
+                {
+                  "key": "inference.llm.output_tokens",
+                  "value": {
+                    "stringValue": "null"
+                  }
+                },
+                {
+                  "key": "inference.llm.provider",
+                  "value": {
+                    "stringValue": "null"
+                  }
+                },
+                {
+                  "key": "inference.observation_kind",
+                  "value": {
+                    "stringValue": "SPAN"
+                  }
+                },
+                {
+                  "key": "inference.project_id",
+                  "value": {
+                    "stringValue": "eventloom-otlp"
+                  }
+                },
+                {
+                  "key": "inference.session_id",
+                  "value": {
+                    "stringValue": "null"
+                  }
+                },
+                {
+                  "key": "inference.user_id",
+                  "value": {
+                    "stringValue": "null"
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "CHAIN"
+                  }
+                }
+              ]
+            },
+            {
+              "traceId": "4206afb54289d88b90be3578a1c47f49",
+              "spanId": "0c5aefd9bcc8b273",
+              "parentSpanId": "e4609a7c9b6572a8",
+              "name": "eventloom.actor.worker.turn",
+              "kind": "SPAN_KIND_INTERNAL",
+              "startTimeUnixNano": "1780272001000000000",
+              "endTimeUnixNano": "1780272001000000000",
+              "status": {
+                "code": "STATUS_CODE_ERROR",
+                "message": "Missing actor.completed event"
+              },
+              "attributes": [
+                {
+                  "key": "agent.name",
+                  "value": {
+                    "stringValue": "worker"
+                  }
+                },
+                {
+                  "key": "agent.workflow.name",
+                  "value": {
+                    "stringValue": "Eventloom actor turn"
+                  }
+                },
+                {
+                  "key": "eventloom.accepted_event_ids",
+                  "value": {
+                    "arrayValue": {
+                      "values": []
+                    }
+                  }
+                },
+                {
+                  "key": "eventloom.actor_id",
+                  "value": {
+                    "stringValue": "worker"
+                  }
+                },
+                {
+                  "key": "eventloom.mailbox_event_type",
+                  "value": {
+                    "stringValue": "goal.created"
+                  }
+                },
+                {
+                  "key": "eventloom.processed_event_id",
+                  "value": {
+                    "stringValue": "null"
+                  }
+                },
+                {
+                  "key": "eventloom.rejected_event_ids",
+                  "value": {
+                    "arrayValue": {
+                      "values": []
+                    }
+                  }
+                },
+                {
+                  "key": "eventloom.source_event_id",
+                  "value": {
+                    "stringValue": "evt_export_negative_goal"
+                  }
+                },
+                {
+                  "key": "eventloom.turn.id",
+                  "value": {
+                    "stringValue": "turn_negative"
+                  }
+                },
+                {
+                  "key": "inference.agent_name",
+                  "value": {
+                    "stringValue": "worker"
+                  }
+                },
+                {
+                  "key": "inference.export.schema_version",
+                  "value": {
+                    "intValue": "1"
+                  }
+                },
+                {
+                  "key": "inference.llm.cost.total",
+                  "value": {
+                    "stringValue": "null"
+                  }
+                },
+                {
+                  "key": "inference.llm.input_tokens",
+                  "value": {
+                    "stringValue": "null"
+                  }
+                },
+                {
+                  "key": "inference.llm.model_name",
+                  "value": {
+                    "stringValue": "null"
+                  }
+                },
+                {
+                  "key": "inference.llm.output_tokens",
+                  "value": {
+                    "stringValue": "null"
+                  }
+                },
+                {
+                  "key": "inference.llm.provider",
+                  "value": {
+                    "stringValue": "null"
+                  }
+                },
+                {
+                  "key": "inference.observation_kind",
+                  "value": {
+                    "stringValue": "AGENT"
+                  }
+                },
+                {
+                  "key": "inference.project_id",
+                  "value": {
+                    "stringValue": "eventloom-otlp"
+                  }
+                },
+                {
+                  "key": "inference.session_id",
+                  "value": {
+                    "stringValue": "null"
+                  }
+                },
+                {
+                  "key": "inference.user_id",
+                  "value": {
+                    "stringValue": "null"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "{\"sourceEventId\":\"evt_export_negative_goal\",\"mailboxEventType\":\"goal.created\"}"
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "AGENT"
+                  }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "{\"completedEventId\":null,\"processedEventId\":null,\"acceptedEvents\":[],\"rejectedEvents\":[]}"
+                  }
+                }
+              ]
+            },
+            {
+              "traceId": "4206afb54289d88b90be3578a1c47f49",
+              "spanId": "8b386a007643eb59",
+              "parentSpanId": "e4609a7c9b6572a8",
+              "name": "eventloom.event.goal.created",
+              "kind": "SPAN_KIND_INTERNAL",
+              "startTimeUnixNano": "1780272000000000000",
+              "endTimeUnixNano": "1780272000000000000",
+              "status": {
+                "code": "STATUS_CODE_OK"
+              },
+              "attributes": [
+                {
+                  "key": "agent.workflow.name",
+                  "value": {
+                    "stringValue": "Eventloom event journal"
+                  }
+                },
+                {
+                  "key": "eventloom.actor_id",
+                  "value": {
+                    "stringValue": "user"
+                  }
+                },
+                {
+                  "key": "eventloom.caused_by",
+                  "value": {
+                    "arrayValue": {
+                      "values": []
+                    }
+                  }
+                },
+                {
+                  "key": "eventloom.event.id",
+                  "value": {
+                    "stringValue": "evt_export_negative_goal"
+                  }
+                },
+                {
+                  "key": "eventloom.event.type",
+                  "value": {
+                    "stringValue": "goal.created"
+                  }
+                },
+                {
+                  "key": "eventloom.parent_event_id",
+                  "value": {
+                    "stringValue": "null"
+                  }
+                },
+                {
+                  "key": "eventloom.thread_id",
+                  "value": {
+                    "stringValue": "thread_negative"
+                  }
+                },
+                {
+                  "key": "inference.agent_name",
+                  "value": {
+                    "stringValue": "user"
+                  }
+                },
+                {
+                  "key": "inference.export.schema_version",
+                  "value": {
+                    "intValue": "1"
+                  }
+                },
+                {
+                  "key": "inference.llm.cost.total",
+                  "value": {
+                    "stringValue": "null"
+                  }
+                },
+                {
+                  "key": "inference.llm.input_tokens",
+                  "value": {
+                    "stringValue": "null"
+                  }
+                },
+                {
+                  "key": "inference.llm.model_name",
+                  "value": {
+                    "stringValue": "null"
+                  }
+                },
+                {
+                  "key": "inference.llm.output_tokens",
+                  "value": {
+                    "stringValue": "null"
+                  }
+                },
+                {
+                  "key": "inference.llm.provider",
+                  "value": {
+                    "stringValue": "null"
+                  }
+                },
+                {
+                  "key": "inference.observation_kind",
+                  "value": {
+                    "stringValue": "SPAN"
+                  }
+                },
+                {
+                  "key": "inference.project_id",
+                  "value": {
+                    "stringValue": "eventloom-otlp"
+                  }
+                },
+                {
+                  "key": "inference.session_id",
+                  "value": {
+                    "stringValue": "null"
+                  }
+                },
+                {
+                  "key": "inference.user_id",
+                  "value": {
+                    "stringValue": "null"
+                  }
+                },
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "{\"title\":\"Demonstrate failed export diagnostics\"}"
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "CHAIN"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "json": "{\n  \"resourceSpans\": [\n    {\n      \"resource\": {\n        \"attributes\": [\n          {\n            \"key\": \"deployment.environment\",\n            \"value\": {\n              \"stringValue\": \"local\"\n            }\n          },\n          {\n            \"key\": \"service.name\",\n            \"value\": {\n              \"stringValue\": \"eventloom-fixtures\"\n            }\n          },\n          {\n            \"key\": \"service.version\",\n            \"value\": {\n              \"stringValue\": \"1.0.0\"\n            }\n          }\n        ]\n      },\n      \"scopeSpans\": [\n        {\n          \"scope\": {\n            \"name\": \"@eventloom/runtime\",\n            \"version\": \"1.0.0\"\n          },\n          \"spans\": [\n            {\n              \"traceId\": \"4206afb54289d88b90be3578a1c47f49\",\n              \"spanId\": \"e4609a7c9b6572a8\",\n              \"parentSpanId\": \"\",\n              \"name\": \"eventloom-otlp-negative\",\n              \"kind\": \"SPAN_KIND_INTERNAL\",\n              \"startTimeUnixNano\": \"1780272000000000000\",\n              \"endTimeUnixNano\": \"1780272001000000000\",\n              \"status\": {\n                \"code\": \"STATUS_CODE_ERROR\",\n                \"message\": \"Eventloom integrity verification failed\"\n              },\n              \"attributes\": [\n                {\n                  \"key\": \"eventloom.event_count\",\n                  \"value\": {\n                    \"intValue\": \"2\"\n                  }\n                },\n                {\n                  \"key\": \"eventloom.event_types\",\n                  \"value\": {\n                    \"kvlistValue\": {\n                      \"values\": [\n                        {\n                          \"key\": \"actor.started\",\n                          \"value\": {\n                            \"intValue\": \"1\"\n                          }\n                        },\n                        {\n                          \"key\": \"goal.created\",\n                          \"value\": {\n                            \"intValue\": \"1\"\n                          }\n                        }\n                      ]\n                    }\n                  }\n                },\n                {\n                  \"key\": \"eventloom.git.branch\",\n                  \"value\": {\n                    \"stringValue\": \"null\"\n                  }\n                },\n                {\n                  \"key\": \"eventloom.git.commit\",\n                  \"value\": {\n                    \"stringValue\": \"null\"\n                  }\n                },\n                {\n                  \"key\": \"eventloom.git.dirty\",\n                  \"value\": {\n                    \"stringValue\": \"null\"\n                  }\n                },\n                {\n                  \"key\": \"eventloom.integrity.diagnostics\",\n                  \"value\": {\n                    \"stringValue\": \"[{\\\"code\\\":\\\"previous_hash_mismatch\\\",\\\"eventId\\\":\\\"evt_export_negative_started\\\",\\\"line\\\":2,\\\"expected\\\":\\\"sha256:d7e951b687a7cc281a0a4e4c3dc7a10a6d723a71190fbf956df22815b306aa26\\\",\\\"actual\\\":\\\"sha256:not-the-previous-hash\\\",\\\"message\\\":\\\"Expected previous hash sha256:d7e951b687a7cc281a0a4e4c3dc7a10a6d723a71190fbf956df22815b306aa26 but found sha256:not-the-previous-hash\\\"}]\"\n                  }\n                },\n                {\n                  \"key\": \"eventloom.integrity.error_count\",\n                  \"value\": {\n                    \"intValue\": \"1\"\n                  }\n                },\n                {\n                  \"key\": \"eventloom.integrity.ok\",\n                  \"value\": {\n                    \"boolValue\": false\n                  }\n                },\n                {\n                  \"key\": \"eventloom.projection_hash\",\n                  \"value\": {\n                    \"stringValue\": \"392674eab468cd14ad5eefcdafb06479641ae052a5628af05b590a103be1e179\"\n                  }\n                },\n                {\n                  \"key\": \"eventloom.thread_ids\",\n                  \"value\": {\n                    \"arrayValue\": {\n                      \"values\": [\n                        {\n                          \"stringValue\": \"thread_negative\"\n                        }\n                      ]\n                    }\n                  }\n                },\n                {\n                  \"key\": \"eventloom.valid_prefix_count\",\n                  \"value\": {\n                    \"intValue\": \"2\"\n                  }\n                },\n                {\n                  \"key\": \"inference.agent_name\",\n                  \"value\": {\n                    \"stringValue\": \"eventloom\"\n                  }\n                },\n                {\n                  \"key\": \"inference.export.schema_version\",\n                  \"value\": {\n                    \"intValue\": \"1\"\n                  }\n                },\n                {\n                  \"key\": \"inference.llm.cost.total\",\n                  \"value\": {\n                    \"stringValue\": \"null\"\n                  }\n                },\n                {\n                  \"key\": \"inference.llm.input_tokens\",\n                  \"value\": {\n                    \"stringValue\": \"null\"\n                  }\n                },\n                {\n                  \"key\": \"inference.llm.model_name\",\n                  \"value\": {\n                    \"stringValue\": \"null\"\n                  }\n                },\n                {\n                  \"key\": \"inference.llm.output_tokens\",\n                  \"value\": {\n                    \"stringValue\": \"null\"\n                  }\n                },\n                {\n                  \"key\": \"inference.llm.provider\",\n                  \"value\": {\n                    \"stringValue\": \"null\"\n                  }\n                },\n                {\n                  \"key\": \"inference.observation_kind\",\n                  \"value\": {\n                    \"stringValue\": \"SPAN\"\n                  }\n                },\n                {\n                  \"key\": \"inference.project_id\",\n                  \"value\": {\n                    \"stringValue\": \"eventloom-otlp\"\n                  }\n                },\n                {\n                  \"key\": \"inference.session_id\",\n                  \"value\": {\n                    \"stringValue\": \"null\"\n                  }\n                },\n                {\n                  \"key\": \"inference.user_id\",\n                  \"value\": {\n                    \"stringValue\": \"null\"\n                  }\n                },\n                {\n                  \"key\": \"openinference.span.kind\",\n                  \"value\": {\n                    \"stringValue\": \"CHAIN\"\n                  }\n                }\n              ]\n            },\n            {\n              \"traceId\": \"4206afb54289d88b90be3578a1c47f49\",\n              \"spanId\": \"0c5aefd9bcc8b273\",\n              \"parentSpanId\": \"e4609a7c9b6572a8\",\n              \"name\": \"eventloom.actor.worker.turn\",\n              \"kind\": \"SPAN_KIND_INTERNAL\",\n              \"startTimeUnixNano\": \"1780272001000000000\",\n              \"endTimeUnixNano\": \"1780272001000000000\",\n              \"status\": {\n                \"code\": \"STATUS_CODE_ERROR\",\n                \"message\": \"Missing actor.completed event\"\n              },\n              \"attributes\": [\n                {\n                  \"key\": \"agent.name\",\n                  \"value\": {\n                    \"stringValue\": \"worker\"\n                  }\n                },\n                {\n                  \"key\": \"agent.workflow.name\",\n                  \"value\": {\n                    \"stringValue\": \"Eventloom actor turn\"\n                  }\n                },\n                {\n                  \"key\": \"eventloom.accepted_event_ids\",\n                  \"value\": {\n                    \"arrayValue\": {\n                      \"values\": []\n                    }\n                  }\n                },\n                {\n                  \"key\": \"eventloom.actor_id\",\n                  \"value\": {\n                    \"stringValue\": \"worker\"\n                  }\n                },\n                {\n                  \"key\": \"eventloom.mailbox_event_type\",\n                  \"value\": {\n                    \"stringValue\": \"goal.created\"\n                  }\n                },\n                {\n                  \"key\": \"eventloom.processed_event_id\",\n                  \"value\": {\n                    \"stringValue\": \"null\"\n                  }\n                },\n                {\n                  \"key\": \"eventloom.rejected_event_ids\",\n                  \"value\": {\n                    \"arrayValue\": {\n                      \"values\": []\n                    }\n                  }\n                },\n                {\n                  \"key\": \"eventloom.source_event_id\",\n                  \"value\": {\n                    \"stringValue\": \"evt_export_negative_goal\"\n                  }\n                },\n                {\n                  \"key\": \"eventloom.turn.id\",\n                  \"value\": {\n                    \"stringValue\": \"turn_negative\"\n                  }\n                },\n                {\n                  \"key\": \"inference.agent_name\",\n                  \"value\": {\n                    \"stringValue\": \"worker\"\n                  }\n                },\n                {\n                  \"key\": \"inference.export.schema_version\",\n                  \"value\": {\n                    \"intValue\": \"1\"\n                  }\n                },\n                {\n                  \"key\": \"inference.llm.cost.total\",\n                  \"value\": {\n                    \"stringValue\": \"null\"\n                  }\n                },\n                {\n                  \"key\": \"inference.llm.input_tokens\",\n                  \"value\": {\n                    \"stringValue\": \"null\"\n                  }\n                },\n                {\n                  \"key\": \"inference.llm.model_name\",\n                  \"value\": {\n                    \"stringValue\": \"null\"\n                  }\n                },\n                {\n                  \"key\": \"inference.llm.output_tokens\",\n                  \"value\": {\n                    \"stringValue\": \"null\"\n                  }\n                },\n                {\n                  \"key\": \"inference.llm.provider\",\n                  \"value\": {\n                    \"stringValue\": \"null\"\n                  }\n                },\n                {\n                  \"key\": \"inference.observation_kind\",\n                  \"value\": {\n                    \"stringValue\": \"AGENT\"\n                  }\n                },\n                {\n                  \"key\": \"inference.project_id\",\n                  \"value\": {\n                    \"stringValue\": \"eventloom-otlp\"\n                  }\n                },\n                {\n                  \"key\": \"inference.session_id\",\n                  \"value\": {\n                    \"stringValue\": \"null\"\n                  }\n                },\n                {\n                  \"key\": \"inference.user_id\",\n                  \"value\": {\n                    \"stringValue\": \"null\"\n                  }\n                },\n                {\n                  \"key\": \"input.value\",\n                  \"value\": {\n                    \"stringValue\": \"{\\\"sourceEventId\\\":\\\"evt_export_negative_goal\\\",\\\"mailboxEventType\\\":\\\"goal.created\\\"}\"\n                  }\n                },\n                {\n                  \"key\": \"openinference.span.kind\",\n                  \"value\": {\n                    \"stringValue\": \"AGENT\"\n                  }\n                },\n                {\n                  \"key\": \"output.value\",\n                  \"value\": {\n                    \"stringValue\": \"{\\\"completedEventId\\\":null,\\\"processedEventId\\\":null,\\\"acceptedEvents\\\":[],\\\"rejectedEvents\\\":[]}\"\n                  }\n                }\n              ]\n            },\n            {\n              \"traceId\": \"4206afb54289d88b90be3578a1c47f49\",\n              \"spanId\": \"8b386a007643eb59\",\n              \"parentSpanId\": \"e4609a7c9b6572a8\",\n              \"name\": \"eventloom.event.goal.created\",\n              \"kind\": \"SPAN_KIND_INTERNAL\",\n              \"startTimeUnixNano\": \"1780272000000000000\",\n              \"endTimeUnixNano\": \"1780272000000000000\",\n              \"status\": {\n                \"code\": \"STATUS_CODE_OK\"\n              },\n              \"attributes\": [\n                {\n                  \"key\": \"agent.workflow.name\",\n                  \"value\": {\n                    \"stringValue\": \"Eventloom event journal\"\n                  }\n                },\n                {\n                  \"key\": \"eventloom.actor_id\",\n                  \"value\": {\n                    \"stringValue\": \"user\"\n                  }\n                },\n                {\n                  \"key\": \"eventloom.caused_by\",\n                  \"value\": {\n                    \"arrayValue\": {\n                      \"values\": []\n                    }\n                  }\n                },\n                {\n                  \"key\": \"eventloom.event.id\",\n                  \"value\": {\n                    \"stringValue\": \"evt_export_negative_goal\"\n                  }\n                },\n                {\n                  \"key\": \"eventloom.event.type\",\n                  \"value\": {\n                    \"stringValue\": \"goal.created\"\n                  }\n                },\n                {\n                  \"key\": \"eventloom.parent_event_id\",\n                  \"value\": {\n                    \"stringValue\": \"null\"\n                  }\n                },\n                {\n                  \"key\": \"eventloom.thread_id\",\n                  \"value\": {\n                    \"stringValue\": \"thread_negative\"\n                  }\n                },\n                {\n                  \"key\": \"inference.agent_name\",\n                  \"value\": {\n                    \"stringValue\": \"user\"\n                  }\n                },\n                {\n                  \"key\": \"inference.export.schema_version\",\n                  \"value\": {\n                    \"intValue\": \"1\"\n                  }\n                },\n                {\n                  \"key\": \"inference.llm.cost.total\",\n                  \"value\": {\n                    \"stringValue\": \"null\"\n                  }\n                },\n                {\n                  \"key\": \"inference.llm.input_tokens\",\n                  \"value\": {\n                    \"stringValue\": \"null\"\n                  }\n                },\n                {\n                  \"key\": \"inference.llm.model_name\",\n                  \"value\": {\n                    \"stringValue\": \"null\"\n                  }\n                },\n                {\n                  \"key\": \"inference.llm.output_tokens\",\n                  \"value\": {\n                    \"stringValue\": \"null\"\n                  }\n                },\n                {\n                  \"key\": \"inference.llm.provider\",\n                  \"value\": {\n                    \"stringValue\": \"null\"\n                  }\n                },\n                {\n                  \"key\": \"inference.observation_kind\",\n                  \"value\": {\n                    \"stringValue\": \"SPAN\"\n                  }\n                },\n                {\n                  \"key\": \"inference.project_id\",\n                  \"value\": {\n                    \"stringValue\": \"eventloom-otlp\"\n                  }\n                },\n                {\n                  \"key\": \"inference.session_id\",\n                  \"value\": {\n                    \"stringValue\": \"null\"\n                  }\n                },\n                {\n                  \"key\": \"inference.user_id\",\n                  \"value\": {\n                    \"stringValue\": \"null\"\n                  }\n                },\n                {\n                  \"key\": \"input.value\",\n                  \"value\": {\n                    \"stringValue\": \"{\\\"title\\\":\\\"Demonstrate failed export diagnostics\\\"}\"\n                  }\n                },\n                {\n                  \"key\": \"openinference.span.kind\",\n                  \"value\": {\n                    \"stringValue\": \"CHAIN\"\n                  }\n                }\n              ]\n            }\n          ]\n        }\n      ]\n    }\n  ]\n}\n"
+}

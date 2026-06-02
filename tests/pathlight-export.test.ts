@@ -1,0 +1,353 @@
+import { mkdtemp } from "node:fs/promises";
+import { join } from "node:path";
+import { tmpdir } from "node:os";
+import { describe, expect, it } from "vitest";
+import { createEvent } from "../src/events.js";
+import { JsonlEventStore } from "../src/event-store.js";
+import { exportToPathlight, PathlightExportError } from "../src/export/pathlight.js";
+import { sealEvent } from "../src/integrity.js";
+import { runSoftwareWorkRuntime } from "../src/runners.js";
+
+describe("Pathlight export", () => {
+  it("maps Eventloom actor turns to Pathlight traces and spans", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "eventloom-pathlight-"));
+    const path = join(dir, "events.jsonl");
+    await runSoftwareWorkRuntime(path);
+    const events = await new JsonlEventStore(path).readAll();
+    const calls: Array<{ url: string; init: RequestInit }> = [];
+    let span = 0;
+    const fetchImpl = async (url: string | URL | Request, init?: RequestInit) => {
+      calls.push({ url: String(url), init: init ?? {} });
+      if (String(url).endsWith("/v1/traces")) return json({ id: "trace_1" });
+      if (String(url).endsWith("/v1/spans")) return json({ id: `span_${span += 1}` });
+      if (String(url).includes("/events")) return json({ id: "event_1" });
+      return json({ ok: true });
+    };
+
+    const result = await exportToPathlight(events, {
+      baseUrl: "http://pathlight.test",
+      traceName: "eventloom-test",
+      fetchImpl: fetchImpl as typeof fetch,
+      provenance: {
+        packageName: "eventloom",
+        packageVersion: "0.1.0",
+        gitCommit: "abc123",
+        gitBranch: "main",
+        gitDirty: true,
+      },
+    });
+
+    expect(result.traceId).toBe("trace_1");
+    expect(result.version).toBe("eventloom.export.pathlight.v1");
+    expect(result.spanCount).toBe(21);
+    expect(calls.filter((call) => call.url === "http://pathlight.test/v1/traces")).toHaveLength(1);
+    expect(calls.filter((call) => call.url === "http://pathlight.test/v1/spans")).toHaveLength(21);
+    expect(calls.some((call) => call.url === "http://pathlight.test/v1/traces/trace_1")).toBe(true);
+
+    const traceCreate = JSON.parse(String(calls[0].init.body));
+    expect(traceCreate.name).toBe("eventloom-test");
+    expect(traceCreate.metadata.source).toBe("eventloom");
+    expect(traceCreate.metadata.integrity.ok).toBe(true);
+    expect(typeof traceCreate.metadata.projectionHash).toBe("string");
+    expect(traceCreate.metadata.projectionKinds).toEqual(["tasks"]);
+    expect(traceCreate.metadata.runtime).toEqual({ name: "eventloom", version: "0.1.0" });
+    expect(traceCreate.metadata.visualizer).toMatchObject({
+      version: "eventloom.pathlight.visualizer.v1",
+      outputPath: "visualizer",
+      panels: [
+        { id: "capture", title: "Capture", outputPath: "visualizer.capture" },
+        { id: "replay", title: "Replay", outputPath: "visualizer.replay" },
+        { id: "handoff", title: "Handoff", outputPath: "visualizer.handoff" },
+      ],
+    });
+    expect(traceCreate.gitCommit).toBe("abc123");
+    expect(traceCreate.gitBranch).toBe("main");
+    expect(traceCreate.gitDirty).toBe(true);
+
+    const tracePatch = calls.find((call) => call.url === "http://pathlight.test/v1/traces/trace_1");
+    const traceOutput = JSON.parse(String(tracePatch?.init.body)).output;
+    expect(traceOutput.visualizer.capture.eventCount).toBe(events.length);
+    expect(traceOutput.visualizer.replay.integrity.ok).toBe(true);
+    expect(traceOutput.visualizer.handoff.telemetry.models).toHaveLength(5);
+
+    const spanPatches = calls.filter((call) => (
+      call.init.method === "PATCH" &&
+      call.url.startsWith("http://pathlight.test/v1/spans/span_")
+    ));
+    expect(spanPatches).toHaveLength(21);
+    for (const call of spanPatches) {
+      const body = JSON.parse(String(call.init.body));
+      expect(body.output.rejectedEvents).toBeUndefined();
+      expect(body.output.rejectionEventIds).toBeUndefined();
+    }
+
+    const spanCreates = calls
+      .filter((call) => call.url === "http://pathlight.test/v1/spans")
+      .map((call) => JSON.parse(String(call.init.body)));
+    expect(spanCreates.filter((span) => span.metadata.exportKind === "actor_turn")).toHaveLength(5);
+    expect(spanCreates.filter((span) => span.metadata.exportKind === "model_invocation")).toHaveLength(5);
+    expect(spanCreates.filter((span) => span.metadata.exportKind === "tool_invocation")).toHaveLength(5);
+    expect(spanCreates.filter((span) => span.metadata.exportKind === "reasoning_summary")).toHaveLength(5);
+    expect(spanCreates.filter((span) => span.metadata.exportKind === "journal_fact")).toHaveLength(1);
+  });
+
+  it("maps external task journals to task lifecycle spans when actor turns are absent", async () => {
+    const events = taskJournalEvents();
+    const calls: Array<{ url: string; init: RequestInit }> = [];
+    let span = 0;
+    const fetchImpl = async (url: string | URL | Request, init?: RequestInit) => {
+      calls.push({ url: String(url), init: init ?? {} });
+      if (String(url).endsWith("/v1/traces")) return json({ id: "trace_tasks" });
+      if (String(url).endsWith("/v1/spans")) return json({ id: `task_span_${span += 1}` });
+      if (String(url).includes("/events")) return json({ id: "event_1" });
+      return json({ ok: true });
+    };
+
+    const result = await exportToPathlight(events, {
+      baseUrl: "http://pathlight.test",
+      fetchImpl: fetchImpl as typeof fetch,
+      provenance: {
+        packageName: "eventloom",
+        packageVersion: "0.1.0",
+        gitCommit: null,
+        gitBranch: null,
+        gitDirty: null,
+      },
+    });
+
+    expect(result).toMatchObject({
+      version: "eventloom.export.pathlight.v1",
+      traceId: "trace_tasks",
+      spanCount: 7,
+      eventCount: 12,
+    });
+    expect(calls.filter((call) => call.url === "http://pathlight.test/v1/spans")).toHaveLength(7);
+
+    const traceCreate = JSON.parse(String(calls[0].init.body));
+    expect(traceCreate.metadata.visualizer.panels.map((panel: { id: string }) => panel.id)).toEqual([
+      "capture",
+      "replay",
+      "handoff",
+    ]);
+
+    const tracePatch = calls.find((call) => call.url === "http://pathlight.test/v1/traces/trace_tasks");
+    const visualizer = JSON.parse(String(tracePatch?.init.body)).output.visualizer;
+    expect(visualizer.capture.events[0]).toMatchObject({
+      id: "evt_goal",
+      type: "goal.created",
+      summary: "Ship agent journal spans",
+    });
+    expect(visualizer.replay.projection.tasks.tasks.task_docs.status).toBe("claimed");
+    expect(visualizer.handoff.tasks.active).toMatchObject([{ id: "task_docs", status: "claimed" }]);
+
+    const spanCreates = calls
+      .filter((call) => call.url === "http://pathlight.test/v1/spans")
+      .map((call) => JSON.parse(String(call.init.body)));
+    expect(spanCreates.slice(0, 3)).toMatchObject([
+      { name: "openai.gpt-test", metadata: { exportKind: "model_invocation" } },
+      { name: "shell", metadata: { exportKind: "tool_invocation" } },
+      { name: "reasoning.summary", metadata: { exportKind: "reasoning_summary" } },
+    ]);
+    expect(spanCreates.slice(3, 5)).toMatchObject([
+      { name: "task.task_docs", metadata: { exportKind: "task_lifecycle", taskStatus: "claimed" } },
+      { name: "task.task_runtime", metadata: { exportKind: "task_lifecycle", taskStatus: "completed" } },
+    ]);
+    expect(spanCreates.slice(5)).toMatchObject([
+      { name: "goal.created", metadata: { exportKind: "journal_fact" } },
+      { name: "verification.completed", metadata: { exportKind: "journal_fact" } },
+    ]);
+
+    const spanPatches = calls.filter((call) => (
+      call.init.method === "PATCH" &&
+      call.url.startsWith("http://pathlight.test/v1/spans/task_span_")
+    ));
+    expect(spanPatches).toHaveLength(7);
+    const output = JSON.parse(String(spanPatches.find((call) => String(call.url).endsWith("/task_span_4"))?.init.body)).output;
+    expect(output).toMatchObject({ taskId: "task_docs", status: "claimed" });
+    expect(output.modelCalls[0]).toMatchObject({
+      callId: "model_docs",
+      status: "completed",
+      inputSummary: "Summarize exporter docs.",
+      outputSummary: "Document richer output.",
+    });
+    expect(output.toolCalls[0]).toMatchObject({
+      callId: "tool_tests",
+      status: "completed",
+      outputSummary: "Exporter tests passed.",
+      exitCode: 0,
+      resultCount: 1,
+    });
+    expect(output.reasoning[0]).toMatchObject({ summary: "Docs need richer exported output." });
+  });
+
+  it("throws typed actionable diagnostics for failed Pathlight requests", async () => {
+    const events = taskJournalEvents().slice(0, 1);
+    const fetchImpl = async () => ({
+      ok: false,
+      status: 503,
+      json: async () => ({ error: "collector unavailable" }),
+      text: async () => "collector unavailable",
+    }) as Response;
+
+    await expect(exportToPathlight(events, {
+      baseUrl: "http://pathlight.test",
+      fetchImpl: fetchImpl as typeof fetch,
+      provenance: {
+        packageName: "eventloom",
+        packageVersion: "0.1.0",
+        gitCommit: null,
+        gitBranch: null,
+        gitDirty: null,
+      },
+    })).rejects.toMatchObject({
+      name: "PathlightExportError",
+      code: "pathlight_request_failed",
+      status: 503,
+      url: "http://pathlight.test/v1/traces",
+      suggestedAction: "Check the Pathlight collector URL and retry after the collector accepts requests.",
+    });
+    await expect(exportToPathlight(events, {
+      baseUrl: "http://pathlight.test",
+      fetchImpl: fetchImpl as typeof fetch,
+      provenance: {
+        packageName: "eventloom",
+        packageVersion: "0.1.0",
+        gitCommit: null,
+        gitBranch: null,
+        gitDirty: null,
+      },
+    })).rejects.toBeInstanceOf(PathlightExportError);
+  });
+
+  it("throws typed diagnostics for invalid Pathlight base URLs before making requests", async () => {
+    const events = taskJournalEvents().slice(0, 1);
+    const fetchImpl = async () => {
+      throw new Error("fetch should not be called");
+    };
+
+    for (const baseUrl of ["localhost:4100", "ftp://pathlight.test"]) {
+      await expect(exportToPathlight(events, {
+        baseUrl,
+        fetchImpl: fetchImpl as typeof fetch,
+        provenance: {
+          packageName: "eventloom",
+          packageVersion: "0.1.0",
+          gitCommit: null,
+          gitBranch: null,
+          gitDirty: null,
+        },
+      })).rejects.toMatchObject({
+        name: "PathlightExportError",
+        code: "pathlight_invalid_base_url",
+        message: "Pathlight baseUrl must be an absolute HTTP(S) URL",
+        url: baseUrl,
+        status: undefined,
+        suggestedAction: "Check the Pathlight collector URL and retry after the collector accepts requests.",
+      });
+    }
+  });
+});
+
+function taskJournalEvents() {
+  let previousHash: string | null = null;
+  return [
+    event("evt_goal", "goal.created", "user", { title: "Ship agent journal spans" }),
+    event("evt_runtime_proposed", "task.proposed", "codex", {
+      taskId: "task_runtime",
+      title: "Build exporter",
+    }),
+    event("evt_runtime_claimed", "task.claimed", "codex", { taskId: "task_runtime" }),
+    event("evt_runtime_done", "task.completed", "codex", { taskId: "task_runtime" }),
+    event("evt_docs_proposed", "task.proposed", "codex", {
+      taskId: "task_docs",
+      title: "Document exporter",
+    }),
+    event("evt_docs_claimed", "task.claimed", "codex", { taskId: "task_docs" }),
+    event("evt_model_start", "model.started", "codex", {
+      taskId: "task_docs",
+      modelCallId: "model_docs",
+      modelProvider: "openai",
+      modelName: "gpt-test",
+      promptVersion: "pathlight.v1",
+      inputSummary: "Summarize exporter docs.",
+      inputMessages: [{ role: "user", content: "Document exporter" }],
+    }),
+    event("evt_model_done", "model.completed", "codex", {
+      taskId: "task_docs",
+      modelCallId: "model_docs",
+      modelProvider: "openai",
+      modelName: "gpt-test",
+      outputText: "Document richer output.",
+      outputSummary: "Document richer output.",
+      inputTokens: 12,
+      outputTokens: 8,
+      totalTokens: 20,
+      latencyMs: 100,
+    }),
+    event("evt_tool_start", "tool.started", "codex", {
+      taskId: "task_docs",
+      toolCallId: "tool_tests",
+      toolName: "shell",
+      inputSummary: "Run Pathlight exporter tests.",
+      input: { cmd: "npm test -- tests/pathlight-export.test.ts" },
+    }),
+    event("evt_tool_done", "tool.completed", "codex", {
+      taskId: "task_docs",
+      toolCallId: "tool_tests",
+      toolName: "shell",
+      output: { passed: true },
+      outputSummary: "Exporter tests passed.",
+      exitCode: 0,
+      resultCount: 1,
+      resultExcerpt: "pathlight-export.test.ts passed",
+      decisive: true,
+      latencyMs: 130,
+    }),
+    event("evt_reasoning", "reasoning.summary", "codex", {
+      taskId: "task_docs",
+      summary: "Docs need richer exported output.",
+      evidenceEventIds: ["evt_tool_done"],
+      confidence: 0.82,
+    }),
+    event("evt_verification", "verification.completed", "codex", {
+      summary: "Exporter tests passed",
+      command: "npm test -- tests/pathlight-export.test.ts",
+      checks: ["Pathlight export"],
+      assertions: ["task output includes telemetry"],
+      evidenceEventIds: ["evt_tool_done"],
+      artifactIds: ["artifact_pathlight_export_test"],
+      passCount: 1,
+      failCount: 0,
+    }),
+  ].map((item) => {
+    const sealed = sealEvent(createEvent(item), previousHash);
+    previousHash = sealed.integrity.hash;
+    return sealed;
+  });
+}
+
+function event(
+  id: string,
+  type: string,
+  actorId: string,
+  payload: Record<string, unknown>,
+) {
+  return {
+    id,
+    type,
+    actorId,
+    threadId: "thread_main",
+    parentEventId: null,
+    causedBy: [],
+    timestamp: "2026-04-29T12:00:00.000Z",
+    payload,
+  };
+}
+
+function json(body: unknown): Response {
+  return {
+    ok: true,
+    status: 200,
+    json: async () => body,
+  } as Response;
+}

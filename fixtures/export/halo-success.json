@@ -1,0 +1,1228 @@
+{
+  "version": "eventloom.export-fixture.v1",
+  "id": "halo-success",
+  "kind": "halo",
+  "scenario": "success",
+  "source": {
+    "log": "fixtures/golden/software-work.jsonl",
+    "eventCount": 46
+  },
+  "result": {
+    "version": "eventloom.export.halo.v1",
+    "projectId": "eventloom-halo-success",
+    "traceId": "9cd1b2e77292a688efd0d9afe52cf5e4",
+    "traceCount": 1,
+    "spanCount": 23,
+    "exportedEventCount": 46,
+    "validPrefixCount": 46,
+    "integrity": {
+      "ok": true,
+      "errors": []
+    }
+  },
+  "spans": [
+    {
+      "trace_id": "9cd1b2e77292a688efd0d9afe52cf5e4",
+      "span_id": "20c69c9ec6b19e11d743ef30",
+      "parent_span_id": "",
+      "trace_state": "",
+      "name": "eventloom-halo-success",
+      "kind": "SPAN_KIND_INTERNAL",
+      "start_time": "2026-04-28T22:00:00.000000000Z",
+      "end_time": "2026-04-28T22:00:00.045000000Z",
+      "status": {
+        "code": "STATUS_CODE_OK",
+        "message": ""
+      },
+      "resource": {
+        "attributes": {
+          "service.name": "eventloom-fixtures",
+          "service.version": "1.0.0",
+          "deployment.environment": "local"
+        }
+      },
+      "scope": {
+        "name": "@eventloom/runtime",
+        "version": "1.0.0"
+      },
+      "attributes": {
+        "openinference.span.kind": "CHAIN",
+        "inference.export.schema_version": 1,
+        "inference.project_id": "eventloom-halo-success",
+        "inference.observation_kind": "SPAN",
+        "inference.llm.provider": null,
+        "inference.llm.model_name": null,
+        "inference.llm.input_tokens": null,
+        "inference.llm.output_tokens": null,
+        "inference.llm.cost.total": null,
+        "inference.user_id": null,
+        "inference.session_id": null,
+        "inference.agent_name": "eventloom",
+        "eventloom.event_count": 46,
+        "eventloom.event_types": {
+          "goal.created": 1,
+          "actor.started": 5,
+          "tool.started": 5,
+          "tool.completed": 5,
+          "model.started": 5,
+          "reasoning.summary": 5,
+          "model.completed": 5,
+          "task.proposed": 1,
+          "actor.completed": 5,
+          "actor.processed": 5,
+          "task.claimed": 1,
+          "task.completed": 1,
+          "review.requested": 1,
+          "review.approved": 1
+        },
+        "eventloom.integrity.ok": true,
+        "eventloom.integrity.error_count": 0,
+        "eventloom.valid_prefix_count": 46,
+        "eventloom.integrity.diagnostics": "[]",
+        "eventloom.projection_hash": "f1052d2716c7c446c06aa835495240bb003f76118e96ad416498259002b3d0e2",
+        "eventloom.thread_ids": [
+          "thread_main"
+        ],
+        "eventloom.git.commit": null,
+        "eventloom.git.branch": null,
+        "eventloom.git.dirty": null
+      }
+    },
+    {
+      "trace_id": "9cd1b2e77292a688efd0d9afe52cf5e4",
+      "span_id": "a1763a88e5078a60f371cfb1",
+      "parent_span_id": "20c69c9ec6b19e11d743ef30",
+      "trace_state": "",
+      "name": "eventloom.actor.planner.turn",
+      "kind": "SPAN_KIND_INTERNAL",
+      "start_time": "2026-04-28T22:00:00.001000000Z",
+      "end_time": "2026-04-28T22:00:00.009000000Z",
+      "status": {
+        "code": "STATUS_CODE_OK",
+        "message": ""
+      },
+      "resource": {
+        "attributes": {
+          "service.name": "eventloom-fixtures",
+          "service.version": "1.0.0",
+          "deployment.environment": "local"
+        }
+      },
+      "scope": {
+        "name": "@eventloom/runtime",
+        "version": "1.0.0"
+      },
+      "attributes": {
+        "openinference.span.kind": "AGENT",
+        "inference.export.schema_version": 1,
+        "inference.project_id": "eventloom-halo-success",
+        "inference.observation_kind": "AGENT",
+        "inference.llm.provider": null,
+        "inference.llm.model_name": null,
+        "inference.llm.input_tokens": null,
+        "inference.llm.output_tokens": null,
+        "inference.llm.cost.total": null,
+        "inference.user_id": null,
+        "inference.session_id": null,
+        "inference.agent_name": "planner",
+        "agent.name": "planner",
+        "agent.workflow.name": "Eventloom actor turn",
+        "eventloom.turn.id": "turn_000001",
+        "eventloom.actor_id": "planner",
+        "eventloom.source_event_id": "evt_runtime_goal",
+        "eventloom.mailbox_event_type": "goal.created",
+        "eventloom.accepted_event_ids": [
+          "evt_software_work_000008"
+        ],
+        "eventloom.rejected_event_ids": [],
+        "eventloom.processed_event_id": "evt_software_work_000010",
+        "input.value": "{\"sourceEventId\":\"evt_runtime_goal\",\"mailboxEventType\":\"goal.created\"}",
+        "output.value": "{\"completedEventId\":\"evt_software_work_000009\",\"processedEventId\":\"evt_software_work_000010\",\"acceptedEvents\":[\"evt_software_work_000008\"],\"rejectedEvents\":[]}"
+      }
+    },
+    {
+      "trace_id": "9cd1b2e77292a688efd0d9afe52cf5e4",
+      "span_id": "3fcd6ba9d58e52714fdc253a",
+      "parent_span_id": "20c69c9ec6b19e11d743ef30",
+      "trace_state": "",
+      "name": "eventloom.actor.worker.turn",
+      "kind": "SPAN_KIND_INTERNAL",
+      "start_time": "2026-04-28T22:00:00.010000000Z",
+      "end_time": "2026-04-28T22:00:00.018000000Z",
+      "status": {
+        "code": "STATUS_CODE_OK",
+        "message": ""
+      },
+      "resource": {
+        "attributes": {
+          "service.name": "eventloom-fixtures",
+          "service.version": "1.0.0",
+          "deployment.environment": "local"
+        }
+      },
+      "scope": {
+        "name": "@eventloom/runtime",
+        "version": "1.0.0"
+      },
+      "attributes": {
+        "openinference.span.kind": "AGENT",
+        "inference.export.schema_version": 1,
+        "inference.project_id": "eventloom-halo-success",
+        "inference.observation_kind": "AGENT",
+        "inference.llm.provider": null,
+        "inference.llm.model_name": null,
+        "inference.llm.input_tokens": null,
+        "inference.llm.output_tokens": null,
+        "inference.llm.cost.total": null,
+        "inference.user_id": null,
+        "inference.session_id": null,
+        "inference.agent_name": "worker",
+        "agent.name": "worker",
+        "agent.workflow.name": "Eventloom actor turn",
+        "eventloom.turn.id": "turn_000002",
+        "eventloom.actor_id": "worker",
+        "eventloom.source_event_id": "evt_software_work_000008",
+        "eventloom.mailbox_event_type": "task.proposed",
+        "eventloom.accepted_event_ids": [
+          "evt_software_work_000017"
+        ],
+        "eventloom.rejected_event_ids": [],
+        "eventloom.processed_event_id": "evt_software_work_000019",
+        "input.value": "{\"sourceEventId\":\"evt_software_work_000008\",\"mailboxEventType\":\"task.proposed\"}",
+        "output.value": "{\"completedEventId\":\"evt_software_work_000018\",\"processedEventId\":\"evt_software_work_000019\",\"acceptedEvents\":[\"evt_software_work_000017\"],\"rejectedEvents\":[]}"
+      }
+    },
+    {
+      "trace_id": "9cd1b2e77292a688efd0d9afe52cf5e4",
+      "span_id": "8ec58ee8daaae81bc2b7e9e7",
+      "parent_span_id": "20c69c9ec6b19e11d743ef30",
+      "trace_state": "",
+      "name": "eventloom.actor.worker.turn",
+      "kind": "SPAN_KIND_INTERNAL",
+      "start_time": "2026-04-28T22:00:00.019000000Z",
+      "end_time": "2026-04-28T22:00:00.027000000Z",
+      "status": {
+        "code": "STATUS_CODE_OK",
+        "message": ""
+      },
+      "resource": {
+        "attributes": {
+          "service.name": "eventloom-fixtures",
+          "service.version": "1.0.0",
+          "deployment.environment": "local"
+        }
+      },
+      "scope": {
+        "name": "@eventloom/runtime",
+        "version": "1.0.0"
+      },
+      "attributes": {
+        "openinference.span.kind": "AGENT",
+        "inference.export.schema_version": 1,
+        "inference.project_id": "eventloom-halo-success",
+        "inference.observation_kind": "AGENT",
+        "inference.llm.provider": null,
+        "inference.llm.model_name": null,
+        "inference.llm.input_tokens": null,
+        "inference.llm.output_tokens": null,
+        "inference.llm.cost.total": null,
+        "inference.user_id": null,
+        "inference.session_id": null,
+        "inference.agent_name": "worker",
+        "agent.name": "worker",
+        "agent.workflow.name": "Eventloom actor turn",
+        "eventloom.turn.id": "turn_000003",
+        "eventloom.actor_id": "worker",
+        "eventloom.source_event_id": "evt_software_work_000017",
+        "eventloom.mailbox_event_type": "task.claimed",
+        "eventloom.accepted_event_ids": [
+          "evt_software_work_000026"
+        ],
+        "eventloom.rejected_event_ids": [],
+        "eventloom.processed_event_id": "evt_software_work_000028",
+        "input.value": "{\"sourceEventId\":\"evt_software_work_000017\",\"mailboxEventType\":\"task.claimed\"}",
+        "output.value": "{\"completedEventId\":\"evt_software_work_000027\",\"processedEventId\":\"evt_software_work_000028\",\"acceptedEvents\":[\"evt_software_work_000026\"],\"rejectedEvents\":[]}"
+      }
+    },
+    {
+      "trace_id": "9cd1b2e77292a688efd0d9afe52cf5e4",
+      "span_id": "d9331e736260735d672229cc",
+      "parent_span_id": "20c69c9ec6b19e11d743ef30",
+      "trace_state": "",
+      "name": "eventloom.actor.worker.turn",
+      "kind": "SPAN_KIND_INTERNAL",
+      "start_time": "2026-04-28T22:00:00.028000000Z",
+      "end_time": "2026-04-28T22:00:00.036000000Z",
+      "status": {
+        "code": "STATUS_CODE_OK",
+        "message": ""
+      },
+      "resource": {
+        "attributes": {
+          "service.name": "eventloom-fixtures",
+          "service.version": "1.0.0",
+          "deployment.environment": "local"
+        }
+      },
+      "scope": {
+        "name": "@eventloom/runtime",
+        "version": "1.0.0"
+      },
+      "attributes": {
+        "openinference.span.kind": "AGENT",
+        "inference.export.schema_version": 1,
+        "inference.project_id": "eventloom-halo-success",
+        "inference.observation_kind": "AGENT",
+        "inference.llm.provider": null,
+        "inference.llm.model_name": null,
+        "inference.llm.input_tokens": null,
+        "inference.llm.output_tokens": null,
+        "inference.llm.cost.total": null,
+        "inference.user_id": null,
+        "inference.session_id": null,
+        "inference.agent_name": "worker",
+        "agent.name": "worker",
+        "agent.workflow.name": "Eventloom actor turn",
+        "eventloom.turn.id": "turn_000004",
+        "eventloom.actor_id": "worker",
+        "eventloom.source_event_id": "evt_software_work_000026",
+        "eventloom.mailbox_event_type": "task.completed",
+        "eventloom.accepted_event_ids": [
+          "evt_software_work_000035"
+        ],
+        "eventloom.rejected_event_ids": [],
+        "eventloom.processed_event_id": "evt_software_work_000037",
+        "input.value": "{\"sourceEventId\":\"evt_software_work_000026\",\"mailboxEventType\":\"task.completed\"}",
+        "output.value": "{\"completedEventId\":\"evt_software_work_000036\",\"processedEventId\":\"evt_software_work_000037\",\"acceptedEvents\":[\"evt_software_work_000035\"],\"rejectedEvents\":[]}"
+      }
+    },
+    {
+      "trace_id": "9cd1b2e77292a688efd0d9afe52cf5e4",
+      "span_id": "b4c37a7f4940550e23fd23a7",
+      "parent_span_id": "20c69c9ec6b19e11d743ef30",
+      "trace_state": "",
+      "name": "eventloom.actor.reviewer.turn",
+      "kind": "SPAN_KIND_INTERNAL",
+      "start_time": "2026-04-28T22:00:00.037000000Z",
+      "end_time": "2026-04-28T22:00:00.045000000Z",
+      "status": {
+        "code": "STATUS_CODE_OK",
+        "message": ""
+      },
+      "resource": {
+        "attributes": {
+          "service.name": "eventloom-fixtures",
+          "service.version": "1.0.0",
+          "deployment.environment": "local"
+        }
+      },
+      "scope": {
+        "name": "@eventloom/runtime",
+        "version": "1.0.0"
+      },
+      "attributes": {
+        "openinference.span.kind": "AGENT",
+        "inference.export.schema_version": 1,
+        "inference.project_id": "eventloom-halo-success",
+        "inference.observation_kind": "AGENT",
+        "inference.llm.provider": null,
+        "inference.llm.model_name": null,
+        "inference.llm.input_tokens": null,
+        "inference.llm.output_tokens": null,
+        "inference.llm.cost.total": null,
+        "inference.user_id": null,
+        "inference.session_id": null,
+        "inference.agent_name": "reviewer",
+        "agent.name": "reviewer",
+        "agent.workflow.name": "Eventloom actor turn",
+        "eventloom.turn.id": "turn_000005",
+        "eventloom.actor_id": "reviewer",
+        "eventloom.source_event_id": "evt_software_work_000035",
+        "eventloom.mailbox_event_type": "review.requested",
+        "eventloom.accepted_event_ids": [
+          "evt_software_work_000044"
+        ],
+        "eventloom.rejected_event_ids": [],
+        "eventloom.processed_event_id": "evt_software_work_000046",
+        "input.value": "{\"sourceEventId\":\"evt_software_work_000035\",\"mailboxEventType\":\"review.requested\"}",
+        "output.value": "{\"completedEventId\":\"evt_software_work_000045\",\"processedEventId\":\"evt_software_work_000046\",\"acceptedEvents\":[\"evt_software_work_000044\"],\"rejectedEvents\":[]}"
+      }
+    },
+    {
+      "trace_id": "9cd1b2e77292a688efd0d9afe52cf5e4",
+      "span_id": "723df93024acde949f0c5dc0",
+      "parent_span_id": "a1763a88e5078a60f371cfb1",
+      "trace_state": "",
+      "name": "eventloom.deterministic-runner",
+      "kind": "SPAN_KIND_CLIENT",
+      "start_time": "2026-04-28T22:00:00.004000000Z",
+      "end_time": "2026-04-28T22:00:00.006000000Z",
+      "status": {
+        "code": "STATUS_CODE_OK",
+        "message": ""
+      },
+      "resource": {
+        "attributes": {
+          "service.name": "eventloom-fixtures",
+          "service.version": "1.0.0",
+          "deployment.environment": "local"
+        }
+      },
+      "scope": {
+        "name": "@eventloom/runtime",
+        "version": "1.0.0"
+      },
+      "attributes": {
+        "openinference.span.kind": "LLM",
+        "inference.export.schema_version": 1,
+        "inference.project_id": "eventloom-halo-success",
+        "inference.observation_kind": "LLM",
+        "inference.llm.provider": "eventloom",
+        "inference.llm.model_name": "deterministic-runner",
+        "inference.llm.input_tokens": 7,
+        "inference.llm.output_tokens": 2,
+        "inference.llm.cost.total": 0,
+        "inference.user_id": null,
+        "inference.session_id": null,
+        "inference.agent_name": "planner",
+        "llm.provider": "eventloom",
+        "llm.model_name": "deterministic-runner",
+        "llm.token_count.prompt": 7,
+        "llm.token_count.completion": 2,
+        "llm.token_count.total": 9,
+        "eventloom.turn.id": "turn_000001",
+        "eventloom.model_call_id": "model_turn_000001",
+        "eventloom.model.prompt_version": "eventloom.deterministic-runner.v1",
+        "eventloom.model.input_summary": "Actor planner handling goal.created.",
+        "eventloom.model.output_summary": "Emitted intentions: task.propose.",
+        "eventloom.model.parameters": {
+          "temperature": 0,
+          "toolChoice": "none"
+        },
+        "eventloom.model.latency_ms": 1,
+        "eventloom.model.error": null,
+        "input.value": "[{\"role\":\"system\",\"content\":\"Break goals into tasks\"},{\"role\":\"user\",\"content\":\"Handle goal.created from user.\"}]",
+        "output.value": "\"Emitted 1 intention(s): task.propose.\""
+      }
+    },
+    {
+      "trace_id": "9cd1b2e77292a688efd0d9afe52cf5e4",
+      "span_id": "922ab9df8b245a5bc266ad60",
+      "parent_span_id": "3fcd6ba9d58e52714fdc253a",
+      "trace_state": "",
+      "name": "eventloom.deterministic-runner",
+      "kind": "SPAN_KIND_CLIENT",
+      "start_time": "2026-04-28T22:00:00.013000000Z",
+      "end_time": "2026-04-28T22:00:00.015000000Z",
+      "status": {
+        "code": "STATUS_CODE_OK",
+        "message": ""
+      },
+      "resource": {
+        "attributes": {
+          "service.name": "eventloom-fixtures",
+          "service.version": "1.0.0",
+          "deployment.environment": "local"
+        }
+      },
+      "scope": {
+        "name": "@eventloom/runtime",
+        "version": "1.0.0"
+      },
+      "attributes": {
+        "openinference.span.kind": "LLM",
+        "inference.export.schema_version": 1,
+        "inference.project_id": "eventloom-halo-success",
+        "inference.observation_kind": "LLM",
+        "inference.llm.provider": "eventloom",
+        "inference.llm.model_name": "deterministic-runner",
+        "inference.llm.input_tokens": 7,
+        "inference.llm.output_tokens": 2,
+        "inference.llm.cost.total": 0,
+        "inference.user_id": null,
+        "inference.session_id": null,
+        "inference.agent_name": "worker",
+        "llm.provider": "eventloom",
+        "llm.model_name": "deterministic-runner",
+        "llm.token_count.prompt": 7,
+        "llm.token_count.completion": 2,
+        "llm.token_count.total": 9,
+        "eventloom.turn.id": "turn_000002",
+        "eventloom.model_call_id": "model_turn_000002",
+        "eventloom.model.prompt_version": "eventloom.deterministic-runner.v1",
+        "eventloom.model.input_summary": "Actor worker handling task.proposed.",
+        "eventloom.model.output_summary": "Emitted intentions: task.claim.",
+        "eventloom.model.parameters": {
+          "temperature": 0,
+          "toolChoice": "none"
+        },
+        "eventloom.model.latency_ms": 1,
+        "eventloom.model.error": null,
+        "input.value": "[{\"role\":\"system\",\"content\":\"Claim and complete tasks\"},{\"role\":\"user\",\"content\":\"Handle task.proposed from planner.\"}]",
+        "output.value": "\"Emitted 1 intention(s): task.claim.\""
+      }
+    },
+    {
+      "trace_id": "9cd1b2e77292a688efd0d9afe52cf5e4",
+      "span_id": "31ed257acf20084c5a55f470",
+      "parent_span_id": "8ec58ee8daaae81bc2b7e9e7",
+      "trace_state": "",
+      "name": "eventloom.deterministic-runner",
+      "kind": "SPAN_KIND_CLIENT",
+      "start_time": "2026-04-28T22:00:00.022000000Z",
+      "end_time": "2026-04-28T22:00:00.024000000Z",
+      "status": {
+        "code": "STATUS_CODE_OK",
+        "message": ""
+      },
+      "resource": {
+        "attributes": {
+          "service.name": "eventloom-fixtures",
+          "service.version": "1.0.0",
+          "deployment.environment": "local"
+        }
+      },
+      "scope": {
+        "name": "@eventloom/runtime",
+        "version": "1.0.0"
+      },
+      "attributes": {
+        "openinference.span.kind": "LLM",
+        "inference.export.schema_version": 1,
+        "inference.project_id": "eventloom-halo-success",
+        "inference.observation_kind": "LLM",
+        "inference.llm.provider": "eventloom",
+        "inference.llm.model_name": "deterministic-runner",
+        "inference.llm.input_tokens": 7,
+        "inference.llm.output_tokens": 2,
+        "inference.llm.cost.total": 0,
+        "inference.user_id": null,
+        "inference.session_id": null,
+        "inference.agent_name": "worker",
+        "llm.provider": "eventloom",
+        "llm.model_name": "deterministic-runner",
+        "llm.token_count.prompt": 7,
+        "llm.token_count.completion": 2,
+        "llm.token_count.total": 9,
+        "eventloom.turn.id": "turn_000003",
+        "eventloom.model_call_id": "model_turn_000003",
+        "eventloom.model.prompt_version": "eventloom.deterministic-runner.v1",
+        "eventloom.model.input_summary": "Actor worker handling task.claimed.",
+        "eventloom.model.output_summary": "Emitted intentions: task.complete.",
+        "eventloom.model.parameters": {
+          "temperature": 0,
+          "toolChoice": "none"
+        },
+        "eventloom.model.latency_ms": 1,
+        "eventloom.model.error": null,
+        "input.value": "[{\"role\":\"system\",\"content\":\"Claim and complete tasks\"},{\"role\":\"user\",\"content\":\"Handle task.claimed from worker.\"}]",
+        "output.value": "\"Emitted 1 intention(s): task.complete.\""
+      }
+    },
+    {
+      "trace_id": "9cd1b2e77292a688efd0d9afe52cf5e4",
+      "span_id": "afb6cde1f7dae2930cb97435",
+      "parent_span_id": "d9331e736260735d672229cc",
+      "trace_state": "",
+      "name": "eventloom.deterministic-runner",
+      "kind": "SPAN_KIND_CLIENT",
+      "start_time": "2026-04-28T22:00:00.031000000Z",
+      "end_time": "2026-04-28T22:00:00.033000000Z",
+      "status": {
+        "code": "STATUS_CODE_OK",
+        "message": ""
+      },
+      "resource": {
+        "attributes": {
+          "service.name": "eventloom-fixtures",
+          "service.version": "1.0.0",
+          "deployment.environment": "local"
+        }
+      },
+      "scope": {
+        "name": "@eventloom/runtime",
+        "version": "1.0.0"
+      },
+      "attributes": {
+        "openinference.span.kind": "LLM",
+        "inference.export.schema_version": 1,
+        "inference.project_id": "eventloom-halo-success",
+        "inference.observation_kind": "LLM",
+        "inference.llm.provider": "eventloom",
+        "inference.llm.model_name": "deterministic-runner",
+        "inference.llm.input_tokens": 7,
+        "inference.llm.output_tokens": 2,
+        "inference.llm.cost.total": 0,
+        "inference.user_id": null,
+        "inference.session_id": null,
+        "inference.agent_name": "worker",
+        "llm.provider": "eventloom",
+        "llm.model_name": "deterministic-runner",
+        "llm.token_count.prompt": 7,
+        "llm.token_count.completion": 2,
+        "llm.token_count.total": 9,
+        "eventloom.turn.id": "turn_000004",
+        "eventloom.model_call_id": "model_turn_000004",
+        "eventloom.model.prompt_version": "eventloom.deterministic-runner.v1",
+        "eventloom.model.input_summary": "Actor worker handling task.completed.",
+        "eventloom.model.output_summary": "Emitted intentions: review.request.",
+        "eventloom.model.parameters": {
+          "temperature": 0,
+          "toolChoice": "none"
+        },
+        "eventloom.model.latency_ms": 1,
+        "eventloom.model.error": null,
+        "input.value": "[{\"role\":\"system\",\"content\":\"Claim and complete tasks\"},{\"role\":\"user\",\"content\":\"Handle task.completed from worker.\"}]",
+        "output.value": "\"Emitted 1 intention(s): review.request.\""
+      }
+    },
+    {
+      "trace_id": "9cd1b2e77292a688efd0d9afe52cf5e4",
+      "span_id": "c7c40ad1a8754552978fd095",
+      "parent_span_id": "b4c37a7f4940550e23fd23a7",
+      "trace_state": "",
+      "name": "eventloom.deterministic-runner",
+      "kind": "SPAN_KIND_CLIENT",
+      "start_time": "2026-04-28T22:00:00.040000000Z",
+      "end_time": "2026-04-28T22:00:00.042000000Z",
+      "status": {
+        "code": "STATUS_CODE_OK",
+        "message": ""
+      },
+      "resource": {
+        "attributes": {
+          "service.name": "eventloom-fixtures",
+          "service.version": "1.0.0",
+          "deployment.environment": "local"
+        }
+      },
+      "scope": {
+        "name": "@eventloom/runtime",
+        "version": "1.0.0"
+      },
+      "attributes": {
+        "openinference.span.kind": "LLM",
+        "inference.export.schema_version": 1,
+        "inference.project_id": "eventloom-halo-success",
+        "inference.observation_kind": "LLM",
+        "inference.llm.provider": "eventloom",
+        "inference.llm.model_name": "deterministic-runner",
+        "inference.llm.input_tokens": 7,
+        "inference.llm.output_tokens": 2,
+        "inference.llm.cost.total": 0,
+        "inference.user_id": null,
+        "inference.session_id": null,
+        "inference.agent_name": "reviewer",
+        "llm.provider": "eventloom",
+        "llm.model_name": "deterministic-runner",
+        "llm.token_count.prompt": 7,
+        "llm.token_count.completion": 2,
+        "llm.token_count.total": 9,
+        "eventloom.turn.id": "turn_000005",
+        "eventloom.model_call_id": "model_turn_000005",
+        "eventloom.model.prompt_version": "eventloom.deterministic-runner.v1",
+        "eventloom.model.input_summary": "Actor reviewer handling review.requested.",
+        "eventloom.model.output_summary": "Emitted intentions: review.approve.",
+        "eventloom.model.parameters": {
+          "temperature": 0,
+          "toolChoice": "none"
+        },
+        "eventloom.model.latency_ms": 1,
+        "eventloom.model.error": null,
+        "input.value": "[{\"role\":\"system\",\"content\":\"Approve or report issues\"},{\"role\":\"user\",\"content\":\"Handle review.requested from worker.\"}]",
+        "output.value": "\"Emitted 1 intention(s): review.approve.\""
+      }
+    },
+    {
+      "trace_id": "9cd1b2e77292a688efd0d9afe52cf5e4",
+      "span_id": "16ad7d104ac873489c7c7f49",
+      "parent_span_id": "a1763a88e5078a60f371cfb1",
+      "trace_state": "",
+      "name": "function.eventloom.mailbox.read",
+      "kind": "SPAN_KIND_INTERNAL",
+      "start_time": "2026-04-28T22:00:00.002000000Z",
+      "end_time": "2026-04-28T22:00:00.003000000Z",
+      "status": {
+        "code": "STATUS_CODE_OK",
+        "message": ""
+      },
+      "resource": {
+        "attributes": {
+          "service.name": "eventloom-fixtures",
+          "service.version": "1.0.0",
+          "deployment.environment": "local"
+        }
+      },
+      "scope": {
+        "name": "@eventloom/runtime",
+        "version": "1.0.0"
+      },
+      "attributes": {
+        "openinference.span.kind": "TOOL",
+        "inference.export.schema_version": 1,
+        "inference.project_id": "eventloom-halo-success",
+        "inference.observation_kind": "TOOL",
+        "inference.llm.provider": null,
+        "inference.llm.model_name": null,
+        "inference.llm.input_tokens": null,
+        "inference.llm.output_tokens": null,
+        "inference.llm.cost.total": null,
+        "inference.user_id": null,
+        "inference.session_id": null,
+        "inference.agent_name": "planner",
+        "tool.name": "eventloom.mailbox.read",
+        "eventloom.turn.id": "turn_000001",
+        "eventloom.tool_call_id": "tool_turn_000001",
+        "eventloom.tool.input_summary": "Read one mailbox item for planner.",
+        "eventloom.tool.output_summary": "Read 1 mailbox item (goal.created).",
+        "eventloom.tool.exit_code": 0,
+        "eventloom.tool.result_count": 1,
+        "eventloom.tool.result_excerpt": "evt_runtime_goal",
+        "eventloom.tool.decisive": true,
+        "eventloom.tool.latency_ms": 1,
+        "eventloom.tool.error": null,
+        "input.value": "{\"actorId\":\"planner\",\"sourceEventId\":\"evt_runtime_goal\",\"mailboxEventType\":\"goal.created\"}",
+        "output.value": "{\"itemCount\":1,\"taskId\":null,\"taskStatus\":null}"
+      }
+    },
+    {
+      "trace_id": "9cd1b2e77292a688efd0d9afe52cf5e4",
+      "span_id": "37b7fd4ce3883515e0c584a5",
+      "parent_span_id": "3fcd6ba9d58e52714fdc253a",
+      "trace_state": "",
+      "name": "function.eventloom.mailbox.read",
+      "kind": "SPAN_KIND_INTERNAL",
+      "start_time": "2026-04-28T22:00:00.011000000Z",
+      "end_time": "2026-04-28T22:00:00.012000000Z",
+      "status": {
+        "code": "STATUS_CODE_OK",
+        "message": ""
+      },
+      "resource": {
+        "attributes": {
+          "service.name": "eventloom-fixtures",
+          "service.version": "1.0.0",
+          "deployment.environment": "local"
+        }
+      },
+      "scope": {
+        "name": "@eventloom/runtime",
+        "version": "1.0.0"
+      },
+      "attributes": {
+        "openinference.span.kind": "TOOL",
+        "inference.export.schema_version": 1,
+        "inference.project_id": "eventloom-halo-success",
+        "inference.observation_kind": "TOOL",
+        "inference.llm.provider": null,
+        "inference.llm.model_name": null,
+        "inference.llm.input_tokens": null,
+        "inference.llm.output_tokens": null,
+        "inference.llm.cost.total": null,
+        "inference.user_id": null,
+        "inference.session_id": null,
+        "inference.agent_name": "worker",
+        "tool.name": "eventloom.mailbox.read",
+        "eventloom.turn.id": "turn_000002",
+        "eventloom.tool_call_id": "tool_turn_000002",
+        "eventloom.tool.input_summary": "Read one mailbox item for worker.",
+        "eventloom.tool.output_summary": "Read 1 mailbox item (task.proposed).",
+        "eventloom.tool.exit_code": 0,
+        "eventloom.tool.result_count": 1,
+        "eventloom.tool.result_excerpt": "evt_software_work_000008",
+        "eventloom.tool.decisive": true,
+        "eventloom.tool.latency_ms": 1,
+        "eventloom.tool.error": null,
+        "input.value": "{\"actorId\":\"worker\",\"sourceEventId\":\"evt_software_work_000008\",\"mailboxEventType\":\"task.proposed\"}",
+        "output.value": "{\"itemCount\":1,\"taskId\":\"task_actor_runtime\",\"taskStatus\":\"proposed\"}"
+      }
+    },
+    {
+      "trace_id": "9cd1b2e77292a688efd0d9afe52cf5e4",
+      "span_id": "ac44c8ebad5a13b84b8ab8d2",
+      "parent_span_id": "8ec58ee8daaae81bc2b7e9e7",
+      "trace_state": "",
+      "name": "function.eventloom.mailbox.read",
+      "kind": "SPAN_KIND_INTERNAL",
+      "start_time": "2026-04-28T22:00:00.020000000Z",
+      "end_time": "2026-04-28T22:00:00.021000000Z",
+      "status": {
+        "code": "STATUS_CODE_OK",
+        "message": ""
+      },
+      "resource": {
+        "attributes": {
+          "service.name": "eventloom-fixtures",
+          "service.version": "1.0.0",
+          "deployment.environment": "local"
+        }
+      },
+      "scope": {
+        "name": "@eventloom/runtime",
+        "version": "1.0.0"
+      },
+      "attributes": {
+        "openinference.span.kind": "TOOL",
+        "inference.export.schema_version": 1,
+        "inference.project_id": "eventloom-halo-success",
+        "inference.observation_kind": "TOOL",
+        "inference.llm.provider": null,
+        "inference.llm.model_name": null,
+        "inference.llm.input_tokens": null,
+        "inference.llm.output_tokens": null,
+        "inference.llm.cost.total": null,
+        "inference.user_id": null,
+        "inference.session_id": null,
+        "inference.agent_name": "worker",
+        "tool.name": "eventloom.mailbox.read",
+        "eventloom.turn.id": "turn_000003",
+        "eventloom.tool_call_id": "tool_turn_000003",
+        "eventloom.tool.input_summary": "Read one mailbox item for worker.",
+        "eventloom.tool.output_summary": "Read 1 mailbox item (task.claimed).",
+        "eventloom.tool.exit_code": 0,
+        "eventloom.tool.result_count": 1,
+        "eventloom.tool.result_excerpt": "evt_software_work_000017",
+        "eventloom.tool.decisive": true,
+        "eventloom.tool.latency_ms": 1,
+        "eventloom.tool.error": null,
+        "input.value": "{\"actorId\":\"worker\",\"sourceEventId\":\"evt_software_work_000017\",\"mailboxEventType\":\"task.claimed\"}",
+        "output.value": "{\"itemCount\":1,\"taskId\":\"task_actor_runtime\",\"taskStatus\":\"claimed\"}"
+      }
+    },
+    {
+      "trace_id": "9cd1b2e77292a688efd0d9afe52cf5e4",
+      "span_id": "39fd90bdeb5e72c95dafe967",
+      "parent_span_id": "d9331e736260735d672229cc",
+      "trace_state": "",
+      "name": "function.eventloom.mailbox.read",
+      "kind": "SPAN_KIND_INTERNAL",
+      "start_time": "2026-04-28T22:00:00.029000000Z",
+      "end_time": "2026-04-28T22:00:00.030000000Z",
+      "status": {
+        "code": "STATUS_CODE_OK",
+        "message": ""
+      },
+      "resource": {
+        "attributes": {
+          "service.name": "eventloom-fixtures",
+          "service.version": "1.0.0",
+          "deployment.environment": "local"
+        }
+      },
+      "scope": {
+        "name": "@eventloom/runtime",
+        "version": "1.0.0"
+      },
+      "attributes": {
+        "openinference.span.kind": "TOOL",
+        "inference.export.schema_version": 1,
+        "inference.project_id": "eventloom-halo-success",
+        "inference.observation_kind": "TOOL",
+        "inference.llm.provider": null,
+        "inference.llm.model_name": null,
+        "inference.llm.input_tokens": null,
+        "inference.llm.output_tokens": null,
+        "inference.llm.cost.total": null,
+        "inference.user_id": null,
+        "inference.session_id": null,
+        "inference.agent_name": "worker",
+        "tool.name": "eventloom.mailbox.read",
+        "eventloom.turn.id": "turn_000004",
+        "eventloom.tool_call_id": "tool_turn_000004",
+        "eventloom.tool.input_summary": "Read one mailbox item for worker.",
+        "eventloom.tool.output_summary": "Read 1 mailbox item (task.completed).",
+        "eventloom.tool.exit_code": 0,
+        "eventloom.tool.result_count": 1,
+        "eventloom.tool.result_excerpt": "evt_software_work_000026",
+        "eventloom.tool.decisive": true,
+        "eventloom.tool.latency_ms": 1,
+        "eventloom.tool.error": null,
+        "input.value": "{\"actorId\":\"worker\",\"sourceEventId\":\"evt_software_work_000026\",\"mailboxEventType\":\"task.completed\"}",
+        "output.value": "{\"itemCount\":1,\"taskId\":\"task_actor_runtime\",\"taskStatus\":\"completed\"}"
+      }
+    },
+    {
+      "trace_id": "9cd1b2e77292a688efd0d9afe52cf5e4",
+      "span_id": "9cb559cce4548eecf0093229",
+      "parent_span_id": "b4c37a7f4940550e23fd23a7",
+      "trace_state": "",
+      "name": "function.eventloom.mailbox.read",
+      "kind": "SPAN_KIND_INTERNAL",
+      "start_time": "2026-04-28T22:00:00.038000000Z",
+      "end_time": "2026-04-28T22:00:00.039000000Z",
+      "status": {
+        "code": "STATUS_CODE_OK",
+        "message": ""
+      },
+      "resource": {
+        "attributes": {
+          "service.name": "eventloom-fixtures",
+          "service.version": "1.0.0",
+          "deployment.environment": "local"
+        }
+      },
+      "scope": {
+        "name": "@eventloom/runtime",
+        "version": "1.0.0"
+      },
+      "attributes": {
+        "openinference.span.kind": "TOOL",
+        "inference.export.schema_version": 1,
+        "inference.project_id": "eventloom-halo-success",
+        "inference.observation_kind": "TOOL",
+        "inference.llm.provider": null,
+        "inference.llm.model_name": null,
+        "inference.llm.input_tokens": null,
+        "inference.llm.output_tokens": null,
+        "inference.llm.cost.total": null,
+        "inference.user_id": null,
+        "inference.session_id": null,
+        "inference.agent_name": "reviewer",
+        "tool.name": "eventloom.mailbox.read",
+        "eventloom.turn.id": "turn_000005",
+        "eventloom.tool_call_id": "tool_turn_000005",
+        "eventloom.tool.input_summary": "Read one mailbox item for reviewer.",
+        "eventloom.tool.output_summary": "Read 1 mailbox item (review.requested).",
+        "eventloom.tool.exit_code": 0,
+        "eventloom.tool.result_count": 1,
+        "eventloom.tool.result_excerpt": "evt_software_work_000035",
+        "eventloom.tool.decisive": true,
+        "eventloom.tool.latency_ms": 1,
+        "eventloom.tool.error": null,
+        "input.value": "{\"actorId\":\"reviewer\",\"sourceEventId\":\"evt_software_work_000035\",\"mailboxEventType\":\"review.requested\"}",
+        "output.value": "{\"itemCount\":1,\"taskId\":\"task_actor_runtime\",\"taskStatus\":\"review_requested\"}"
+      }
+    },
+    {
+      "trace_id": "9cd1b2e77292a688efd0d9afe52cf5e4",
+      "span_id": "09e8c76ef399af14b985c999",
+      "parent_span_id": "a1763a88e5078a60f371cfb1",
+      "trace_state": "",
+      "name": "eventloom.reasoning.summary",
+      "kind": "SPAN_KIND_INTERNAL",
+      "start_time": "2026-04-28T22:00:00.005000000Z",
+      "end_time": "2026-04-28T22:00:00.005000000Z",
+      "status": {
+        "code": "STATUS_CODE_OK",
+        "message": ""
+      },
+      "resource": {
+        "attributes": {
+          "service.name": "eventloom-fixtures",
+          "service.version": "1.0.0",
+          "deployment.environment": "local"
+        }
+      },
+      "scope": {
+        "name": "@eventloom/runtime",
+        "version": "1.0.0"
+      },
+      "attributes": {
+        "openinference.span.kind": "CHAIN",
+        "inference.export.schema_version": 1,
+        "inference.project_id": "eventloom-halo-success",
+        "inference.observation_kind": "SPAN",
+        "inference.llm.provider": null,
+        "inference.llm.model_name": null,
+        "inference.llm.input_tokens": null,
+        "inference.llm.output_tokens": null,
+        "inference.llm.cost.total": null,
+        "inference.user_id": null,
+        "inference.session_id": null,
+        "inference.agent_name": "planner",
+        "eventloom.turn.id": "turn_000001",
+        "eventloom.reasoning.summary": "planner handled goal.created as Break goals into tasks and emitted task.propose.",
+        "eventloom.reasoning.evidence_event_ids": [
+          "evt_runtime_goal"
+        ],
+        "eventloom.reasoning.confidence": 1,
+        "input.value": "{\"turnId\":\"turn_000001\",\"summary\":\"planner handled goal.created as Break goals into tasks and emitted task.propose.\",\"alternativesConsidered\":[],\"evidenceEventIds\":[\"evt_runtime_goal\"],\"confidence\":1}"
+      }
+    },
+    {
+      "trace_id": "9cd1b2e77292a688efd0d9afe52cf5e4",
+      "span_id": "3cd82dd217ee00957c1e2c40",
+      "parent_span_id": "3fcd6ba9d58e52714fdc253a",
+      "trace_state": "",
+      "name": "eventloom.reasoning.summary",
+      "kind": "SPAN_KIND_INTERNAL",
+      "start_time": "2026-04-28T22:00:00.014000000Z",
+      "end_time": "2026-04-28T22:00:00.014000000Z",
+      "status": {
+        "code": "STATUS_CODE_OK",
+        "message": ""
+      },
+      "resource": {
+        "attributes": {
+          "service.name": "eventloom-fixtures",
+          "service.version": "1.0.0",
+          "deployment.environment": "local"
+        }
+      },
+      "scope": {
+        "name": "@eventloom/runtime",
+        "version": "1.0.0"
+      },
+      "attributes": {
+        "openinference.span.kind": "CHAIN",
+        "inference.export.schema_version": 1,
+        "inference.project_id": "eventloom-halo-success",
+        "inference.observation_kind": "SPAN",
+        "inference.llm.provider": null,
+        "inference.llm.model_name": null,
+        "inference.llm.input_tokens": null,
+        "inference.llm.output_tokens": null,
+        "inference.llm.cost.total": null,
+        "inference.user_id": null,
+        "inference.session_id": null,
+        "inference.agent_name": "worker",
+        "eventloom.turn.id": "turn_000002",
+        "eventloom.reasoning.summary": "worker handled task.proposed as Claim and complete tasks and emitted task.claim.",
+        "eventloom.reasoning.evidence_event_ids": [
+          "evt_software_work_000008"
+        ],
+        "eventloom.reasoning.confidence": 1,
+        "input.value": "{\"turnId\":\"turn_000002\",\"summary\":\"worker handled task.proposed as Claim and complete tasks and emitted task.claim.\",\"alternativesConsidered\":[],\"evidenceEventIds\":[\"evt_software_work_000008\"],\"confidence\":1}"
+      }
+    },
+    {
+      "trace_id": "9cd1b2e77292a688efd0d9afe52cf5e4",
+      "span_id": "e4e39034af0e768dc1b8333a",
+      "parent_span_id": "8ec58ee8daaae81bc2b7e9e7",
+      "trace_state": "",
+      "name": "eventloom.reasoning.summary",
+      "kind": "SPAN_KIND_INTERNAL",
+      "start_time": "2026-04-28T22:00:00.023000000Z",
+      "end_time": "2026-04-28T22:00:00.023000000Z",
+      "status": {
+        "code": "STATUS_CODE_OK",
+        "message": ""
+      },
+      "resource": {
+        "attributes": {
+          "service.name": "eventloom-fixtures",
+          "service.version": "1.0.0",
+          "deployment.environment": "local"
+        }
+      },
+      "scope": {
+        "name": "@eventloom/runtime",
+        "version": "1.0.0"
+      },
+      "attributes": {
+        "openinference.span.kind": "CHAIN",
+        "inference.export.schema_version": 1,
+        "inference.project_id": "eventloom-halo-success",
+        "inference.observation_kind": "SPAN",
+        "inference.llm.provider": null,
+        "inference.llm.model_name": null,
+        "inference.llm.input_tokens": null,
+        "inference.llm.output_tokens": null,
+        "inference.llm.cost.total": null,
+        "inference.user_id": null,
+        "inference.session_id": null,
+        "inference.agent_name": "worker",
+        "eventloom.turn.id": "turn_000003",
+        "eventloom.reasoning.summary": "worker handled task.claimed as Claim and complete tasks and emitted task.complete.",
+        "eventloom.reasoning.evidence_event_ids": [
+          "evt_software_work_000017"
+        ],
+        "eventloom.reasoning.confidence": 1,
+        "input.value": "{\"turnId\":\"turn_000003\",\"summary\":\"worker handled task.claimed as Claim and complete tasks and emitted task.complete.\",\"alternativesConsidered\":[],\"evidenceEventIds\":[\"evt_software_work_000017\"],\"confidence\":1}"
+      }
+    },
+    {
+      "trace_id": "9cd1b2e77292a688efd0d9afe52cf5e4",
+      "span_id": "1a3c4f30dcba386f46d868ac",
+      "parent_span_id": "d9331e736260735d672229cc",
+      "trace_state": "",
+      "name": "eventloom.reasoning.summary",
+      "kind": "SPAN_KIND_INTERNAL",
+      "start_time": "2026-04-28T22:00:00.032000000Z",
+      "end_time": "2026-04-28T22:00:00.032000000Z",
+      "status": {
+        "code": "STATUS_CODE_OK",
+        "message": ""
+      },
+      "resource": {
+        "attributes": {
+          "service.name": "eventloom-fixtures",
+          "service.version": "1.0.0",
+          "deployment.environment": "local"
+        }
+      },
+      "scope": {
+        "name": "@eventloom/runtime",
+        "version": "1.0.0"
+      },
+      "attributes": {
+        "openinference.span.kind": "CHAIN",
+        "inference.export.schema_version": 1,
+        "inference.project_id": "eventloom-halo-success",
+        "inference.observation_kind": "SPAN",
+        "inference.llm.provider": null,
+        "inference.llm.model_name": null,
+        "inference.llm.input_tokens": null,
+        "inference.llm.output_tokens": null,
+        "inference.llm.cost.total": null,
+        "inference.user_id": null,
+        "inference.session_id": null,
+        "inference.agent_name": "worker",
+        "eventloom.turn.id": "turn_000004",
+        "eventloom.reasoning.summary": "worker handled task.completed as Claim and complete tasks and emitted review.request.",
+        "eventloom.reasoning.evidence_event_ids": [
+          "evt_software_work_000026"
+        ],
+        "eventloom.reasoning.confidence": 1,
+        "input.value": "{\"turnId\":\"turn_000004\",\"summary\":\"worker handled task.completed as Claim and complete tasks and emitted review.request.\",\"alternativesConsidered\":[],\"evidenceEventIds\":[\"evt_software_work_000026\"],\"confidence\":1}"
+      }
+    },
+    {
+      "trace_id": "9cd1b2e77292a688efd0d9afe52cf5e4",
+      "span_id": "b25b9526d86b2ad6f255f24a",
+      "parent_span_id": "b4c37a7f4940550e23fd23a7",
+      "trace_state": "",
+      "name": "eventloom.reasoning.summary",
+      "kind": "SPAN_KIND_INTERNAL",
+      "start_time": "2026-04-28T22:00:00.041000000Z",
+      "end_time": "2026-04-28T22:00:00.041000000Z",
+      "status": {
+        "code": "STATUS_CODE_OK",
+        "message": ""
+      },
+      "resource": {
+        "attributes": {
+          "service.name": "eventloom-fixtures",
+          "service.version": "1.0.0",
+          "deployment.environment": "local"
+        }
+      },
+      "scope": {
+        "name": "@eventloom/runtime",
+        "version": "1.0.0"
+      },
+      "attributes": {
+        "openinference.span.kind": "CHAIN",
+        "inference.export.schema_version": 1,
+        "inference.project_id": "eventloom-halo-success",
+        "inference.observation_kind": "SPAN",
+        "inference.llm.provider": null,
+        "inference.llm.model_name": null,
+        "inference.llm.input_tokens": null,
+        "inference.llm.output_tokens": null,
+        "inference.llm.cost.total": null,
+        "inference.user_id": null,
+        "inference.session_id": null,
+        "inference.agent_name": "reviewer",
+        "eventloom.turn.id": "turn_000005",
+        "eventloom.reasoning.summary": "reviewer handled review.requested as Approve or report issues and emitted review.approve.",
+        "eventloom.reasoning.evidence_event_ids": [
+          "evt_software_work_000035"
+        ],
+        "eventloom.reasoning.confidence": 1,
+        "input.value": "{\"turnId\":\"turn_000005\",\"summary\":\"reviewer handled review.requested as Approve or report issues and emitted review.approve.\",\"alternativesConsidered\":[],\"evidenceEventIds\":[\"evt_software_work_000035\"],\"confidence\":1}"
+      }
+    },
+    {
+      "trace_id": "9cd1b2e77292a688efd0d9afe52cf5e4",
+      "span_id": "133d2e10e38dcf5b81d1ead3",
+      "parent_span_id": "20c69c9ec6b19e11d743ef30",
+      "trace_state": "",
+      "name": "eventloom.task.task_actor_runtime",
+      "kind": "SPAN_KIND_INTERNAL",
+      "start_time": "2026-04-28T22:00:00.007000000Z",
+      "end_time": "2026-04-28T22:00:00.043000000Z",
+      "status": {
+        "code": "STATUS_CODE_OK",
+        "message": ""
+      },
+      "resource": {
+        "attributes": {
+          "service.name": "eventloom-fixtures",
+          "service.version": "1.0.0",
+          "deployment.environment": "local"
+        }
+      },
+      "scope": {
+        "name": "@eventloom/runtime",
+        "version": "1.0.0"
+      },
+      "attributes": {
+        "openinference.span.kind": "AGENT",
+        "inference.export.schema_version": 1,
+        "inference.project_id": "eventloom-halo-success",
+        "inference.observation_kind": "AGENT",
+        "inference.llm.provider": null,
+        "inference.llm.model_name": null,
+        "inference.llm.input_tokens": null,
+        "inference.llm.output_tokens": null,
+        "inference.llm.cost.total": null,
+        "inference.user_id": null,
+        "inference.session_id": null,
+        "inference.agent_name": "reviewer",
+        "agent.name": "reviewer",
+        "agent.workflow.name": "Eventloom task lifecycle",
+        "eventloom.task.id": "task_actor_runtime",
+        "eventloom.task.title": "Run actors from rebuilt mailboxes",
+        "eventloom.task.status": "approved",
+        "eventloom.task.history_event_ids": [
+          "evt_software_work_000008",
+          "evt_software_work_000017",
+          "evt_software_work_000026",
+          "evt_software_work_000035",
+          "evt_software_work_000044"
+        ],
+        "input.value": "{\"taskId\":\"task_actor_runtime\",\"title\":\"Run actors from rebuilt mailboxes\"}",
+        "output.value": "{\"status\":\"approved\",\"lastEventId\":\"evt_software_work_000044\",\"eventTypes\":{\"task.proposed\":1,\"task.claimed\":1,\"task.completed\":1,\"review.requested\":1,\"review.approved\":1}}"
+      }
+    },
+    {
+      "trace_id": "9cd1b2e77292a688efd0d9afe52cf5e4",
+      "span_id": "33ed647f1e3f20cc977ae014",
+      "parent_span_id": "20c69c9ec6b19e11d743ef30",
+      "trace_state": "",
+      "name": "eventloom.event.goal.created",
+      "kind": "SPAN_KIND_INTERNAL",
+      "start_time": "2026-04-28T22:00:00.000000000Z",
+      "end_time": "2026-04-28T22:00:00.000000000Z",
+      "status": {
+        "code": "STATUS_CODE_OK",
+        "message": ""
+      },
+      "resource": {
+        "attributes": {
+          "service.name": "eventloom-fixtures",
+          "service.version": "1.0.0",
+          "deployment.environment": "local"
+        }
+      },
+      "scope": {
+        "name": "@eventloom/runtime",
+        "version": "1.0.0"
+      },
+      "attributes": {
+        "openinference.span.kind": "CHAIN",
+        "inference.export.schema_version": 1,
+        "inference.project_id": "eventloom-halo-success",
+        "inference.observation_kind": "SPAN",
+        "inference.llm.provider": null,
+        "inference.llm.model_name": null,
+        "inference.llm.input_tokens": null,
+        "inference.llm.output_tokens": null,
+        "inference.llm.cost.total": null,
+        "inference.user_id": null,
+        "inference.session_id": null,
+        "inference.agent_name": "user",
+        "agent.workflow.name": "Eventloom event journal",
+        "eventloom.event.id": "evt_runtime_goal",
+        "eventloom.event.type": "goal.created",
+        "eventloom.actor_id": "user",
+        "eventloom.thread_id": "thread_main",
+        "eventloom.parent_event_id": null,
+        "eventloom.caused_by": [],
+        "input.value": "{\"title\":\"Build deterministic actor runners\"}"
+      }
+    }
+  ],
+  "jsonl": "{\"trace_id\":\"9cd1b2e77292a688efd0d9afe52cf5e4\",\"span_id\":\"20c69c9ec6b19e11d743ef30\",\"parent_span_id\":\"\",\"trace_state\":\"\",\"name\":\"eventloom-halo-success\",\"kind\":\"SPAN_KIND_INTERNAL\",\"start_time\":\"2026-04-28T22:00:00.000000000Z\",\"end_time\":\"2026-04-28T22:00:00.045000000Z\",\"status\":{\"code\":\"STATUS_CODE_OK\",\"message\":\"\"},\"resource\":{\"attributes\":{\"service.name\":\"eventloom-fixtures\",\"service.version\":\"1.0.0\",\"deployment.environment\":\"local\"}},\"scope\":{\"name\":\"@eventloom/runtime\",\"version\":\"1.0.0\"},\"attributes\":{\"openinference.span.kind\":\"CHAIN\",\"inference.export.schema_version\":1,\"inference.project_id\":\"eventloom-halo-success\",\"inference.observation_kind\":\"SPAN\",\"inference.llm.provider\":null,\"inference.llm.model_name\":null,\"inference.llm.input_tokens\":null,\"inference.llm.output_tokens\":null,\"inference.llm.cost.total\":null,\"inference.user_id\":null,\"inference.session_id\":null,\"inference.agent_name\":\"eventloom\",\"eventloom.event_count\":46,\"eventloom.event_types\":{\"goal.created\":1,\"actor.started\":5,\"tool.started\":5,\"tool.completed\":5,\"model.started\":5,\"reasoning.summary\":5,\"model.completed\":5,\"task.proposed\":1,\"actor.completed\":5,\"actor.processed\":5,\"task.claimed\":1,\"task.completed\":1,\"review.requested\":1,\"review.approved\":1},\"eventloom.integrity.ok\":true,\"eventloom.integrity.error_count\":0,\"eventloom.valid_prefix_count\":46,\"eventloom.integrity.diagnostics\":\"[]\",\"eventloom.projection_hash\":\"f1052d2716c7c446c06aa835495240bb003f76118e96ad416498259002b3d0e2\",\"eventloom.thread_ids\":[\"thread_main\"],\"eventloom.git.commit\":null,\"eventloom.git.branch\":null,\"eventloom.git.dirty\":null}}\n{\"trace_id\":\"9cd1b2e77292a688efd0d9afe52cf5e4\",\"span_id\":\"a1763a88e5078a60f371cfb1\",\"parent_span_id\":\"20c69c9ec6b19e11d743ef30\",\"trace_state\":\"\",\"name\":\"eventloom.actor.planner.turn\",\"kind\":\"SPAN_KIND_INTERNAL\",\"start_time\":\"2026-04-28T22:00:00.001000000Z\",\"end_time\":\"2026-04-28T22:00:00.009000000Z\",\"status\":{\"code\":\"STATUS_CODE_OK\",\"message\":\"\"},\"resource\":{\"attributes\":{\"service.name\":\"eventloom-fixtures\",\"service.version\":\"1.0.0\",\"deployment.environment\":\"local\"}},\"scope\":{\"name\":\"@eventloom/runtime\",\"version\":\"1.0.0\"},\"attributes\":{\"openinference.span.kind\":\"AGENT\",\"inference.export.schema_version\":1,\"inference.project_id\":\"eventloom-halo-success\",\"inference.observation_kind\":\"AGENT\",\"inference.llm.provider\":null,\"inference.llm.model_name\":null,\"inference.llm.input_tokens\":null,\"inference.llm.output_tokens\":null,\"inference.llm.cost.total\":null,\"inference.user_id\":null,\"inference.session_id\":null,\"inference.agent_name\":\"planner\",\"agent.name\":\"planner\",\"agent.workflow.name\":\"Eventloom actor turn\",\"eventloom.turn.id\":\"turn_000001\",\"eventloom.actor_id\":\"planner\",\"eventloom.source_event_id\":\"evt_runtime_goal\",\"eventloom.mailbox_event_type\":\"goal.created\",\"eventloom.accepted_event_ids\":[\"evt_software_work_000008\"],\"eventloom.rejected_event_ids\":[],\"eventloom.processed_event_id\":\"evt_software_work_000010\",\"input.value\":\"{\\\"sourceEventId\\\":\\\"evt_runtime_goal\\\",\\\"mailboxEventType\\\":\\\"goal.created\\\"}\",\"output.value\":\"{\\\"completedEventId\\\":\\\"evt_software_work_000009\\\",\\\"processedEventId\\\":\\\"evt_software_work_000010\\\",\\\"acceptedEvents\\\":[\\\"evt_software_work_000008\\\"],\\\"rejectedEvents\\\":[]}\"}}\n{\"trace_id\":\"9cd1b2e77292a688efd0d9afe52cf5e4\",\"span_id\":\"3fcd6ba9d58e52714fdc253a\",\"parent_span_id\":\"20c69c9ec6b19e11d743ef30\",\"trace_state\":\"\",\"name\":\"eventloom.actor.worker.turn\",\"kind\":\"SPAN_KIND_INTERNAL\",\"start_time\":\"2026-04-28T22:00:00.010000000Z\",\"end_time\":\"2026-04-28T22:00:00.018000000Z\",\"status\":{\"code\":\"STATUS_CODE_OK\",\"message\":\"\"},\"resource\":{\"attributes\":{\"service.name\":\"eventloom-fixtures\",\"service.version\":\"1.0.0\",\"deployment.environment\":\"local\"}},\"scope\":{\"name\":\"@eventloom/runtime\",\"version\":\"1.0.0\"},\"attributes\":{\"openinference.span.kind\":\"AGENT\",\"inference.export.schema_version\":1,\"inference.project_id\":\"eventloom-halo-success\",\"inference.observation_kind\":\"AGENT\",\"inference.llm.provider\":null,\"inference.llm.model_name\":null,\"inference.llm.input_tokens\":null,\"inference.llm.output_tokens\":null,\"inference.llm.cost.total\":null,\"inference.user_id\":null,\"inference.session_id\":null,\"inference.agent_name\":\"worker\",\"agent.name\":\"worker\",\"agent.workflow.name\":\"Eventloom actor turn\",\"eventloom.turn.id\":\"turn_000002\",\"eventloom.actor_id\":\"worker\",\"eventloom.source_event_id\":\"evt_software_work_000008\",\"eventloom.mailbox_event_type\":\"task.proposed\",\"eventloom.accepted_event_ids\":[\"evt_software_work_000017\"],\"eventloom.rejected_event_ids\":[],\"eventloom.processed_event_id\":\"evt_software_work_000019\",\"input.value\":\"{\\\"sourceEventId\\\":\\\"evt_software_work_000008\\\",\\\"mailboxEventType\\\":\\\"task.proposed\\\"}\",\"output.value\":\"{\\\"completedEventId\\\":\\\"evt_software_work_000018\\\",\\\"processedEventId\\\":\\\"evt_software_work_000019\\\",\\\"acceptedEvents\\\":[\\\"evt_software_work_000017\\\"],\\\"rejectedEvents\\\":[]}\"}}\n{\"trace_id\":\"9cd1b2e77292a688efd0d9afe52cf5e4\",\"span_id\":\"8ec58ee8daaae81bc2b7e9e7\",\"parent_span_id\":\"20c69c9ec6b19e11d743ef30\",\"trace_state\":\"\",\"name\":\"eventloom.actor.worker.turn\",\"kind\":\"SPAN_KIND_INTERNAL\",\"start_time\":\"2026-04-28T22:00:00.019000000Z\",\"end_time\":\"2026-04-28T22:00:00.027000000Z\",\"status\":{\"code\":\"STATUS_CODE_OK\",\"message\":\"\"},\"resource\":{\"attributes\":{\"service.name\":\"eventloom-fixtures\",\"service.version\":\"1.0.0\",\"deployment.environment\":\"local\"}},\"scope\":{\"name\":\"@eventloom/runtime\",\"version\":\"1.0.0\"},\"attributes\":{\"openinference.span.kind\":\"AGENT\",\"inference.export.schema_version\":1,\"inference.project_id\":\"eventloom-halo-success\",\"inference.observation_kind\":\"AGENT\",\"inference.llm.provider\":null,\"inference.llm.model_name\":null,\"inference.llm.input_tokens\":null,\"inference.llm.output_tokens\":null,\"inference.llm.cost.total\":null,\"inference.user_id\":null,\"inference.session_id\":null,\"inference.agent_name\":\"worker\",\"agent.name\":\"worker\",\"agent.workflow.name\":\"Eventloom actor turn\",\"eventloom.turn.id\":\"turn_000003\",\"eventloom.actor_id\":\"worker\",\"eventloom.source_event_id\":\"evt_software_work_000017\",\"eventloom.mailbox_event_type\":\"task.claimed\",\"eventloom.accepted_event_ids\":[\"evt_software_work_000026\"],\"eventloom.rejected_event_ids\":[],\"eventloom.processed_event_id\":\"evt_software_work_000028\",\"input.value\":\"{\\\"sourceEventId\\\":\\\"evt_software_work_000017\\\",\\\"mailboxEventType\\\":\\\"task.claimed\\\"}\",\"output.value\":\"{\\\"completedEventId\\\":\\\"evt_software_work_000027\\\",\\\"processedEventId\\\":\\\"evt_software_work_000028\\\",\\\"acceptedEvents\\\":[\\\"evt_software_work_000026\\\"],\\\"rejectedEvents\\\":[]}\"}}\n{\"trace_id\":\"9cd1b2e77292a688efd0d9afe52cf5e4\",\"span_id\":\"d9331e736260735d672229cc\",\"parent_span_id\":\"20c69c9ec6b19e11d743ef30\",\"trace_state\":\"\",\"name\":\"eventloom.actor.worker.turn\",\"kind\":\"SPAN_KIND_INTERNAL\",\"start_time\":\"2026-04-28T22:00:00.028000000Z\",\"end_time\":\"2026-04-28T22:00:00.036000000Z\",\"status\":{\"code\":\"STATUS_CODE_OK\",\"message\":\"\"},\"resource\":{\"attributes\":{\"service.name\":\"eventloom-fixtures\",\"service.version\":\"1.0.0\",\"deployment.environment\":\"local\"}},\"scope\":{\"name\":\"@eventloom/runtime\",\"version\":\"1.0.0\"},\"attributes\":{\"openinference.span.kind\":\"AGENT\",\"inference.export.schema_version\":1,\"inference.project_id\":\"eventloom-halo-success\",\"inference.observation_kind\":\"AGENT\",\"inference.llm.provider\":null,\"inference.llm.model_name\":null,\"inference.llm.input_tokens\":null,\"inference.llm.output_tokens\":null,\"inference.llm.cost.total\":null,\"inference.user_id\":null,\"inference.session_id\":null,\"inference.agent_name\":\"worker\",\"agent.name\":\"worker\",\"agent.workflow.name\":\"Eventloom actor turn\",\"eventloom.turn.id\":\"turn_000004\",\"eventloom.actor_id\":\"worker\",\"eventloom.source_event_id\":\"evt_software_work_000026\",\"eventloom.mailbox_event_type\":\"task.completed\",\"eventloom.accepted_event_ids\":[\"evt_software_work_000035\"],\"eventloom.rejected_event_ids\":[],\"eventloom.processed_event_id\":\"evt_software_work_000037\",\"input.value\":\"{\\\"sourceEventId\\\":\\\"evt_software_work_000026\\\",\\\"mailboxEventType\\\":\\\"task.completed\\\"}\",\"output.value\":\"{\\\"completedEventId\\\":\\\"evt_software_work_000036\\\",\\\"processedEventId\\\":\\\"evt_software_work_000037\\\",\\\"acceptedEvents\\\":[\\\"evt_software_work_000035\\\"],\\\"rejectedEvents\\\":[]}\"}}\n{\"trace_id\":\"9cd1b2e77292a688efd0d9afe52cf5e4\",\"span_id\":\"b4c37a7f4940550e23fd23a7\",\"parent_span_id\":\"20c69c9ec6b19e11d743ef30\",\"trace_state\":\"\",\"name\":\"eventloom.actor.reviewer.turn\",\"kind\":\"SPAN_KIND_INTERNAL\",\"start_time\":\"2026-04-28T22:00:00.037000000Z\",\"end_time\":\"2026-04-28T22:00:00.045000000Z\",\"status\":{\"code\":\"STATUS_CODE_OK\",\"message\":\"\"},\"resource\":{\"attributes\":{\"service.name\":\"eventloom-fixtures\",\"service.version\":\"1.0.0\",\"deployment.environment\":\"local\"}},\"scope\":{\"name\":\"@eventloom/runtime\",\"version\":\"1.0.0\"},\"attributes\":{\"openinference.span.kind\":\"AGENT\",\"inference.export.schema_version\":1,\"inference.project_id\":\"eventloom-halo-success\",\"inference.observation_kind\":\"AGENT\",\"inference.llm.provider\":null,\"inference.llm.model_name\":null,\"inference.llm.input_tokens\":null,\"inference.llm.output_tokens\":null,\"inference.llm.cost.total\":null,\"inference.user_id\":null,\"inference.session_id\":null,\"inference.agent_name\":\"reviewer\",\"agent.name\":\"reviewer\",\"agent.workflow.name\":\"Eventloom actor turn\",\"eventloom.turn.id\":\"turn_000005\",\"eventloom.actor_id\":\"reviewer\",\"eventloom.source_event_id\":\"evt_software_work_000035\",\"eventloom.mailbox_event_type\":\"review.requested\",\"eventloom.accepted_event_ids\":[\"evt_software_work_000044\"],\"eventloom.rejected_event_ids\":[],\"eventloom.processed_event_id\":\"evt_software_work_000046\",\"input.value\":\"{\\\"sourceEventId\\\":\\\"evt_software_work_000035\\\",\\\"mailboxEventType\\\":\\\"review.requested\\\"}\",\"output.value\":\"{\\\"completedEventId\\\":\\\"evt_software_work_000045\\\",\\\"processedEventId\\\":\\\"evt_software_work_000046\\\",\\\"acceptedEvents\\\":[\\\"evt_software_work_000044\\\"],\\\"rejectedEvents\\\":[]}\"}}\n{\"trace_id\":\"9cd1b2e77292a688efd0d9afe52cf5e4\",\"span_id\":\"723df93024acde949f0c5dc0\",\"parent_span_id\":\"a1763a88e5078a60f371cfb1\",\"trace_state\":\"\",\"name\":\"eventloom.deterministic-runner\",\"kind\":\"SPAN_KIND_CLIENT\",\"start_time\":\"2026-04-28T22:00:00.004000000Z\",\"end_time\":\"2026-04-28T22:00:00.006000000Z\",\"status\":{\"code\":\"STATUS_CODE_OK\",\"message\":\"\"},\"resource\":{\"attributes\":{\"service.name\":\"eventloom-fixtures\",\"service.version\":\"1.0.0\",\"deployment.environment\":\"local\"}},\"scope\":{\"name\":\"@eventloom/runtime\",\"version\":\"1.0.0\"},\"attributes\":{\"openinference.span.kind\":\"LLM\",\"inference.export.schema_version\":1,\"inference.project_id\":\"eventloom-halo-success\",\"inference.observation_kind\":\"LLM\",\"inference.llm.provider\":\"eventloom\",\"inference.llm.model_name\":\"deterministic-runner\",\"inference.llm.input_tokens\":7,\"inference.llm.output_tokens\":2,\"inference.llm.cost.total\":0,\"inference.user_id\":null,\"inference.session_id\":null,\"inference.agent_name\":\"planner\",\"llm.provider\":\"eventloom\",\"llm.model_name\":\"deterministic-runner\",\"llm.token_count.prompt\":7,\"llm.token_count.completion\":2,\"llm.token_count.total\":9,\"eventloom.turn.id\":\"turn_000001\",\"eventloom.model_call_id\":\"model_turn_000001\",\"eventloom.model.prompt_version\":\"eventloom.deterministic-runner.v1\",\"eventloom.model.input_summary\":\"Actor planner handling goal.created.\",\"eventloom.model.output_summary\":\"Emitted intentions: task.propose.\",\"eventloom.model.parameters\":{\"temperature\":0,\"toolChoice\":\"none\"},\"eventloom.model.latency_ms\":1,\"eventloom.model.error\":null,\"input.value\":\"[{\\\"role\\\":\\\"system\\\",\\\"content\\\":\\\"Break goals into tasks\\\"},{\\\"role\\\":\\\"user\\\",\\\"content\\\":\\\"Handle goal.created from user.\\\"}]\",\"output.value\":\"\\\"Emitted 1 intention(s): task.propose.\\\"\"}}\n{\"trace_id\":\"9cd1b2e77292a688efd0d9afe52cf5e4\",\"span_id\":\"922ab9df8b245a5bc266ad60\",\"parent_span_id\":\"3fcd6ba9d58e52714fdc253a\",\"trace_state\":\"\",\"name\":\"eventloom.deterministic-runner\",\"kind\":\"SPAN_KIND_CLIENT\",\"start_time\":\"2026-04-28T22:00:00.013000000Z\",\"end_time\":\"2026-04-28T22:00:00.015000000Z\",\"status\":{\"code\":\"STATUS_CODE_OK\",\"message\":\"\"},\"resource\":{\"attributes\":{\"service.name\":\"eventloom-fixtures\",\"service.version\":\"1.0.0\",\"deployment.environment\":\"local\"}},\"scope\":{\"name\":\"@eventloom/runtime\",\"version\":\"1.0.0\"},\"attributes\":{\"openinference.span.kind\":\"LLM\",\"inference.export.schema_version\":1,\"inference.project_id\":\"eventloom-halo-success\",\"inference.observation_kind\":\"LLM\",\"inference.llm.provider\":\"eventloom\",\"inference.llm.model_name\":\"deterministic-runner\",\"inference.llm.input_tokens\":7,\"inference.llm.output_tokens\":2,\"inference.llm.cost.total\":0,\"inference.user_id\":null,\"inference.session_id\":null,\"inference.agent_name\":\"worker\",\"llm.provider\":\"eventloom\",\"llm.model_name\":\"deterministic-runner\",\"llm.token_count.prompt\":7,\"llm.token_count.completion\":2,\"llm.token_count.total\":9,\"eventloom.turn.id\":\"turn_000002\",\"eventloom.model_call_id\":\"model_turn_000002\",\"eventloom.model.prompt_version\":\"eventloom.deterministic-runner.v1\",\"eventloom.model.input_summary\":\"Actor worker handling task.proposed.\",\"eventloom.model.output_summary\":\"Emitted intentions: task.claim.\",\"eventloom.model.parameters\":{\"temperature\":0,\"toolChoice\":\"none\"},\"eventloom.model.latency_ms\":1,\"eventloom.model.error\":null,\"input.value\":\"[{\\\"role\\\":\\\"system\\\",\\\"content\\\":\\\"Claim and complete tasks\\\"},{\\\"role\\\":\\\"user\\\",\\\"content\\\":\\\"Handle task.proposed from planner.\\\"}]\",\"output.value\":\"\\\"Emitted 1 intention(s): task.claim.\\\"\"}}\n{\"trace_id\":\"9cd1b2e77292a688efd0d9afe52cf5e4\",\"span_id\":\"31ed257acf20084c5a55f470\",\"parent_span_id\":\"8ec58ee8daaae81bc2b7e9e7\",\"trace_state\":\"\",\"name\":\"eventloom.deterministic-runner\",\"kind\":\"SPAN_KIND_CLIENT\",\"start_time\":\"2026-04-28T22:00:00.022000000Z\",\"end_time\":\"2026-04-28T22:00:00.024000000Z\",\"status\":{\"code\":\"STATUS_CODE_OK\",\"message\":\"\"},\"resource\":{\"attributes\":{\"service.name\":\"eventloom-fixtures\",\"service.version\":\"1.0.0\",\"deployment.environment\":\"local\"}},\"scope\":{\"name\":\"@eventloom/runtime\",\"version\":\"1.0.0\"},\"attributes\":{\"openinference.span.kind\":\"LLM\",\"inference.export.schema_version\":1,\"inference.project_id\":\"eventloom-halo-success\",\"inference.observation_kind\":\"LLM\",\"inference.llm.provider\":\"eventloom\",\"inference.llm.model_name\":\"deterministic-runner\",\"inference.llm.input_tokens\":7,\"inference.llm.output_tokens\":2,\"inference.llm.cost.total\":0,\"inference.user_id\":null,\"inference.session_id\":null,\"inference.agent_name\":\"worker\",\"llm.provider\":\"eventloom\",\"llm.model_name\":\"deterministic-runner\",\"llm.token_count.prompt\":7,\"llm.token_count.completion\":2,\"llm.token_count.total\":9,\"eventloom.turn.id\":\"turn_000003\",\"eventloom.model_call_id\":\"model_turn_000003\",\"eventloom.model.prompt_version\":\"eventloom.deterministic-runner.v1\",\"eventloom.model.input_summary\":\"Actor worker handling task.claimed.\",\"eventloom.model.output_summary\":\"Emitted intentions: task.complete.\",\"eventloom.model.parameters\":{\"temperature\":0,\"toolChoice\":\"none\"},\"eventloom.model.latency_ms\":1,\"eventloom.model.error\":null,\"input.value\":\"[{\\\"role\\\":\\\"system\\\",\\\"content\\\":\\\"Claim and complete tasks\\\"},{\\\"role\\\":\\\"user\\\",\\\"content\\\":\\\"Handle task.claimed from worker.\\\"}]\",\"output.value\":\"\\\"Emitted 1 intention(s): task.complete.\\\"\"}}\n{\"trace_id\":\"9cd1b2e77292a688efd0d9afe52cf5e4\",\"span_id\":\"afb6cde1f7dae2930cb97435\",\"parent_span_id\":\"d9331e736260735d672229cc\",\"trace_state\":\"\",\"name\":\"eventloom.deterministic-runner\",\"kind\":\"SPAN_KIND_CLIENT\",\"start_time\":\"2026-04-28T22:00:00.031000000Z\",\"end_time\":\"2026-04-28T22:00:00.033000000Z\",\"status\":{\"code\":\"STATUS_CODE_OK\",\"message\":\"\"},\"resource\":{\"attributes\":{\"service.name\":\"eventloom-fixtures\",\"service.version\":\"1.0.0\",\"deployment.environment\":\"local\"}},\"scope\":{\"name\":\"@eventloom/runtime\",\"version\":\"1.0.0\"},\"attributes\":{\"openinference.span.kind\":\"LLM\",\"inference.export.schema_version\":1,\"inference.project_id\":\"eventloom-halo-success\",\"inference.observation_kind\":\"LLM\",\"inference.llm.provider\":\"eventloom\",\"inference.llm.model_name\":\"deterministic-runner\",\"inference.llm.input_tokens\":7,\"inference.llm.output_tokens\":2,\"inference.llm.cost.total\":0,\"inference.user_id\":null,\"inference.session_id\":null,\"inference.agent_name\":\"worker\",\"llm.provider\":\"eventloom\",\"llm.model_name\":\"deterministic-runner\",\"llm.token_count.prompt\":7,\"llm.token_count.completion\":2,\"llm.token_count.total\":9,\"eventloom.turn.id\":\"turn_000004\",\"eventloom.model_call_id\":\"model_turn_000004\",\"eventloom.model.prompt_version\":\"eventloom.deterministic-runner.v1\",\"eventloom.model.input_summary\":\"Actor worker handling task.completed.\",\"eventloom.model.output_summary\":\"Emitted intentions: review.request.\",\"eventloom.model.parameters\":{\"temperature\":0,\"toolChoice\":\"none\"},\"eventloom.model.latency_ms\":1,\"eventloom.model.error\":null,\"input.value\":\"[{\\\"role\\\":\\\"system\\\",\\\"content\\\":\\\"Claim and complete tasks\\\"},{\\\"role\\\":\\\"user\\\",\\\"content\\\":\\\"Handle task.completed from worker.\\\"}]\",\"output.value\":\"\\\"Emitted 1 intention(s): review.request.\\\"\"}}\n{\"trace_id\":\"9cd1b2e77292a688efd0d9afe52cf5e4\",\"span_id\":\"c7c40ad1a8754552978fd095\",\"parent_span_id\":\"b4c37a7f4940550e23fd23a7\",\"trace_state\":\"\",\"name\":\"eventloom.deterministic-runner\",\"kind\":\"SPAN_KIND_CLIENT\",\"start_time\":\"2026-04-28T22:00:00.040000000Z\",\"end_time\":\"2026-04-28T22:00:00.042000000Z\",\"status\":{\"code\":\"STATUS_CODE_OK\",\"message\":\"\"},\"resource\":{\"attributes\":{\"service.name\":\"eventloom-fixtures\",\"service.version\":\"1.0.0\",\"deployment.environment\":\"local\"}},\"scope\":{\"name\":\"@eventloom/runtime\",\"version\":\"1.0.0\"},\"attributes\":{\"openinference.span.kind\":\"LLM\",\"inference.export.schema_version\":1,\"inference.project_id\":\"eventloom-halo-success\",\"inference.observation_kind\":\"LLM\",\"inference.llm.provider\":\"eventloom\",\"inference.llm.model_name\":\"deterministic-runner\",\"inference.llm.input_tokens\":7,\"inference.llm.output_tokens\":2,\"inference.llm.cost.total\":0,\"inference.user_id\":null,\"inference.session_id\":null,\"inference.agent_name\":\"reviewer\",\"llm.provider\":\"eventloom\",\"llm.model_name\":\"deterministic-runner\",\"llm.token_count.prompt\":7,\"llm.token_count.completion\":2,\"llm.token_count.total\":9,\"eventloom.turn.id\":\"turn_000005\",\"eventloom.model_call_id\":\"model_turn_000005\",\"eventloom.model.prompt_version\":\"eventloom.deterministic-runner.v1\",\"eventloom.model.input_summary\":\"Actor reviewer handling review.requested.\",\"eventloom.model.output_summary\":\"Emitted intentions: review.approve.\",\"eventloom.model.parameters\":{\"temperature\":0,\"toolChoice\":\"none\"},\"eventloom.model.latency_ms\":1,\"eventloom.model.error\":null,\"input.value\":\"[{\\\"role\\\":\\\"system\\\",\\\"content\\\":\\\"Approve or report issues\\\"},{\\\"role\\\":\\\"user\\\",\\\"content\\\":\\\"Handle review.requested from worker.\\\"}]\",\"output.value\":\"\\\"Emitted 1 intention(s): review.approve.\\\"\"}}\n{\"trace_id\":\"9cd1b2e77292a688efd0d9afe52cf5e4\",\"span_id\":\"16ad7d104ac873489c7c7f49\",\"parent_span_id\":\"a1763a88e5078a60f371cfb1\",\"trace_state\":\"\",\"name\":\"function.eventloom.mailbox.read\",\"kind\":\"SPAN_KIND_INTERNAL\",\"start_time\":\"2026-04-28T22:00:00.002000000Z\",\"end_time\":\"2026-04-28T22:00:00.003000000Z\",\"status\":{\"code\":\"STATUS_CODE_OK\",\"message\":\"\"},\"resource\":{\"attributes\":{\"service.name\":\"eventloom-fixtures\",\"service.version\":\"1.0.0\",\"deployment.environment\":\"local\"}},\"scope\":{\"name\":\"@eventloom/runtime\",\"version\":\"1.0.0\"},\"attributes\":{\"openinference.span.kind\":\"TOOL\",\"inference.export.schema_version\":1,\"inference.project_id\":\"eventloom-halo-success\",\"inference.observation_kind\":\"TOOL\",\"inference.llm.provider\":null,\"inference.llm.model_name\":null,\"inference.llm.input_tokens\":null,\"inference.llm.output_tokens\":null,\"inference.llm.cost.total\":null,\"inference.user_id\":null,\"inference.session_id\":null,\"inference.agent_name\":\"planner\",\"tool.name\":\"eventloom.mailbox.read\",\"eventloom.turn.id\":\"turn_000001\",\"eventloom.tool_call_id\":\"tool_turn_000001\",\"eventloom.tool.input_summary\":\"Read one mailbox item for planner.\",\"eventloom.tool.output_summary\":\"Read 1 mailbox item (goal.created).\",\"eventloom.tool.exit_code\":0,\"eventloom.tool.result_count\":1,\"eventloom.tool.result_excerpt\":\"evt_runtime_goal\",\"eventloom.tool.decisive\":true,\"eventloom.tool.latency_ms\":1,\"eventloom.tool.error\":null,\"input.value\":\"{\\\"actorId\\\":\\\"planner\\\",\\\"sourceEventId\\\":\\\"evt_runtime_goal\\\",\\\"mailboxEventType\\\":\\\"goal.created\\\"}\",\"output.value\":\"{\\\"itemCount\\\":1,\\\"taskId\\\":null,\\\"taskStatus\\\":null}\"}}\n{\"trace_id\":\"9cd1b2e77292a688efd0d9afe52cf5e4\",\"span_id\":\"37b7fd4ce3883515e0c584a5\",\"parent_span_id\":\"3fcd6ba9d58e52714fdc253a\",\"trace_state\":\"\",\"name\":\"function.eventloom.mailbox.read\",\"kind\":\"SPAN_KIND_INTERNAL\",\"start_time\":\"2026-04-28T22:00:00.011000000Z\",\"end_time\":\"2026-04-28T22:00:00.012000000Z\",\"status\":{\"code\":\"STATUS_CODE_OK\",\"message\":\"\"},\"resource\":{\"attributes\":{\"service.name\":\"eventloom-fixtures\",\"service.version\":\"1.0.0\",\"deployment.environment\":\"local\"}},\"scope\":{\"name\":\"@eventloom/runtime\",\"version\":\"1.0.0\"},\"attributes\":{\"openinference.span.kind\":\"TOOL\",\"inference.export.schema_version\":1,\"inference.project_id\":\"eventloom-halo-success\",\"inference.observation_kind\":\"TOOL\",\"inference.llm.provider\":null,\"inference.llm.model_name\":null,\"inference.llm.input_tokens\":null,\"inference.llm.output_tokens\":null,\"inference.llm.cost.total\":null,\"inference.user_id\":null,\"inference.session_id\":null,\"inference.agent_name\":\"worker\",\"tool.name\":\"eventloom.mailbox.read\",\"eventloom.turn.id\":\"turn_000002\",\"eventloom.tool_call_id\":\"tool_turn_000002\",\"eventloom.tool.input_summary\":\"Read one mailbox item for worker.\",\"eventloom.tool.output_summary\":\"Read 1 mailbox item (task.proposed).\",\"eventloom.tool.exit_code\":0,\"eventloom.tool.result_count\":1,\"eventloom.tool.result_excerpt\":\"evt_software_work_000008\",\"eventloom.tool.decisive\":true,\"eventloom.tool.latency_ms\":1,\"eventloom.tool.error\":null,\"input.value\":\"{\\\"actorId\\\":\\\"worker\\\",\\\"sourceEventId\\\":\\\"evt_software_work_000008\\\",\\\"mailboxEventType\\\":\\\"task.proposed\\\"}\",\"output.value\":\"{\\\"itemCount\\\":1,\\\"taskId\\\":\\\"task_actor_runtime\\\",\\\"taskStatus\\\":\\\"proposed\\\"}\"}}\n{\"trace_id\":\"9cd1b2e77292a688efd0d9afe52cf5e4\",\"span_id\":\"ac44c8ebad5a13b84b8ab8d2\",\"parent_span_id\":\"8ec58ee8daaae81bc2b7e9e7\",\"trace_state\":\"\",\"name\":\"function.eventloom.mailbox.read\",\"kind\":\"SPAN_KIND_INTERNAL\",\"start_time\":\"2026-04-28T22:00:00.020000000Z\",\"end_time\":\"2026-04-28T22:00:00.021000000Z\",\"status\":{\"code\":\"STATUS_CODE_OK\",\"message\":\"\"},\"resource\":{\"attributes\":{\"service.name\":\"eventloom-fixtures\",\"service.version\":\"1.0.0\",\"deployment.environment\":\"local\"}},\"scope\":{\"name\":\"@eventloom/runtime\",\"version\":\"1.0.0\"},\"attributes\":{\"openinference.span.kind\":\"TOOL\",\"inference.export.schema_version\":1,\"inference.project_id\":\"eventloom-halo-success\",\"inference.observation_kind\":\"TOOL\",\"inference.llm.provider\":null,\"inference.llm.model_name\":null,\"inference.llm.input_tokens\":null,\"inference.llm.output_tokens\":null,\"inference.llm.cost.total\":null,\"inference.user_id\":null,\"inference.session_id\":null,\"inference.agent_name\":\"worker\",\"tool.name\":\"eventloom.mailbox.read\",\"eventloom.turn.id\":\"turn_000003\",\"eventloom.tool_call_id\":\"tool_turn_000003\",\"eventloom.tool.input_summary\":\"Read one mailbox item for worker.\",\"eventloom.tool.output_summary\":\"Read 1 mailbox item (task.claimed).\",\"eventloom.tool.exit_code\":0,\"eventloom.tool.result_count\":1,\"eventloom.tool.result_excerpt\":\"evt_software_work_000017\",\"eventloom.tool.decisive\":true,\"eventloom.tool.latency_ms\":1,\"eventloom.tool.error\":null,\"input.value\":\"{\\\"actorId\\\":\\\"worker\\\",\\\"sourceEventId\\\":\\\"evt_software_work_000017\\\",\\\"mailboxEventType\\\":\\\"task.claimed\\\"}\",\"output.value\":\"{\\\"itemCount\\\":1,\\\"taskId\\\":\\\"task_actor_runtime\\\",\\\"taskStatus\\\":\\\"claimed\\\"}\"}}\n{\"trace_id\":\"9cd1b2e77292a688efd0d9afe52cf5e4\",\"span_id\":\"39fd90bdeb5e72c95dafe967\",\"parent_span_id\":\"d9331e736260735d672229cc\",\"trace_state\":\"\",\"name\":\"function.eventloom.mailbox.read\",\"kind\":\"SPAN_KIND_INTERNAL\",\"start_time\":\"2026-04-28T22:00:00.029000000Z\",\"end_time\":\"2026-04-28T22:00:00.030000000Z\",\"status\":{\"code\":\"STATUS_CODE_OK\",\"message\":\"\"},\"resource\":{\"attributes\":{\"service.name\":\"eventloom-fixtures\",\"service.version\":\"1.0.0\",\"deployment.environment\":\"local\"}},\"scope\":{\"name\":\"@eventloom/runtime\",\"version\":\"1.0.0\"},\"attributes\":{\"openinference.span.kind\":\"TOOL\",\"inference.export.schema_version\":1,\"inference.project_id\":\"eventloom-halo-success\",\"inference.observation_kind\":\"TOOL\",\"inference.llm.provider\":null,\"inference.llm.model_name\":null,\"inference.llm.input_tokens\":null,\"inference.llm.output_tokens\":null,\"inference.llm.cost.total\":null,\"inference.user_id\":null,\"inference.session_id\":null,\"inference.agent_name\":\"worker\",\"tool.name\":\"eventloom.mailbox.read\",\"eventloom.turn.id\":\"turn_000004\",\"eventloom.tool_call_id\":\"tool_turn_000004\",\"eventloom.tool.input_summary\":\"Read one mailbox item for worker.\",\"eventloom.tool.output_summary\":\"Read 1 mailbox item (task.completed).\",\"eventloom.tool.exit_code\":0,\"eventloom.tool.result_count\":1,\"eventloom.tool.result_excerpt\":\"evt_software_work_000026\",\"eventloom.tool.decisive\":true,\"eventloom.tool.latency_ms\":1,\"eventloom.tool.error\":null,\"input.value\":\"{\\\"actorId\\\":\\\"worker\\\",\\\"sourceEventId\\\":\\\"evt_software_work_000026\\\",\\\"mailboxEventType\\\":\\\"task.completed\\\"}\",\"output.value\":\"{\\\"itemCount\\\":1,\\\"taskId\\\":\\\"task_actor_runtime\\\",\\\"taskStatus\\\":\\\"completed\\\"}\"}}\n{\"trace_id\":\"9cd1b2e77292a688efd0d9afe52cf5e4\",\"span_id\":\"9cb559cce4548eecf0093229\",\"parent_span_id\":\"b4c37a7f4940550e23fd23a7\",\"trace_state\":\"\",\"name\":\"function.eventloom.mailbox.read\",\"kind\":\"SPAN_KIND_INTERNAL\",\"start_time\":\"2026-04-28T22:00:00.038000000Z\",\"end_time\":\"2026-04-28T22:00:00.039000000Z\",\"status\":{\"code\":\"STATUS_CODE_OK\",\"message\":\"\"},\"resource\":{\"attributes\":{\"service.name\":\"eventloom-fixtures\",\"service.version\":\"1.0.0\",\"deployment.environment\":\"local\"}},\"scope\":{\"name\":\"@eventloom/runtime\",\"version\":\"1.0.0\"},\"attributes\":{\"openinference.span.kind\":\"TOOL\",\"inference.export.schema_version\":1,\"inference.project_id\":\"eventloom-halo-success\",\"inference.observation_kind\":\"TOOL\",\"inference.llm.provider\":null,\"inference.llm.model_name\":null,\"inference.llm.input_tokens\":null,\"inference.llm.output_tokens\":null,\"inference.llm.cost.total\":null,\"inference.user_id\":null,\"inference.session_id\":null,\"inference.agent_name\":\"reviewer\",\"tool.name\":\"eventloom.mailbox.read\",\"eventloom.turn.id\":\"turn_000005\",\"eventloom.tool_call_id\":\"tool_turn_000005\",\"eventloom.tool.input_summary\":\"Read one mailbox item for reviewer.\",\"eventloom.tool.output_summary\":\"Read 1 mailbox item (review.requested).\",\"eventloom.tool.exit_code\":0,\"eventloom.tool.result_count\":1,\"eventloom.tool.result_excerpt\":\"evt_software_work_000035\",\"eventloom.tool.decisive\":true,\"eventloom.tool.latency_ms\":1,\"eventloom.tool.error\":null,\"input.value\":\"{\\\"actorId\\\":\\\"reviewer\\\",\\\"sourceEventId\\\":\\\"evt_software_work_000035\\\",\\\"mailboxEventType\\\":\\\"review.requested\\\"}\",\"output.value\":\"{\\\"itemCount\\\":1,\\\"taskId\\\":\\\"task_actor_runtime\\\",\\\"taskStatus\\\":\\\"review_requested\\\"}\"}}\n{\"trace_id\":\"9cd1b2e77292a688efd0d9afe52cf5e4\",\"span_id\":\"09e8c76ef399af14b985c999\",\"parent_span_id\":\"a1763a88e5078a60f371cfb1\",\"trace_state\":\"\",\"name\":\"eventloom.reasoning.summary\",\"kind\":\"SPAN_KIND_INTERNAL\",\"start_time\":\"2026-04-28T22:00:00.005000000Z\",\"end_time\":\"2026-04-28T22:00:00.005000000Z\",\"status\":{\"code\":\"STATUS_CODE_OK\",\"message\":\"\"},\"resource\":{\"attributes\":{\"service.name\":\"eventloom-fixtures\",\"service.version\":\"1.0.0\",\"deployment.environment\":\"local\"}},\"scope\":{\"name\":\"@eventloom/runtime\",\"version\":\"1.0.0\"},\"attributes\":{\"openinference.span.kind\":\"CHAIN\",\"inference.export.schema_version\":1,\"inference.project_id\":\"eventloom-halo-success\",\"inference.observation_kind\":\"SPAN\",\"inference.llm.provider\":null,\"inference.llm.model_name\":null,\"inference.llm.input_tokens\":null,\"inference.llm.output_tokens\":null,\"inference.llm.cost.total\":null,\"inference.user_id\":null,\"inference.session_id\":null,\"inference.agent_name\":\"planner\",\"eventloom.turn.id\":\"turn_000001\",\"eventloom.reasoning.summary\":\"planner handled goal.created as Break goals into tasks and emitted task.propose.\",\"eventloom.reasoning.evidence_event_ids\":[\"evt_runtime_goal\"],\"eventloom.reasoning.confidence\":1,\"input.value\":\"{\\\"turnId\\\":\\\"turn_000001\\\",\\\"summary\\\":\\\"planner handled goal.created as Break goals into tasks and emitted task.propose.\\\",\\\"alternativesConsidered\\\":[],\\\"evidenceEventIds\\\":[\\\"evt_runtime_goal\\\"],\\\"confidence\\\":1}\"}}\n{\"trace_id\":\"9cd1b2e77292a688efd0d9afe52cf5e4\",\"span_id\":\"3cd82dd217ee00957c1e2c40\",\"parent_span_id\":\"3fcd6ba9d58e52714fdc253a\",\"trace_state\":\"\",\"name\":\"eventloom.reasoning.summary\",\"kind\":\"SPAN_KIND_INTERNAL\",\"start_time\":\"2026-04-28T22:00:00.014000000Z\",\"end_time\":\"2026-04-28T22:00:00.014000000Z\",\"status\":{\"code\":\"STATUS_CODE_OK\",\"message\":\"\"},\"resource\":{\"attributes\":{\"service.name\":\"eventloom-fixtures\",\"service.version\":\"1.0.0\",\"deployment.environment\":\"local\"}},\"scope\":{\"name\":\"@eventloom/runtime\",\"version\":\"1.0.0\"},\"attributes\":{\"openinference.span.kind\":\"CHAIN\",\"inference.export.schema_version\":1,\"inference.project_id\":\"eventloom-halo-success\",\"inference.observation_kind\":\"SPAN\",\"inference.llm.provider\":null,\"inference.llm.model_name\":null,\"inference.llm.input_tokens\":null,\"inference.llm.output_tokens\":null,\"inference.llm.cost.total\":null,\"inference.user_id\":null,\"inference.session_id\":null,\"inference.agent_name\":\"worker\",\"eventloom.turn.id\":\"turn_000002\",\"eventloom.reasoning.summary\":\"worker handled task.proposed as Claim and complete tasks and emitted task.claim.\",\"eventloom.reasoning.evidence_event_ids\":[\"evt_software_work_000008\"],\"eventloom.reasoning.confidence\":1,\"input.value\":\"{\\\"turnId\\\":\\\"turn_000002\\\",\\\"summary\\\":\\\"worker handled task.proposed as Claim and complete tasks and emitted task.claim.\\\",\\\"alternativesConsidered\\\":[],\\\"evidenceEventIds\\\":[\\\"evt_software_work_000008\\\"],\\\"confidence\\\":1}\"}}\n{\"trace_id\":\"9cd1b2e77292a688efd0d9afe52cf5e4\",\"span_id\":\"e4e39034af0e768dc1b8333a\",\"parent_span_id\":\"8ec58ee8daaae81bc2b7e9e7\",\"trace_state\":\"\",\"name\":\"eventloom.reasoning.summary\",\"kind\":\"SPAN_KIND_INTERNAL\",\"start_time\":\"2026-04-28T22:00:00.023000000Z\",\"end_time\":\"2026-04-28T22:00:00.023000000Z\",\"status\":{\"code\":\"STATUS_CODE_OK\",\"message\":\"\"},\"resource\":{\"attributes\":{\"service.name\":\"eventloom-fixtures\",\"service.version\":\"1.0.0\",\"deployment.environment\":\"local\"}},\"scope\":{\"name\":\"@eventloom/runtime\",\"version\":\"1.0.0\"},\"attributes\":{\"openinference.span.kind\":\"CHAIN\",\"inference.export.schema_version\":1,\"inference.project_id\":\"eventloom-halo-success\",\"inference.observation_kind\":\"SPAN\",\"inference.llm.provider\":null,\"inference.llm.model_name\":null,\"inference.llm.input_tokens\":null,\"inference.llm.output_tokens\":null,\"inference.llm.cost.total\":null,\"inference.user_id\":null,\"inference.session_id\":null,\"inference.agent_name\":\"worker\",\"eventloom.turn.id\":\"turn_000003\",\"eventloom.reasoning.summary\":\"worker handled task.claimed as Claim and complete tasks and emitted task.complete.\",\"eventloom.reasoning.evidence_event_ids\":[\"evt_software_work_000017\"],\"eventloom.reasoning.confidence\":1,\"input.value\":\"{\\\"turnId\\\":\\\"turn_000003\\\",\\\"summary\\\":\\\"worker handled task.claimed as Claim and complete tasks and emitted task.complete.\\\",\\\"alternativesConsidered\\\":[],\\\"evidenceEventIds\\\":[\\\"evt_software_work_000017\\\"],\\\"confidence\\\":1}\"}}\n{\"trace_id\":\"9cd1b2e77292a688efd0d9afe52cf5e4\",\"span_id\":\"1a3c4f30dcba386f46d868ac\",\"parent_span_id\":\"d9331e736260735d672229cc\",\"trace_state\":\"\",\"name\":\"eventloom.reasoning.summary\",\"kind\":\"SPAN_KIND_INTERNAL\",\"start_time\":\"2026-04-28T22:00:00.032000000Z\",\"end_time\":\"2026-04-28T22:00:00.032000000Z\",\"status\":{\"code\":\"STATUS_CODE_OK\",\"message\":\"\"},\"resource\":{\"attributes\":{\"service.name\":\"eventloom-fixtures\",\"service.version\":\"1.0.0\",\"deployment.environment\":\"local\"}},\"scope\":{\"name\":\"@eventloom/runtime\",\"version\":\"1.0.0\"},\"attributes\":{\"openinference.span.kind\":\"CHAIN\",\"inference.export.schema_version\":1,\"inference.project_id\":\"eventloom-halo-success\",\"inference.observation_kind\":\"SPAN\",\"inference.llm.provider\":null,\"inference.llm.model_name\":null,\"inference.llm.input_tokens\":null,\"inference.llm.output_tokens\":null,\"inference.llm.cost.total\":null,\"inference.user_id\":null,\"inference.session_id\":null,\"inference.agent_name\":\"worker\",\"eventloom.turn.id\":\"turn_000004\",\"eventloom.reasoning.summary\":\"worker handled task.completed as Claim and complete tasks and emitted review.request.\",\"eventloom.reasoning.evidence_event_ids\":[\"evt_software_work_000026\"],\"eventloom.reasoning.confidence\":1,\"input.value\":\"{\\\"turnId\\\":\\\"turn_000004\\\",\\\"summary\\\":\\\"worker handled task.completed as Claim and complete tasks and emitted review.request.\\\",\\\"alternativesConsidered\\\":[],\\\"evidenceEventIds\\\":[\\\"evt_software_work_000026\\\"],\\\"confidence\\\":1}\"}}\n{\"trace_id\":\"9cd1b2e77292a688efd0d9afe52cf5e4\",\"span_id\":\"b25b9526d86b2ad6f255f24a\",\"parent_span_id\":\"b4c37a7f4940550e23fd23a7\",\"trace_state\":\"\",\"name\":\"eventloom.reasoning.summary\",\"kind\":\"SPAN_KIND_INTERNAL\",\"start_time\":\"2026-04-28T22:00:00.041000000Z\",\"end_time\":\"2026-04-28T22:00:00.041000000Z\",\"status\":{\"code\":\"STATUS_CODE_OK\",\"message\":\"\"},\"resource\":{\"attributes\":{\"service.name\":\"eventloom-fixtures\",\"service.version\":\"1.0.0\",\"deployment.environment\":\"local\"}},\"scope\":{\"name\":\"@eventloom/runtime\",\"version\":\"1.0.0\"},\"attributes\":{\"openinference.span.kind\":\"CHAIN\",\"inference.export.schema_version\":1,\"inference.project_id\":\"eventloom-halo-success\",\"inference.observation_kind\":\"SPAN\",\"inference.llm.provider\":null,\"inference.llm.model_name\":null,\"inference.llm.input_tokens\":null,\"inference.llm.output_tokens\":null,\"inference.llm.cost.total\":null,\"inference.user_id\":null,\"inference.session_id\":null,\"inference.agent_name\":\"reviewer\",\"eventloom.turn.id\":\"turn_000005\",\"eventloom.reasoning.summary\":\"reviewer handled review.requested as Approve or report issues and emitted review.approve.\",\"eventloom.reasoning.evidence_event_ids\":[\"evt_software_work_000035\"],\"eventloom.reasoning.confidence\":1,\"input.value\":\"{\\\"turnId\\\":\\\"turn_000005\\\",\\\"summary\\\":\\\"reviewer handled review.requested as Approve or report issues and emitted review.approve.\\\",\\\"alternativesConsidered\\\":[],\\\"evidenceEventIds\\\":[\\\"evt_software_work_000035\\\"],\\\"confidence\\\":1}\"}}\n{\"trace_id\":\"9cd1b2e77292a688efd0d9afe52cf5e4\",\"span_id\":\"133d2e10e38dcf5b81d1ead3\",\"parent_span_id\":\"20c69c9ec6b19e11d743ef30\",\"trace_state\":\"\",\"name\":\"eventloom.task.task_actor_runtime\",\"kind\":\"SPAN_KIND_INTERNAL\",\"start_time\":\"2026-04-28T22:00:00.007000000Z\",\"end_time\":\"2026-04-28T22:00:00.043000000Z\",\"status\":{\"code\":\"STATUS_CODE_OK\",\"message\":\"\"},\"resource\":{\"attributes\":{\"service.name\":\"eventloom-fixtures\",\"service.version\":\"1.0.0\",\"deployment.environment\":\"local\"}},\"scope\":{\"name\":\"@eventloom/runtime\",\"version\":\"1.0.0\"},\"attributes\":{\"openinference.span.kind\":\"AGENT\",\"inference.export.schema_version\":1,\"inference.project_id\":\"eventloom-halo-success\",\"inference.observation_kind\":\"AGENT\",\"inference.llm.provider\":null,\"inference.llm.model_name\":null,\"inference.llm.input_tokens\":null,\"inference.llm.output_tokens\":null,\"inference.llm.cost.total\":null,\"inference.user_id\":null,\"inference.session_id\":null,\"inference.agent_name\":\"reviewer\",\"agent.name\":\"reviewer\",\"agent.workflow.name\":\"Eventloom task lifecycle\",\"eventloom.task.id\":\"task_actor_runtime\",\"eventloom.task.title\":\"Run actors from rebuilt mailboxes\",\"eventloom.task.status\":\"approved\",\"eventloom.task.history_event_ids\":[\"evt_software_work_000008\",\"evt_software_work_000017\",\"evt_software_work_000026\",\"evt_software_work_000035\",\"evt_software_work_000044\"],\"input.value\":\"{\\\"taskId\\\":\\\"task_actor_runtime\\\",\\\"title\\\":\\\"Run actors from rebuilt mailboxes\\\"}\",\"output.value\":\"{\\\"status\\\":\\\"approved\\\",\\\"lastEventId\\\":\\\"evt_software_work_000044\\\",\\\"eventTypes\\\":{\\\"task.proposed\\\":1,\\\"task.claimed\\\":1,\\\"task.completed\\\":1,\\\"review.requested\\\":1,\\\"review.approved\\\":1}}\"}}\n{\"trace_id\":\"9cd1b2e77292a688efd0d9afe52cf5e4\",\"span_id\":\"33ed647f1e3f20cc977ae014\",\"parent_span_id\":\"20c69c9ec6b19e11d743ef30\",\"trace_state\":\"\",\"name\":\"eventloom.event.goal.created\",\"kind\":\"SPAN_KIND_INTERNAL\",\"start_time\":\"2026-04-28T22:00:00.000000000Z\",\"end_time\":\"2026-04-28T22:00:00.000000000Z\",\"status\":{\"code\":\"STATUS_CODE_OK\",\"message\":\"\"},\"resource\":{\"attributes\":{\"service.name\":\"eventloom-fixtures\",\"service.version\":\"1.0.0\",\"deployment.environment\":\"local\"}},\"scope\":{\"name\":\"@eventloom/runtime\",\"version\":\"1.0.0\"},\"attributes\":{\"openinference.span.kind\":\"CHAIN\",\"inference.export.schema_version\":1,\"inference.project_id\":\"eventloom-halo-success\",\"inference.observation_kind\":\"SPAN\",\"inference.llm.provider\":null,\"inference.llm.model_name\":null,\"inference.llm.input_tokens\":null,\"inference.llm.output_tokens\":null,\"inference.llm.cost.total\":null,\"inference.user_id\":null,\"inference.session_id\":null,\"inference.agent_name\":\"user\",\"agent.workflow.name\":\"Eventloom event journal\",\"eventloom.event.id\":\"evt_runtime_goal\",\"eventloom.event.type\":\"goal.created\",\"eventloom.actor_id\":\"user\",\"eventloom.thread_id\":\"thread_main\",\"eventloom.parent_event_id\":null,\"eventloom.caused_by\":[],\"input.value\":\"{\\\"title\\\":\\\"Build deterministic actor runners\\\"}\"}}\n"
+}
