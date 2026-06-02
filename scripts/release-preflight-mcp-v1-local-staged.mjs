@@ -38,6 +38,7 @@ async function main(argv) {
       cwd: stagedMcpRoot,
       stdio: args.json ? ["ignore", "ignore", "pipe"] : "inherit",
     });
+    const stagedPackageChecks = runStagedMcpPackageChecks(stagedMcpRoot, args.json);
 
     const report = await buildReleasePreflightReport({
       root: stagedRoot,
@@ -46,9 +47,10 @@ async function main(argv) {
       checkGit: false,
       localRuntimeTarball: runtimeTarball,
     });
+    const combinedReport = withStagedPackageChecks(report, stagedPackageChecks);
 
-    console.log(args.json ? JSON.stringify(withStagedTarball(report, runtimeTarball), null, 2) : formatReport(report, runtimeTarball));
-    if (!report.ok) process.exitCode = 1;
+    console.log(args.json ? JSON.stringify(withStagedTarball(combinedReport, runtimeTarball), null, 2) : formatReport(combinedReport, runtimeTarball));
+    if (!combinedReport.ok) process.exitCode = 1;
   } catch (error) {
     const report = failureReport(stagedRoot, error);
     console.log(wantsJson ? JSON.stringify(report, null, 2) : formatReport(report, null));
@@ -89,6 +91,7 @@ function stageReleaseTree(stagedRoot, runtimeTarball) {
   for (const entry of runtimePackage.files ?? []) {
     copyPath(stagedRoot, entry);
   }
+  copyPath(stagedRoot, "scripts/chmod-cli-bins.mjs");
 
   for (const entry of ["package.json", "README.md", "LICENSE", "tsconfig.json", "src", "dist"]) {
     copyPath(stagedRoot, join("packages", "mcp", entry));
@@ -128,6 +131,148 @@ function formatReport(report, runtimeTarball) {
     lines.push(`${check.ok ? "ok" : "fail"} ${check.name}: expected ${JSON.stringify(check.expected)}, actual ${JSON.stringify(check.actual)}`);
   }
   return lines.join("\n");
+}
+
+function runStagedMcpPackageChecks(stagedMcpRoot, json) {
+  const install = commandCheck(
+    "staged MCP package dependencies install",
+    "npm ci --ignore-scripts",
+    "npm",
+    ["ci", "--ignore-scripts"],
+    stagedMcpRoot,
+    json,
+  );
+  const build = install.ok
+    ? commandCheck(
+      "staged MCP package builds",
+      "npm run build",
+      "npm",
+      ["run", "build"],
+      stagedMcpRoot,
+      json,
+    )
+    : skippedCheck("staged MCP package builds", "npm run build", "dependency install failed");
+  const packChecks = build.ok
+    ? stagedMcpPackDryRunChecks(stagedMcpRoot)
+    : [skippedCheck("staged MCP package pack dry-run", "npm pack --dry-run --ignore-scripts", "build failed")];
+  return [install, build, ...packChecks];
+}
+
+function commandCheck(name, expected, command, args, cwd, json) {
+  try {
+    execFileSync(command, args, {
+      cwd,
+      stdio: json ? ["ignore", "ignore", "pipe"] : "inherit",
+    });
+    return {
+      name,
+      ok: true,
+      expected,
+      actual: expected,
+    };
+  } catch (error) {
+    return {
+      name,
+      ok: false,
+      expected,
+      actual: commandError(error),
+    };
+  }
+}
+
+function skippedCheck(name, expected, reason) {
+  return {
+    name,
+    ok: false,
+    expected,
+    actual: reason,
+  };
+}
+
+function stagedMcpPackDryRunChecks(stagedMcpRoot) {
+  const expected = "npm pack --dry-run --ignore-scripts";
+  try {
+    const output = execFileSync("npm", ["pack", "--dry-run", "--ignore-scripts", "--json"], {
+      cwd: stagedMcpRoot,
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+    const manifest = parsePackManifest(output);
+    const paths = Array.isArray(manifest.files) ? manifest.files.map((file) => file.path) : [];
+    return [
+      {
+        name: "staged MCP package pack dry-run",
+        ok: true,
+        expected,
+        actual: expected,
+      },
+      equalsCheck("staged MCP pack name", "@eventloom/mcp", manifest.name),
+      equalsCheck("staged MCP pack version", targetVersion, manifest.version),
+      equalsCheck("staged MCP pack filename", `eventloom-mcp-${targetVersion}.tgz`, manifest.filename),
+      ...["package.json", "README.md", "LICENSE", "dist/index.js", "dist/cli.js", "dist/server.js", "dist/tools.js"]
+        .map((path) => pathIncludedCheck(`staged MCP pack includes ${path}`, paths, path)),
+      ...["src/", "tests/", "package-lock.json", "tsconfig.json", "vitest.config.ts"]
+        .map((path) => pathExcludedCheck(`staged MCP pack excludes ${path}`, paths, path)),
+    ];
+  } catch (error) {
+    return [{
+      name: "staged MCP package pack dry-run",
+      ok: false,
+      expected,
+      actual: commandError(error),
+    }];
+  }
+}
+
+function parsePackManifest(output) {
+  const parsed = JSON.parse(output);
+  const manifest = Array.isArray(parsed) ? parsed[0] : parsed;
+  if (!manifest || typeof manifest !== "object") {
+    throw new Error("npm pack --dry-run did not return a package manifest");
+  }
+  return manifest;
+}
+
+function equalsCheck(name, expected, actual) {
+  return {
+    name,
+    ok: actual === expected,
+    expected,
+    actual: actual ?? "missing",
+  };
+}
+
+function pathIncludedCheck(name, paths, path) {
+  const ok = paths.includes(path);
+  return {
+    name,
+    ok,
+    expected: path,
+    actual: ok ? path : "missing",
+  };
+}
+
+function pathExcludedCheck(name, paths, path) {
+  const ok = path.endsWith("/")
+    ? !paths.some((candidate) => candidate.startsWith(path))
+    : !paths.includes(path);
+  return {
+    name,
+    ok,
+    expected: "absent",
+    actual: ok ? "absent" : path,
+  };
+}
+
+function withStagedPackageChecks(report, stagedPackageChecks) {
+  return {
+    ...report,
+    ok: report.ok && stagedPackageChecks.every((check) => check.ok),
+    checks: [
+      ...stagedPackageChecks,
+      ...report.checks,
+    ],
+  };
 }
 
 function withStagedTarball(report, runtimeTarball) {

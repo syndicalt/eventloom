@@ -1456,6 +1456,66 @@ describe("release contract", () => {
     });
   });
 
+  it("reports staged MCP build and pack dry-run checks in local staged preflight JSON", () => {
+    const result = spawnSync(process.execPath, [
+      "scripts/release-preflight-mcp-v1-local-staged.mjs",
+      "--json",
+    ], {
+      cwd: root,
+      encoding: "utf8",
+    });
+
+    expect(result.status).toBe(0);
+    expect(result.stderr).toBe("");
+    expect(JSON.parse(result.stdout)).toMatchObject({
+      ok: true,
+      checks: expect.arrayContaining([
+        {
+          name: "staged MCP package builds",
+          ok: true,
+          expected: "npm run build",
+          actual: "npm run build",
+        },
+        {
+          name: "staged MCP package pack dry-run",
+          ok: true,
+          expected: "npm pack --dry-run --ignore-scripts",
+          actual: "npm pack --dry-run --ignore-scripts",
+        },
+        {
+          name: "staged MCP pack name",
+          ok: true,
+          expected: "@eventloom/mcp",
+          actual: "@eventloom/mcp",
+        },
+        {
+          name: "staged MCP pack version",
+          ok: true,
+          expected: "1.0.0",
+          actual: "1.0.0",
+        },
+        {
+          name: "staged MCP pack filename",
+          ok: true,
+          expected: "eventloom-mcp-1.0.0.tgz",
+          actual: "eventloom-mcp-1.0.0.tgz",
+        },
+        {
+          name: "staged MCP pack includes dist/server.js",
+          ok: true,
+          expected: "dist/server.js",
+          actual: "dist/server.js",
+        },
+        {
+          name: "staged MCP pack excludes src/",
+          ok: true,
+          expected: "absent",
+          actual: "absent",
+        },
+      ]),
+    });
+  });
+
   it("rejects option-like missing values in release support scripts", () => {
     const cases = [
       {

@@ -151,7 +151,7 @@ Do not treat `npm run release:preflight:v1:local` or `npm run release:preflight:
 
 Use these local audits for development snapshots only. A real release still requires the phase-appropriate CI command, the non-local preflight commands, and the guarded publish scripts from a clean Git checkout.
 
-`npm run release:preflight:mcp-v1-staged:local` builds a scratch release tree, stages MCP metadata as `1.0.0`, points MCP at the locally packed runtime tarball, refreshes only the temporary MCP lockfile, and runs the MCP preflight in explicit local-tarball mode. It is supplemental to the real MCP preflight and must not replace `npm run release:preflight:mcp-v1` after runtime publication.
+`npm run release:preflight:mcp-v1-staged:local` builds a scratch release tree, stages MCP metadata as `1.0.0`, points MCP at the locally packed runtime tarball, refreshes only the temporary MCP lockfile, installs staged MCP dependencies with lifecycle scripts disabled, runs the staged MCP build, and performs an `npm pack --dry-run --ignore-scripts` manifest check before running the MCP preflight in explicit local-tarball mode. It is supplemental to the real MCP preflight and must not replace `npm run release:preflight:mcp-v1` after runtime publication.
 
 ## Local Tarball Smoke Test
 
