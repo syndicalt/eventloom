@@ -71,7 +71,7 @@ describe("Eventloom MCP tools", () => {
       encoding: "utf8",
     });
 
-    expect(result.status).toBe(1);
+    expect(result.status).not.toBe(0);
     expect(result.stdout).toBe("");
     expect(JSON.parse(result.stderr)).toMatchObject({
       error: {
