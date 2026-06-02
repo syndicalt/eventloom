@@ -653,6 +653,7 @@ describe("release contract", () => {
     const agentIntegration = readFileSync(join(root, "docs", "agent-integration.md"), "utf8");
     const userGuide = readFileSync(join(root, "docs", "user-guide.md"), "utf8");
     const cliReference = readFileSync(join(root, "docs", "cli-reference.md"), "utf8");
+    const mcpPackage = readFileSync(join(root, "docs", "mcp-package.md"), "utf8");
     const server = readFileSync(join(root, "packages", "mcp", "src", "server.ts"), "utf8");
 
     expect(agentIntegration).toContain("eventloom_write_artifacts");
@@ -661,6 +662,9 @@ describe("release contract", () => {
     expect(agentIntegration).toContain("integrity");
     expect(agentIntegration).toContain("verified prefix");
     expect(agentIntegration).toContain("Pathlight, HALO, or generic OTLP");
+    expect(agentIntegration).toContain("`exportedEventCount` and `validPrefixCount` are the runtime and CLI source-log counters");
+    expect(agentIntegration).toContain("MCP HALO `eventCount` is a compatibility alias for `exportedEventCount`");
+    expect(agentIntegration).toContain("Pathlight `eventCount` is the Pathlight span-event count");
     expect(agentIntegration).toContain("## OTLP Export");
     expect(agentIntegration).toContain("resourceSpans");
     const registeredTools = Array.from(server.matchAll(/server\.registerTool\(\s*"(eventloom_[^"]+)"/g), (match) => match[1]);
@@ -686,6 +690,10 @@ describe("release contract", () => {
     expect(cliReference).toContain("`selection` records `totalEventCount`, `matchedEventCount`, the effective query, and stable event summaries");
     expect(cliReference).toContain("npx eventloom timeline <events.jsonl> --limit <n>");
     expect(cliReference).toContain("Use `--limit <n>` to print only the last `n` events from the verified prefix.");
+
+    expect(mcpPackage).toContain("Runtime and CLI export results use `exportedEventCount` and `validPrefixCount` for Eventloom source-log counters.");
+    expect(mcpPackage).toContain("MCP HALO adds `eventCount` only as a compatibility alias for `exportedEventCount`.");
+    expect(mcpPackage).toContain("Pathlight `eventCount` remains the Pathlight span-event count, not the Eventloom source-log count.");
   });
 
   it("keeps MCP setup, design docs, and CLI usage aligned with implemented tools", () => {

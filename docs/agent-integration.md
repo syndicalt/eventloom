@@ -199,7 +199,7 @@ Current tools:
 - `eventloom_export_halo`
 - `eventloom_export_otlp`
 
-Read-model, export, and artifact tools use verified-prefix reads where appropriate and preserve integrity diagnostics in structured output.
+Read-model, export, and artifact tools use verified-prefix reads where appropriate and preserve integrity diagnostics in structured output. `exportedEventCount` and `validPrefixCount` are the runtime and CLI source-log counters. MCP HALO `eventCount` is a compatibility alias for `exportedEventCount`; Pathlight `eventCount` is the Pathlight span-event count.
 
 ## Pathlight Export
 

@@ -437,6 +437,8 @@ function requiredRuntimePackageFiles() {
     { name: "runtime package ships agent integration docs", path: "docs/agent-integration.md" },
     { name: "runtime package ships MCP setup docs", path: "docs/mcp-setup.md" },
     { name: "runtime package ships MCP package docs", path: "docs/mcp-package.md" },
+    { name: "runtime package ships Pathlight integration docs", path: "docs/pathlight-integration.md" },
+    { name: "runtime package ships HALO integration docs", path: "docs/halo-integration.md" },
     { name: "runtime package ships OTLP integration docs", path: "docs/otlp-integration.md" },
     { name: "runtime package ships sample fixture", path: "fixtures/sample.jsonl" },
     { name: "runtime package ships golden fixtures", path: "fixtures/golden" },

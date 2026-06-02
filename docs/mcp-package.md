@@ -697,7 +697,9 @@ Output:
 }
 ```
 
-This tool returns the same versioned `eventloom.export.pathlight.v1` model as the runtime and CLI. It performs a network request and should be documented as optional. Eventloom remains useful without Pathlight. If the source log has a corrupt tail, the tool exports the verified prefix and returns the original scan diagnostics in `integrity`.
+This tool returns the same versioned `eventloom.export.pathlight.v1` model as the runtime and CLI. Runtime and CLI export results use `exportedEventCount` and `validPrefixCount` for Eventloom source-log counters. Pathlight `eventCount` remains the Pathlight span-event count, not the Eventloom source-log count.
+
+It performs a network request and should be documented as optional. Eventloom remains useful without Pathlight. If the source log has a corrupt tail, the tool exports the verified prefix and returns the original scan diagnostics in `integrity`.
 
 ### `eventloom_export_halo`
 
@@ -733,7 +735,9 @@ Output:
 }
 ```
 
-Both `path` and `out` are resolved inside the configured MCP root. The tool returns the same versioned `eventloom.export.halo.v1` model as the runtime and CLI, writes a local JSONL file, and does not perform network requests. The output file is written through a same-directory temporary file, flushed, atomically renamed into place, and followed by a best-effort containing-directory sync on platforms that support directory fsync. If the source log has a corrupt tail, the tool exports the verified prefix and carries the original diagnostics into `integrity` and the HALO root span attributes.
+Both `path` and `out` are resolved inside the configured MCP root. The tool returns the same versioned `eventloom.export.halo.v1` model as the runtime and CLI, writes a local JSONL file, and does not perform network requests. Runtime and CLI export results use `exportedEventCount` and `validPrefixCount` for Eventloom source-log counters. MCP HALO adds `eventCount` only as a compatibility alias for `exportedEventCount`.
+
+The output file is written through a same-directory temporary file, flushed, atomically renamed into place, and followed by a best-effort containing-directory sync on platforms that support directory fsync. If the source log has a corrupt tail, the tool exports the verified prefix and carries the original diagnostics into `integrity` and the HALO root span attributes.
 
 ### `eventloom_export_otlp`
 

@@ -37,13 +37,15 @@ async function main(): Promise<void> {
   const successEvents = await softwareWorkEvents();
   const negativeEvents = negativePathEvents();
 
+  const successSourceLog = "fixtures/golden/software-work.jsonl";
+  const negativeSourceLog = "synthetic-negative-path";
   const fixtures = [
-    await writePathlightFixture("pathlight-success", "success", "pathlight-success.json", successEvents),
-    await writePathlightFixture("pathlight-negative", "negative", "pathlight-negative.json", negativeEvents),
-    await writeHaloFixture("halo-success", "success", "halo-success.json", successEvents),
-    await writeHaloFixture("halo-negative", "negative", "halo-negative.json", negativeEvents),
-    await writeOtlpFixture("otlp-success", "success", "otlp-success.json", successEvents),
-    await writeOtlpFixture("otlp-negative", "negative", "otlp-negative.json", negativeEvents),
+    await writePathlightFixture("pathlight-success", "success", "pathlight-success.json", successEvents, successSourceLog),
+    await writePathlightFixture("pathlight-negative", "negative", "pathlight-negative.json", negativeEvents, negativeSourceLog),
+    await writeHaloFixture("halo-success", "success", "halo-success.json", successEvents, successSourceLog),
+    await writeHaloFixture("halo-negative", "negative", "halo-negative.json", negativeEvents, negativeSourceLog),
+    await writeOtlpFixture("otlp-success", "success", "otlp-success.json", successEvents, successSourceLog),
+    await writeOtlpFixture("otlp-negative", "negative", "otlp-negative.json", negativeEvents, negativeSourceLog),
   ];
 
   await writeJson("manifest.json", { version: 1, fixtures });
@@ -88,6 +90,7 @@ async function writePathlightFixture(
   scenario: "success" | "negative",
   path: string,
   events: readonly EventEnvelope[],
+  sourceLog: string,
 ) {
   const calls: Array<{ url: string; init: RequestInit }> = [];
   let span = 0;
@@ -120,7 +123,7 @@ async function writePathlightFixture(
     id,
     kind: "pathlight",
     scenario,
-    source: sourceMetadata(events),
+    source: sourceMetadata(events, sourceLog),
     result,
     trace: {
       id: result.traceId,
@@ -158,6 +161,7 @@ async function writeHaloFixture(
   scenario: "success" | "negative",
   path: string,
   events: readonly EventEnvelope[],
+  sourceLog: string,
 ) {
   const result = await exportToHalo(events, {
     projectId: `eventloom-${id}`,
@@ -170,7 +174,7 @@ async function writeHaloFixture(
     id,
     kind: "halo",
     scenario,
-    source: sourceMetadata(events),
+    source: sourceMetadata(events, sourceLog),
     result: {
       version: result.version,
       projectId: result.projectId,
@@ -202,6 +206,7 @@ async function writeOtlpFixture(
   scenario: "success" | "negative",
   path: string,
   events: readonly EventEnvelope[],
+  sourceLog: string,
 ) {
   const result = await exportToOtlp(events, {
     serviceName: "eventloom-fixtures",
@@ -214,7 +219,7 @@ async function writeOtlpFixture(
     id,
     kind: "otlp",
     scenario,
-    source: sourceMetadata(events),
+    source: sourceMetadata(events, sourceLog),
     result: {
       version: result.version,
       traceCount: result.traceCount,
@@ -257,9 +262,9 @@ async function runtimePackageVersion(): Promise<string> {
   return packageJson.version;
 }
 
-function sourceMetadata(events: readonly EventEnvelope[]) {
+function sourceMetadata(events: readonly EventEnvelope[], log: string) {
   return {
-    log: events.length === 46 ? "fixtures/golden/software-work.jsonl" : "synthetic-negative-path",
+    log,
     eventCount: events.length,
   };
 }

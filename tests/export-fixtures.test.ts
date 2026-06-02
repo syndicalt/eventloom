@@ -1,5 +1,7 @@
-import { readFile } from "node:fs/promises";
+import { copyFile, mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { spawnSync } from "node:child_process";
 import { describe, expect, it } from "vitest";
 
 interface ExportFixtureManifest {
@@ -65,8 +67,41 @@ describe("export fixtures", () => {
     ))).toBe(true);
     expect(otlpPayload.json).toContain("\"STATUS_CODE_ERROR\"");
   });
+
+  it("records fixture source logs by scenario instead of golden event count", async () => {
+    const tempRoot = await makeTempWorkspace();
+    const goldenPath = join(tempRoot, "fixtures", "golden", "software-work.jsonl");
+    const originalGolden = await readFile(join("fixtures", "golden", "software-work.jsonl"), "utf8");
+    const fewerEventsGolden = originalGolden.trimEnd().split("\n").slice(0, -1).join("\n");
+    await writeFile(goldenPath, `${fewerEventsGolden}\n`, "utf8");
+
+    const outDir = join(tempRoot, "fixtures", "export");
+    const result = spawnSync(
+      "npx",
+      ["tsx", join(process.cwd(), "scripts", "generate-export-fixtures.ts"), "--out-dir", outDir],
+      { cwd: tempRoot, encoding: "utf8" },
+    );
+
+    expect(result.status, result.stderr || result.stdout).toBe(0);
+
+    const manifest = JSON.parse(await readFile(join(outDir, "manifest.json"), "utf8")) as ExportFixtureManifest;
+    for (const fixture of manifest.fixtures) {
+      const payload = JSON.parse(await readFile(join(outDir, fixture.path), "utf8"));
+      expect(payload.source.log).toBe(
+        fixture.scenario === "success" ? "fixtures/golden/software-work.jsonl" : "synthetic-negative-path",
+      );
+    }
+  });
 });
 
 async function readManifest(): Promise<ExportFixtureManifest> {
   return JSON.parse(await readFile(join("fixtures", "export", "manifest.json"), "utf8")) as ExportFixtureManifest;
+}
+
+async function makeTempWorkspace(): Promise<string> {
+  const root = await mkdtemp(join(tmpdir(), "eventloom-export-fixtures-"));
+  await mkdir(join(root, "fixtures", "golden"), { recursive: true });
+  await mkdir(join(root, "fixtures", "export"), { recursive: true });
+  await copyFile("package.json", join(root, "package.json"));
+  return root;
 }

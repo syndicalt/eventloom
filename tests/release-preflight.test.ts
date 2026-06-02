@@ -1156,6 +1156,18 @@ describe("release preflight", () => {
         actual: "missing",
       },
       {
+        name: "runtime package ships Pathlight integration docs",
+        ok: false,
+        expected: "docs/pathlight-integration.md",
+        actual: "missing",
+      },
+      {
+        name: "runtime package ships HALO integration docs",
+        ok: false,
+        expected: "docs/halo-integration.md",
+        actual: "missing",
+      },
+      {
         name: "runtime package ships sample fixture",
         ok: false,
         expected: "fixtures/sample.jsonl",
