@@ -13,9 +13,9 @@ jobs:
   eventloom-artifacts:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 20
           cache: npm
@@ -45,7 +45,7 @@ jobs:
           test -f .eventloom/artifacts/manifest-verify.json
 
       - name: Upload Eventloom artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: eventloom-agent-artifacts
           if-no-files-found: error

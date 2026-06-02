@@ -52,6 +52,7 @@ Eventloom follows semantic versioning. Runtime package compatibility is governed
 - Added CLI and MCP artifact-bundle verification commands for checking preserved session artifacts in local automation and agent clients.
 - Hardened artifact bundle verification so malformed or hand-edited manifest digest metadata returns stable `invalid_manifest` issues instead of generic runtime errors.
 - Extended installed runtime CLI, installed MCP bin, and staged MCP v1 smoke tests to verify generated artifact bundle manifests, source-log `inputDigest`, and all ten source-log plus generated artifact digests before accepting packaged release artifacts.
+- Updated the v1 release workflow to use Node 24-native GitHub JavaScript actions for checkout, setup-node, and artifact upload while preserving the supported Node.js package test matrix.
 - Added `inspect.json` to artifact bundles so preserved agent-session artifacts include the consolidated `eventloom.inspect.v1` integrity, stats, timeline, and handoff model.
 
 ### Security

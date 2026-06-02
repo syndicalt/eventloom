@@ -1919,8 +1919,9 @@ describe("release contract", () => {
     expect(workflow).toContain("fail-fast: false");
     expect(workflow).toContain("node-version: [20.x, 22.x, 24.x]");
     expect(workflow).toContain("FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: \"true\"");
+    expect(workflow).toContain("actions/checkout@v5");
     expect(workflow).toContain("node-version: ${{ matrix.node-version }}");
-    expect(workflow).toContain("actions/setup-node@v4");
+    expect(workflow).toContain("actions/setup-node@v5");
     expect(workflow).toContain("package-lock.json");
     expect(workflow).toContain("packages/mcp/package-lock.json");
     expect(workflow).toContain("npm ci");
@@ -1943,7 +1944,7 @@ describe("release contract", () => {
     expect(workflow).toContain("npm run --silent release:preflight:mcp-v1-staged:local -- --json");
     expect(workflow).toContain("tee \".eventloom-ci/staged-mcp-v1-preflight-node-${{ matrix.node-version }}.json\"");
     expect(workflow).toContain("Upload staged MCP v1 preflight report");
-    expect(workflow).toContain("actions/upload-artifact@v4");
+    expect(workflow).toContain("actions/upload-artifact@v6");
     expect(workflow).toContain("staged-mcp-v1-preflight-node-${{ matrix.node-version }}");
     expect(workflow).toContain("if-no-files-found: error");
     expect(release).toContain(".github/workflows/ci.yml");
@@ -1964,7 +1965,9 @@ describe("release contract", () => {
     expect(release).not.toContain("runs the same release gate on Node.js 20, 22, and 24");
 
     const preflight = readFileSync(join(root, "scripts", "release-preflight.mjs"), "utf8");
-    expect(preflight).toContain("workflow uses setup-node v4");
+    expect(preflight).toContain("workflow uses Node 24 checkout action");
+    expect(preflight).toContain("workflow uses setup-node v5");
+    expect(preflight).toContain("workflow uploads artifacts with Node 24 upload action");
     expect(preflight).toContain("workflow runs JavaScript actions on Node 24");
     expect(preflight).toContain("workflow caches runtime lockfile");
     expect(preflight).toContain("workflow caches MCP lockfile");

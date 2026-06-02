@@ -784,15 +784,21 @@ describe("release preflight", () => {
         actual: "missing",
       },
       {
-        name: "workflow uploads artifacts with upload-artifact v4",
+        name: "workflow uploads artifacts with Node 24 upload action",
         ok: false,
-        expected: "actions/upload-artifact@v4",
+        expected: "actions/upload-artifact@v6",
         actual: "missing",
       },
       {
-        name: "workflow uses setup-node v4",
+        name: "workflow uses setup-node v5",
         ok: false,
-        expected: "actions/setup-node@v4",
+        expected: "actions/setup-node@v5",
+        actual: "missing",
+      },
+      {
+        name: "workflow uses Node 24 checkout action",
+        ok: false,
+        expected: "actions/checkout@v5",
         actual: "missing",
       },
       {
@@ -2008,7 +2014,8 @@ jobs:
       matrix:
         node-version: [20.x, 22.x, 24.x]
     steps:
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: \${{ matrix.node-version }}
           cache: npm
@@ -2031,7 +2038,7 @@ jobs:
           npm run --silent eventloom -- artifacts .eventloom/agent-work.jsonl --out .eventloom/artifacts --title "Runtime Release Evidence"
           npm run --silent eventloom -- artifacts verify .eventloom/artifacts/manifest.json > ".eventloom-ci/artifact-bundle-verify-node-\${{ matrix.node-version }}.json"
       - name: Upload runtime release evidence reports
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: runtime-release-evidence-node-\${{ matrix.node-version }}
           if-no-files-found: error
@@ -2048,7 +2055,7 @@ jobs:
           npm run --silent release:preflight:mcp-v1-staged:local -- --json \\
             | tee ".eventloom-ci/staged-mcp-v1-preflight-node-\${{ matrix.node-version }}.json"
       - name: Upload staged MCP v1 preflight report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: staged-mcp-v1-preflight-node-\${{ matrix.node-version }}
           if-no-files-found: error
@@ -2070,7 +2077,8 @@ jobs:
       matrix:
         node-version: [20.x, 22.x, 24.x]
     steps:
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: \${{ matrix.node-version }}
           cache: npm
@@ -2093,7 +2101,7 @@ jobs:
           npm run --silent eventloom -- artifacts .eventloom/agent-work.jsonl --out .eventloom/artifacts --title "Runtime Release Evidence"
           npm run --silent eventloom -- artifacts verify .eventloom/artifacts/manifest.json > ".eventloom-ci/artifact-bundle-verify-node-\${{ matrix.node-version }}.json"
       - name: Upload runtime release evidence reports
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: runtime-release-evidence-node-\${{ matrix.node-version }}
           if-no-files-found: error
@@ -2110,7 +2118,7 @@ jobs:
           npm run --silent release:preflight:mcp-v1-staged:local -- --json \\
             | tee ".eventloom-ci/staged-mcp-v1-preflight-node-\${{ matrix.node-version }}.json"
       - name: Upload staged MCP v1 preflight report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: staged-mcp-v1-preflight-node-\${{ matrix.node-version }}
           if-no-files-found: error

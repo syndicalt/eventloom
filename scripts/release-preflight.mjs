@@ -505,9 +505,10 @@ function releaseWorkflowChecks(workflow) {
   const job = workflowDoc?.jobs?.["release-gates"];
   const steps = Array.isArray(job?.steps) ? job.steps : [];
   const jobText = workflowSearchText(job);
-  const setupNodeStep = steps.find((step) => step?.uses === "actions/setup-node@v4");
+  const checkoutStep = steps.find((step) => step?.uses === "actions/checkout@v5");
+  const setupNodeStep = steps.find((step) => step?.uses === "actions/setup-node@v5");
   const setupNodeText = workflowSearchText(setupNodeStep);
-  const uploadSteps = steps.filter((step) => step?.uses === "actions/upload-artifact@v4");
+  const uploadSteps = steps.filter((step) => step?.uses === "actions/upload-artifact@v6");
   const runtimeUploadStep = uploadSteps.find((step) => step?.with?.name === "runtime-release-evidence-node-${{ matrix.node-version }}");
   const runtimeUploadText = workflowSearchText(runtimeUploadStep);
   const stagedMcpUploadStep = uploadSteps.find((step) => step?.with?.name === "staged-mcp-v1-preflight-node-${{ matrix.node-version }}");
@@ -518,13 +519,14 @@ function releaseWorkflowChecks(workflow) {
     workflowStructuralCheck("workflow keeps matrix fail-fast disabled", job?.strategy?.["fail-fast"] === false, "fail-fast: false"),
     workflowStructuralCheck("workflow tests supported Node versions", sameStringArray(job?.strategy?.matrix?.["node-version"], ["20.x", "22.x", "24.x"]), "node-version: [20.x, 22.x, 24.x]"),
     workflowStructuralCheck("workflow runs JavaScript actions on Node 24", job?.env?.FORCE_JAVASCRIPT_ACTIONS_TO_NODE24 === "true", "FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true"),
+    workflowStructuralCheck("workflow uses Node 24 checkout action", Boolean(checkoutStep), "actions/checkout@v5"),
     workflowStructuralCheck("workflow uses matrix Node version", setupNodeStep?.with?.["node-version"] === "${{ matrix.node-version }}", "node-version: ${{ matrix.node-version }}"),
-    workflowStructuralCheck("workflow uses setup-node v4", Boolean(setupNodeStep), "actions/setup-node@v4"),
+    workflowStructuralCheck("workflow uses setup-node v5", Boolean(setupNodeStep), "actions/setup-node@v5"),
     workflowStructuralCheck("workflow caches runtime lockfile", setupNodeText.includes("package-lock.json"), "package-lock.json"),
     workflowStructuralCheck("workflow caches MCP lockfile", setupNodeText.includes("packages/mcp/package-lock.json"), "packages/mcp/package-lock.json"),
     workflowStructuralCheck("workflow installs runtime dependencies from lockfile", jobText.includes("npm ci"), "npm ci"),
     workflowStructuralCheck("workflow installs MCP dependencies from lockfile", jobText.includes("npm --prefix packages/mcp ci"), "npm --prefix packages/mcp ci"),
-    workflowStructuralCheck("workflow uploads artifacts with upload-artifact v4", uploadSteps.length > 0, "actions/upload-artifact@v4"),
+    workflowStructuralCheck("workflow uploads artifacts with Node 24 upload action", uploadSteps.length > 0, "actions/upload-artifact@v6"),
     workflowStructuralCheck("workflow runs runtime release gate", jobText.includes("npm run ci:runtime-v1"), "npm run ci:runtime-v1"),
     workflowStructuralCheck("workflow writes golden fixture evidence", jobText.includes('node scripts/check-golden-fixtures.mjs --json > ".eventloom-ci/golden-fixtures-node-${{ matrix.node-version }}.json"'), 'node scripts/check-golden-fixtures.mjs --json > ".eventloom-ci/golden-fixtures-node-${{ matrix.node-version }}.json"'),
     workflowStructuralCheck("workflow writes export fixture evidence", jobText.includes('node scripts/check-export-fixtures.mjs --json > ".eventloom-ci/export-fixtures-node-${{ matrix.node-version }}.json"'), 'node scripts/check-export-fixtures.mjs --json > ".eventloom-ci/export-fixtures-node-${{ matrix.node-version }}.json"'),
