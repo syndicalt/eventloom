@@ -3,8 +3,9 @@ import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
 const REPORT_VERSION = "eventloom.benchmark-evidence.v1";
-const DEFAULT_FULL_PATH = ".eventloom-ci/benchmark-full-node-20.json";
-const DEFAULT_EXPORT_PATH = ".eventloom-ci/benchmark-export-node-20.json";
+const NODE_MAJOR = process.versions.node.split(".")[0];
+const DEFAULT_FULL_PATH = `.eventloom-ci/benchmark-full-node-${NODE_MAJOR}.json`;
+const DEFAULT_EXPORT_PATH = `.eventloom-ci/benchmark-export-node-${NODE_MAJOR}.json`;
 const requiredOperations = [
   "appendMany",
   "readAll",

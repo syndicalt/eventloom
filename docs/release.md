@@ -53,7 +53,7 @@ This executable preflight verifies that:
 - the `@eventloom/mcp` dependency on `@eventloom/runtime` is `^1.0.0`
 - runtime and MCP `prepack` scripts run tests and builds before pack or publish
 - MCP v1 publication uses `--check-published-runtime` after the runtime package has been published
-- the runtime package ships the release and migration docs
+- the runtime package ships the migration guide and selected runtime-user docs; repo-only release, planning, MCP, and contributor docs stay linked from GitHub
 - `.github/workflows/ci.yml` runs the release gate on Node.js 20, 22, and 24 with `fail-fast: false`
 - `.github/workflows/ci.yml` writes and uploads parseable fixture, benchmark smoke, package-manifest, artifact-bundle verification, and staged MCP preflight evidence reports
 
@@ -110,11 +110,13 @@ The runtime package should include only:
 - `README.md`
 - `CHANGELOG.md`
 - `LICENSE`
-- selected user-facing docs
+- selected runtime-user docs, integration docs, architecture docs, and migration docs
 - `fixtures/sample.jsonl`
 - golden and export fixtures
 - custom workflow example
 - `package.json`
+
+It intentionally excludes repo-only publisher checklists, planning notes, contributor docs, and MCP package design/setup docs from the runtime tarball. Packaged Markdown links to those repo-only docs should use GitHub URLs so installed package docs stay link-checkable.
 
 The MCP package currently ships only:
 
@@ -128,12 +130,12 @@ The MCP package currently ships only:
 `npm run bench:smoke` is the CI correctness gate for the benchmark harness, but release candidates should also include full local benchmark evidence. Before tagging a v1 release candidate, run:
 
 ```bash
-EVENTLOOM_BENCH_HARDWARE="<CPU, disk, memory>" npm run bench -- --out .eventloom-ci/benchmark-full-node-20.json
-EVENTLOOM_BENCH_HARDWARE="<CPU, disk, memory>" npm run bench:export -- --out .eventloom-ci/benchmark-export-node-20.json
-npm run bench:evidence:check -- --full .eventloom-ci/benchmark-full-node-20.json --export .eventloom-ci/benchmark-export-node-20.json
+EVENTLOOM_BENCH_HARDWARE="<CPU, disk, memory>" npm run bench -- --out .eventloom-ci/benchmark-full-node-<node-major>.json
+EVENTLOOM_BENCH_HARDWARE="<CPU, disk, memory>" npm run bench:export -- --out .eventloom-ci/benchmark-export-node-<node-major>.json
+npm run bench:evidence:check -- --full .eventloom-ci/benchmark-full-node-<node-major>.json --export .eventloom-ci/benchmark-export-node-<node-major>.json
 ```
 
-Upload the `.eventloom-ci/benchmark-*.json` reports with the release-candidate evidence packet after `npm run bench:evidence:check` passes. Each benchmark report is versioned as `eventloom.benchmark.v1`, and the checker report is versioned as `eventloom.benchmark-evidence.v1`; record the command, Node version, hardware note, event counts, `durationMs`, and `throughputPerSecond` values in the release notes. See [Benchmarks](benchmarks.md) and `docs/benchmarks.md` for the benchmark output schema and baseline policy.
+Replace `<node-major>` with the Node.js major version used to collect the release-candidate evidence, for example `24` for Node.js 24. When `--full` and `--export` are omitted, `npm run bench:evidence:check` defaults to the current Node.js major version. Upload the `.eventloom-ci/benchmark-*.json` reports with the release-candidate evidence packet after `npm run bench:evidence:check` passes. Each benchmark report is versioned as `eventloom.benchmark.v1`, and the checker report is versioned as `eventloom.benchmark-evidence.v1`; record the command, Node version, hardware note, event counts, `durationMs`, and `throughputPerSecond` values in the release notes. See [Benchmarks](benchmarks.md) and `docs/benchmarks.md` for the benchmark output schema and baseline policy.
 
 ## Local Readiness Audit
 

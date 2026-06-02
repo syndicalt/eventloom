@@ -162,7 +162,7 @@ MCP remains a separate package from the runtime:
 @eventloom/mcp
 ```
 
-The package is implemented in `packages/mcp`, and the tool contract is documented in [MCP Package Design](mcp-package.md).
+The package is implemented in `packages/mcp`, and the tool contract is documented in [MCP Package Design](https://github.com/syndicalt/eventloom/blob/master/docs/mcp-package.md).
 
 Local checkout usage:
 

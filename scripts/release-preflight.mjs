@@ -126,8 +126,8 @@ export async function buildReleasePreflightReport(options = {}) {
   checks.push(containsCheck("release doc references CI workflow", releaseDoc, ".github/workflows/ci.yml"));
   checks.push(containsCheck("release doc references supported Node matrix", releaseDoc, "Node.js 20, 22, and 24"));
   checks.push(containsCheck("release doc references benchmark evidence report", releaseDoc, ".eventloom-ci/benchmark-smoke-node-<node-version>.json"));
-  checks.push(containsCheck("release doc references full benchmark evidence report", releaseDoc, ".eventloom-ci/benchmark-full-node-20.json"));
-  checks.push(containsCheck("release doc references export benchmark evidence report", releaseDoc, ".eventloom-ci/benchmark-export-node-20.json"));
+  checks.push(containsCheck("release doc references full benchmark evidence report", releaseDoc, ".eventloom-ci/benchmark-full-node-<node-major>.json"));
+  checks.push(containsCheck("release doc references export benchmark evidence report", releaseDoc, ".eventloom-ci/benchmark-export-node-<node-major>.json"));
   checks.push(containsCheck("release doc references benchmark evidence checker", releaseDoc, "npm run bench:evidence:check"));
   checks.push(containsCheck("release doc references benchmark evidence check report version", releaseDoc, "eventloom.benchmark-evidence.v1"));
   checks.push(containsCheck("release doc references benchmark hardware note", releaseDoc, "EVENTLOOM_BENCH_HARDWARE"));
@@ -445,25 +445,16 @@ function requiredRuntimePackageFiles() {
     { name: "runtime package ships changelog", path: "CHANGELOG.md" },
     { name: "runtime package ships license", path: "LICENSE" },
     { name: "runtime package ships docs index", path: "docs/README.md" },
-    { name: "runtime package ships roadmap docs", path: "docs/roadmap-v1.md" },
     { name: "runtime package ships benchmark docs", path: "docs/benchmarks.md" },
     { name: "runtime package ships package API docs", path: "docs/package-api.md" },
     { name: "runtime package ships public API docs", path: "docs/public-api.md" },
     { name: "runtime package ships custom workflow docs", path: "docs/custom-workflows.md" },
     { name: "runtime package ships cookbook docs", path: "docs/agent-journal-cookbook.md" },
     { name: "runtime package ships GitHub artifact docs", path: "docs/github-actions-artifacts.md" },
-    { name: "runtime package ships release docs", path: "docs/release.md" },
     { name: "runtime package ships migration docs", path: "docs/migration-v1.md" },
     { name: "runtime package ships CLI reference", path: "docs/cli-reference.md" },
     { name: "runtime package ships user guide", path: "docs/user-guide.md" },
     { name: "runtime package ships agent integration docs", path: "docs/agent-integration.md" },
-    { name: "runtime package ships MCP setup docs", path: "docs/mcp-setup.md" },
-    { name: "runtime package ships MCP package docs", path: "docs/mcp-package.md" },
-    { name: "runtime package ships contributor guide", path: "docs/contributor-guide.md" },
-    { name: "runtime package ships product spec", path: "docs/product-spec.md" },
-    { name: "runtime package ships development plan", path: "docs/development-plan.md" },
-    { name: "runtime package ships stack review", path: "docs/stack-review.md" },
-    { name: "runtime package ships Pathlight ADR", path: "docs/decisions/pathlight-bridge-spike.md" },
     { name: "runtime package ships case studies", path: "docs/case-studies" },
     { name: "runtime package ships architecture docs", path: "docs/architecture.md" },
     { name: "runtime package ships event model docs", path: "docs/event-model.md" },

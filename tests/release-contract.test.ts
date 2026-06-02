@@ -38,7 +38,7 @@ describe("release contract", () => {
     const migration = readFileSync(join(root, "docs", "migration-v1.md"), "utf8");
     const changelog = readFileSync(join(root, "CHANGELOG.md"), "utf8");
 
-    expect(files).toContain("docs/release.md");
+    expect(files).not.toContain("docs/release.md");
     expect(files).toContain("docs/migration-v1.md");
     expect(release).toContain("npm run bench:smoke");
     expect(release).toContain("invalid_release_preflight_option");
@@ -483,25 +483,16 @@ describe("release contract", () => {
       "CHANGELOG.md",
       "LICENSE",
       "docs/README.md",
-      "docs/roadmap-v1.md",
       "docs/benchmarks.md",
       "docs/package-api.md",
       "docs/public-api.md",
       "docs/custom-workflows.md",
       "docs/agent-journal-cookbook.md",
       "docs/github-actions-artifacts.md",
-      "docs/release.md",
       "docs/migration-v1.md",
       "docs/cli-reference.md",
       "docs/user-guide.md",
       "docs/agent-integration.md",
-      "docs/mcp-setup.md",
-      "docs/mcp-package.md",
-      "docs/contributor-guide.md",
-      "docs/product-spec.md",
-      "docs/development-plan.md",
-      "docs/stack-review.md",
-      "docs/decisions/pathlight-bridge-spike.md",
       "docs/case-studies",
       "docs/architecture.md",
       "docs/event-model.md",
@@ -523,10 +514,10 @@ describe("release contract", () => {
     const docsIndex = readFileSync(join(root, "docs", "README.md"), "utf8");
 
     expect(docsIndex).toContain("[Migration Notes](migration-v1.md)");
-    expect(docsIndex).toContain("[Release Checklist](release.md)");
+    expect(docsIndex).toContain("[Release Checklist](https://github.com/syndicalt/eventloom/blob/master/docs/release.md)");
     expect(docsIndex).toContain("[OTLP Integration](otlp-integration.md)");
-    expect(docsIndex).toContain("[Product Spec](product-spec.md): historical MVP target");
-    expect(docsIndex).toContain("[Stack Review](stack-review.md): historical stack decision note");
+    expect(docsIndex).toContain("[Product Spec](https://github.com/syndicalt/eventloom/blob/master/docs/product-spec.md): historical MVP target");
+    expect(docsIndex).toContain("[Stack Review](https://github.com/syndicalt/eventloom/blob/master/docs/stack-review.md): historical stack decision note");
   });
 
   it("marks early planning docs as historical next to current v1 docs", () => {
@@ -1613,8 +1604,9 @@ describe("release contract", () => {
     expect(release).toContain("## Benchmark Evidence");
     expect(release).toContain("npm run bench");
     expect(release).toContain("npm run bench:export");
-    expect(release).toContain("--out .eventloom-ci/benchmark-full-node-20.json");
-    expect(release).toContain("--out .eventloom-ci/benchmark-export-node-20.json");
+    expect(release).toContain("--out .eventloom-ci/benchmark-full-node-<node-major>.json");
+    expect(release).toContain("--out .eventloom-ci/benchmark-export-node-<node-major>.json");
+    expect(release).toContain("defaults to the current Node.js major version");
     expect(release).toContain("Upload the `.eventloom-ci/benchmark-*.json` reports");
     expect(release).toContain("EVENTLOOM_BENCH_HARDWARE");
     expect(release).toContain("docs/benchmarks.md");

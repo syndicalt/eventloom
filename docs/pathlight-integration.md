@@ -224,6 +224,6 @@ This keeps the runtime simple and preserves the local JSONL development model.
 
 ## Bridge Decision
 
-See [Pathlight Bridge Spike](decisions/pathlight-bridge-spike.md) for the decision to keep Eventloom as a separate runtime prototype and integrate through an export adapter.
+See [Pathlight Bridge Spike](https://github.com/syndicalt/eventloom/blob/master/docs/decisions/pathlight-bridge-spike.md) for the decision to keep Eventloom as a separate runtime prototype and integrate through an export adapter.
 
 See [Agent Work Log Pathlight Case Study](case-studies/agent-work-pathlight.md) for an example of exporting a real `.eventloom/agent-work.jsonl` journal.

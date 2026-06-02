@@ -97,6 +97,7 @@ function stageReleaseTree(stagedRoot, runtimeTarball) {
   for (const entry of runtimePackage.files ?? []) {
     copyPath(stagedRoot, entry);
   }
+  copyPath(stagedRoot, "docs/release.md");
   copyPath(stagedRoot, "scripts/chmod-cli-bins.mjs");
 
   for (const entry of ["package.json", "README.md", "LICENSE", "tsconfig.json", "src", "dist"]) {

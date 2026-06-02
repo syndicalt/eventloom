@@ -25,7 +25,7 @@ Existing hash-chain fields also keep the same meaning:
 
 ## Public API freeze
 
-The v1 public API freeze covers the package-facing exports documented in [Public API Stability](public-api.md), the CLI command family documented in [CLI Reference](cli-reference.md), and the MCP tools documented in [MCP Package](mcp-package.md).
+The v1 public API freeze covers the package-facing exports documented in [Public API Stability](public-api.md), the CLI command family documented in [CLI Reference](cli-reference.md), and the MCP tools documented in [MCP Package](https://github.com/syndicalt/eventloom/blob/master/docs/mcp-package.md).
 
 Eventloom may add new exports, commands, payload fields, and optional artifact formats in v1.x. Removing documented exports, changing event envelope semantics, changing accepted built-in event names, or changing the MCP tool contract requires a migration note and a semver-major release.
 

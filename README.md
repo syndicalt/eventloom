@@ -181,11 +181,11 @@ console.log(replay.projection.research);
 
 The npm package is published as `@eventloom/runtime`. See [Package API](docs/package-api.md) for the full package-facing API.
 
-The MCP server package lives in `packages/mcp` as `@eventloom/mcp`. It exposes Eventloom log operations, visualizer output, artifact bundles, and Pathlight/HALO/OTLP export to local MCP clients over stdio. See [MCP Setup](docs/mcp-setup.md) for editor setup and [MCP Package Design](docs/mcp-package.md) for the tool contract.
+The MCP server package lives in `packages/mcp` as `@eventloom/mcp`. It exposes Eventloom log operations, visualizer output, artifact bundles, and Pathlight/HALO/OTLP export to local MCP clients over stdio. See [MCP Setup](https://github.com/syndicalt/eventloom/blob/master/docs/mcp-setup.md) for editor setup and [MCP Package Design](https://github.com/syndicalt/eventloom/blob/master/docs/mcp-package.md) for the tool contract.
 
 For v1-specific stability and extension guidance, see [Migration Notes](docs/migration-v1.md), [Public API](docs/public-api.md), and [Custom Workflows](docs/custom-workflows.md).
 
-Release hardening commands are documented in [Release Checklist](docs/release.md). The first v1 release uses phase-specific checks. Before the runtime package is published, use the runtime-first gate plus the staged MCP local preflight:
+Release hardening commands are documented in the [Release Checklist](https://github.com/syndicalt/eventloom/blob/master/docs/release.md). The first v1 release uses phase-specific checks. Before the runtime package is published, use the runtime-first gate plus the staged MCP local preflight:
 
 ```bash
 npm run ci:runtime-v1
@@ -207,17 +207,17 @@ npm run release:preflight:mcp-v1
 - [CLI Reference](docs/cli-reference.md)
 - [Package API](docs/package-api.md)
 - [Agent Integration](docs/agent-integration.md)
-- [MCP Setup](docs/mcp-setup.md)
-- [MCP Package Design](docs/mcp-package.md)
+- [MCP Setup](https://github.com/syndicalt/eventloom/blob/master/docs/mcp-setup.md)
+- [MCP Package Design](https://github.com/syndicalt/eventloom/blob/master/docs/mcp-package.md)
 - [Agent Work Export Case Study](docs/case-studies/agent-work-pathlight.md)
 - [Architecture](docs/architecture.md)
 - [Event Model](docs/event-model.md)
 - [Workflow Guide](docs/workflows.md)
-- [v1.0 Roadmap](docs/roadmap-v1.md)
+- [v1.0 Roadmap](https://github.com/syndicalt/eventloom/blob/master/docs/roadmap-v1.md)
 - [Pathlight Integration](docs/pathlight-integration.md)
 - [HALO Integration](docs/halo-integration.md)
 - [OTLP Integration](docs/otlp-integration.md)
-- [Contributor Guide](docs/contributor-guide.md)
+- [Contributor Guide](https://github.com/syndicalt/eventloom/blob/master/docs/contributor-guide.md)
 
 ## Project Layout
 

@@ -946,13 +946,13 @@ describe("release preflight", () => {
       {
         name: "release doc references full benchmark evidence report",
         ok: false,
-        expected: ".eventloom-ci/benchmark-full-node-20.json",
+        expected: ".eventloom-ci/benchmark-full-node-<node-major>.json",
         actual: "missing",
       },
       {
         name: "release doc references export benchmark evidence report",
         ok: false,
-        expected: ".eventloom-ci/benchmark-export-node-20.json",
+        expected: ".eventloom-ci/benchmark-export-node-<node-major>.json",
         actual: "missing",
       },
       {
@@ -1164,7 +1164,7 @@ describe("release preflight", () => {
       mcpVersion: "1.0.0",
       mcpVersionConstant: "1.0.0",
       mcpRuntimeDependency: "^1.0.0",
-      files: ["docs/release.md", "docs/migration-v1.md"],
+      files: ["docs/migration-v1.md"],
     });
 
     const report = await buildReleasePreflightReport({
@@ -1209,36 +1209,6 @@ describe("release preflight", () => {
         name: "runtime package ships HALO integration docs",
         ok: false,
         expected: "docs/halo-integration.md",
-        actual: "missing",
-      },
-      {
-        name: "runtime package ships contributor guide",
-        ok: false,
-        expected: "docs/contributor-guide.md",
-        actual: "missing",
-      },
-      {
-        name: "runtime package ships product spec",
-        ok: false,
-        expected: "docs/product-spec.md",
-        actual: "missing",
-      },
-      {
-        name: "runtime package ships development plan",
-        ok: false,
-        expected: "docs/development-plan.md",
-        actual: "missing",
-      },
-      {
-        name: "runtime package ships stack review",
-        ok: false,
-        expected: "docs/stack-review.md",
-        actual: "missing",
-      },
-      {
-        name: "runtime package ships Pathlight ADR",
-        ok: false,
-        expected: "docs/decisions/pathlight-bridge-spike.md",
         actual: "missing",
       },
       {
@@ -1843,7 +1813,7 @@ The repository CI workflow at .github/workflows/ci.yml runs the runtime-first re
 
 Runtime release evidence includes .eventloom-ci/benchmark-smoke-node-<node-version>.json.
 
-Release-candidate benchmark evidence includes .eventloom-ci/benchmark-full-node-20.json and .eventloom-ci/benchmark-export-node-20.json with EVENTLOOM_BENCH_HARDWARE.
+Release-candidate benchmark evidence includes .eventloom-ci/benchmark-full-node-<node-major>.json and .eventloom-ci/benchmark-export-node-<node-major>.json with EVENTLOOM_BENCH_HARDWARE.
 
 npm run bench:evidence:check validates release-candidate benchmark evidence and emits eventloom.benchmark-evidence.v1.
 
@@ -1986,25 +1956,16 @@ function runtimePackageFiles(): string[] {
     "CHANGELOG.md",
     "LICENSE",
     "docs/README.md",
-    "docs/roadmap-v1.md",
     "docs/benchmarks.md",
     "docs/package-api.md",
     "docs/public-api.md",
     "docs/custom-workflows.md",
     "docs/agent-journal-cookbook.md",
     "docs/github-actions-artifacts.md",
-    "docs/release.md",
     "docs/migration-v1.md",
     "docs/cli-reference.md",
     "docs/user-guide.md",
     "docs/agent-integration.md",
-    "docs/mcp-setup.md",
-    "docs/mcp-package.md",
-    "docs/contributor-guide.md",
-    "docs/product-spec.md",
-    "docs/development-plan.md",
-    "docs/stack-review.md",
-    "docs/decisions/pathlight-bridge-spike.md",
     "docs/case-studies",
     "docs/architecture.md",
     "docs/event-model.md",

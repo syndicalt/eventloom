@@ -6,6 +6,8 @@ import { describe, expect, it } from "vitest";
 import packageJson from "../package.json" with { type: "json" };
 
 describe("benchmark evidence check", () => {
+  const nodeMajor = process.versions.node.split(".")[0];
+
   it("is exposed as a release evidence script", () => {
     expect(packageJson.scripts).toMatchObject({
       "bench:evidence:check": "node scripts/check-benchmark-evidence.mjs",
@@ -14,8 +16,8 @@ describe("benchmark evidence check", () => {
 
   it("prints a parseable success report for full and export benchmark evidence", async () => {
     const dir = await mkdtemp(join(tmpdir(), "eventloom-benchmark-evidence-"));
-    const fullPath = join(dir, "benchmark-full-node-20.json");
-    const exportPath = join(dir, "benchmark-export-node-20.json");
+    const fullPath = join(dir, `benchmark-full-node-${nodeMajor}.json`);
+    const exportPath = join(dir, `benchmark-export-node-${nodeMajor}.json`);
     await writeBenchmarkReport(fullPath, benchmarkReport({ mode: "full", eventCount: 100000 }));
     await writeBenchmarkReport(exportPath, benchmarkReport({ mode: "export", eventCount: 50000 }));
 
@@ -45,8 +47,8 @@ describe("benchmark evidence check", () => {
 
   it("rejects missing full/export evidence details with structured failures", async () => {
     const dir = await mkdtemp(join(tmpdir(), "eventloom-benchmark-evidence-"));
-    const fullPath = join(dir, "benchmark-full-node-20.json");
-    const exportPath = join(dir, "benchmark-export-node-20.json");
+    const fullPath = join(dir, `benchmark-full-node-${nodeMajor}.json`);
+    const exportPath = join(dir, `benchmark-export-node-${nodeMajor}.json`);
     await writeBenchmarkReport(fullPath, benchmarkReport({
       mode: "smoke",
       eventCount: 1000,
