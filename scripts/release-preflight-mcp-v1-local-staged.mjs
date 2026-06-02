@@ -83,12 +83,14 @@ function packRuntime(tempRoot) {
 function stageReleaseTree(stagedRoot, runtimeTarball) {
   copyFile(stagedRoot, "package.json");
   copyFile(stagedRoot, "package-lock.json");
-  copyFile(stagedRoot, "CHANGELOG.md");
   copyFile(stagedRoot, ".github/workflows/ci.yml");
-  copyFile(stagedRoot, "docs/release.md");
-  copyFile(stagedRoot, "docs/migration-v1.md");
 
-  for (const entry of ["package.json", "README.md", "tsconfig.json", "src"]) {
+  const runtimePackage = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
+  for (const entry of runtimePackage.files ?? []) {
+    copyPath(stagedRoot, entry);
+  }
+
+  for (const entry of ["package.json", "README.md", "LICENSE", "tsconfig.json", "src", "dist"]) {
     copyPath(stagedRoot, join("packages", "mcp", entry));
   }
 

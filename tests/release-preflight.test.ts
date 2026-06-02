@@ -1,5 +1,5 @@
 import { execFileSync, spawnSync } from "node:child_process";
-import { mkdir, mkdtemp, writeFile } from "node:fs/promises";
+import { access, mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { describe, expect, it } from "vitest";
@@ -1168,6 +1168,60 @@ describe("release preflight", () => {
         actual: "missing",
       },
       {
+        name: "runtime package ships contributor guide",
+        ok: false,
+        expected: "docs/contributor-guide.md",
+        actual: "missing",
+      },
+      {
+        name: "runtime package ships product spec",
+        ok: false,
+        expected: "docs/product-spec.md",
+        actual: "missing",
+      },
+      {
+        name: "runtime package ships development plan",
+        ok: false,
+        expected: "docs/development-plan.md",
+        actual: "missing",
+      },
+      {
+        name: "runtime package ships stack review",
+        ok: false,
+        expected: "docs/stack-review.md",
+        actual: "missing",
+      },
+      {
+        name: "runtime package ships Pathlight ADR",
+        ok: false,
+        expected: "docs/decisions/pathlight-bridge-spike.md",
+        actual: "missing",
+      },
+      {
+        name: "runtime package ships architecture docs",
+        ok: false,
+        expected: "docs/architecture.md",
+        actual: "missing",
+      },
+      {
+        name: "runtime package ships event model docs",
+        ok: false,
+        expected: "docs/event-model.md",
+        actual: "missing",
+      },
+      {
+        name: "runtime package ships workflow docs",
+        ok: false,
+        expected: "docs/workflows.md",
+        actual: "missing",
+      },
+      {
+        name: "runtime package ships case studies",
+        ok: false,
+        expected: "docs/case-studies",
+        actual: "missing",
+      },
+      {
         name: "runtime package ships sample fixture",
         ok: false,
         expected: "fixtures/sample.jsonl",
@@ -1189,6 +1243,39 @@ describe("release preflight", () => {
         name: "runtime package ships custom workflow example",
         ok: false,
         expected: "examples/custom-workflow.ts",
+        actual: "missing",
+      },
+    ]));
+  });
+
+  it("requires listed package files to exist in the release tree", async () => {
+    const root = await tempReleaseTree({
+      runtimeVersion: "1.0.0",
+      mcpVersion: "1.0.0",
+      mcpVersionConstant: "1.0.0",
+      mcpRuntimeDependency: "^1.0.0",
+    });
+    await rm(join(root, "LICENSE"), { force: true });
+    await rm(join(root, "packages", "mcp", "LICENSE"), { force: true });
+
+    const report = await buildReleasePreflightReport({
+      root,
+      targetVersion: "1.0.0",
+      checkGit: false,
+    });
+
+    expect(report.ok).toBe(false);
+    expect(report.checks).toEqual(expect.arrayContaining([
+      {
+        name: "runtime package file exists LICENSE",
+        ok: false,
+        expected: "LICENSE",
+        actual: "missing",
+      },
+      {
+        name: "mcp package file exists LICENSE",
+        ok: false,
+        expected: "LICENSE",
         actual: "missing",
       },
     ]));
@@ -1643,6 +1730,8 @@ async function tempReleaseTree(options: {
   await writeText(join(root, "docs", "migration-v1.md"), "# Migrating To Eventloom v1.0.0\n");
   await writeText(join(root, "CHANGELOG.md"), options.changelog ?? changelog());
   await writeText(join(root, ".github", "workflows", "ci.yml"), options.workflow ?? releaseWorkflow());
+  await materializePackageFiles(root, options.files ?? runtimePackageFiles());
+  await materializePackageFiles(join(root, "packages", "mcp"), options.mcpFiles ?? mcpPackageFiles());
   return root;
 }
 
@@ -1971,4 +2060,25 @@ async function writeJson(path: string, value: unknown): Promise<void> {
 async function writeText(path: string, value: string): Promise<void> {
   await mkdir(dirname(path), { recursive: true });
   await writeFile(path, value, "utf8");
+}
+
+async function materializePackageFiles(root: string, entries: readonly string[]): Promise<void> {
+  const directoryEntries = new Set(["dist", "docs/case-studies", "fixtures/export", "fixtures/golden"]);
+  for (const entry of entries) {
+    const path = join(root, entry);
+    if (directoryEntries.has(entry)) {
+      await mkdir(path, { recursive: true });
+    } else if (!(await pathExists(path))) {
+      await writeText(path, `${entry}\n`);
+    }
+  }
+}
+
+async function pathExists(path: string): Promise<boolean> {
+  try {
+    await access(path);
+    return true;
+  } catch {
+    return false;
+  }
 }

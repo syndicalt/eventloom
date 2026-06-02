@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { execFileSync } from "node:child_process";
-import { readFile } from "node:fs/promises";
+import { access, readFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -114,6 +114,7 @@ export async function buildReleasePreflightReport(options = {}) {
       mcpLock.packages?.["node_modules/@eventloom/runtime"]?.integrity,
     ));
     checks.push(...mcpPackageFileChecks(mcpPackage.files));
+    checks.push(...await mcpPackageFileExistenceChecks(mcpRoot));
   }
   if (options.checkPublishedRuntime) {
     checks.push(await publishedRuntimeCheck(targetVersion, options.npmView));
@@ -158,6 +159,7 @@ export async function buildReleasePreflightReport(options = {}) {
   checks.push(containsCheck("changelog documents pack manifest evidence version", changelog, "eventloom.pack-manifests.v1"));
   checks.push(containsCheck("changelog documents packaged smoke verification", changelog, "verify generated artifact bundle manifests"));
   checks.push(...runtimePackageFileChecks(runtimePackage.files));
+  checks.push(...await runtimePackageFileExistenceChecks(root));
 
   return {
     version: RELEASE_PREFLIGHT_REPORT_VERSION,
@@ -359,6 +361,23 @@ function mcpPackageFileChecks(files) {
   return requiredMcpPackageFiles().map((entry) => fileEntryCheck(entry.name, files, entry.path));
 }
 
+async function runtimePackageFileExistenceChecks(root) {
+  return Promise.all(requiredRuntimePackageFiles().map((entry) => fileExistsCheck("runtime", root, entry.path)));
+}
+
+async function mcpPackageFileExistenceChecks(root) {
+  return Promise.all(requiredMcpPackageFiles().map((entry) => fileExistsCheck("mcp", root, entry.path)));
+}
+
+async function fileExistsCheck(packageName, root, path) {
+  try {
+    await access(resolve(root, path));
+    return equalsCheck(`${packageName} package file exists ${path}`, path, path);
+  } catch {
+    return equalsCheck(`${packageName} package file exists ${path}`, path, "missing");
+  }
+}
+
 function runtimePackageMetadataChecks(packageJson) {
   return [
     equalsCheck("runtime package description", "Append-only event-log runtime for multi-agent AI systems", packageJson.description ?? "missing"),
@@ -437,6 +456,15 @@ function requiredRuntimePackageFiles() {
     { name: "runtime package ships agent integration docs", path: "docs/agent-integration.md" },
     { name: "runtime package ships MCP setup docs", path: "docs/mcp-setup.md" },
     { name: "runtime package ships MCP package docs", path: "docs/mcp-package.md" },
+    { name: "runtime package ships contributor guide", path: "docs/contributor-guide.md" },
+    { name: "runtime package ships product spec", path: "docs/product-spec.md" },
+    { name: "runtime package ships development plan", path: "docs/development-plan.md" },
+    { name: "runtime package ships stack review", path: "docs/stack-review.md" },
+    { name: "runtime package ships Pathlight ADR", path: "docs/decisions/pathlight-bridge-spike.md" },
+    { name: "runtime package ships case studies", path: "docs/case-studies" },
+    { name: "runtime package ships architecture docs", path: "docs/architecture.md" },
+    { name: "runtime package ships event model docs", path: "docs/event-model.md" },
+    { name: "runtime package ships workflow docs", path: "docs/workflows.md" },
     { name: "runtime package ships Pathlight integration docs", path: "docs/pathlight-integration.md" },
     { name: "runtime package ships HALO integration docs", path: "docs/halo-integration.md" },
     { name: "runtime package ships OTLP integration docs", path: "docs/otlp-integration.md" },
