@@ -4,6 +4,7 @@ import { describe, expect, test } from "vitest";
 
 const siteHtml = readFileSync(resolve("site/index.html"), "utf8");
 const siteCss = readFileSync(resolve("site/style.css"), "utf8");
+const pagesWorkflowPath = resolve(".github/workflows/pages.yml");
 
 describe("GitHub Pages site", () => {
   test("positions Eventloom as a runtime trace layer", () => {
@@ -56,5 +57,16 @@ describe("GitHub Pages site", () => {
     expect(siteCss).toContain("color-scheme: dark");
     expect(siteCss).toContain("--background: #05070b");
     expect(siteCss).not.toMatch(/purple|violet|orb|bokeh|blob/i);
+  });
+
+  test("deploys the static site directory through GitHub Pages workflow publishing", () => {
+    expect(existsSync(pagesWorkflowPath)).toBe(true);
+    const workflow = readFileSync(pagesWorkflowPath, "utf8");
+
+    expect(workflow).toContain("actions/upload-pages-artifact");
+    expect(workflow).toContain("actions/deploy-pages");
+    expect(workflow).toContain("path: site");
+    expect(workflow).toContain("pages: write");
+    expect(workflow).toContain("id-token: write");
   });
 });
