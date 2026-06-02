@@ -68,5 +68,6 @@ describe("GitHub Pages site", () => {
     expect(workflow).toContain("path: site");
     expect(workflow).toContain("pages: write");
     expect(workflow).toContain("id-token: write");
+    expect(workflow).toContain("FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: \"true\"");
   });
 });
