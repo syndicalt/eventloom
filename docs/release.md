@@ -34,7 +34,7 @@ npm run publish:runtime-v1
 npm run publish:mcp-v1
 ```
 
-`publish:runtime-v1` runs `npm run ci:runtime-v1` and the runtime preflight before invoking `npm publish`. `publish:mcp-v1` runs `npm run ci:full-v1` and the MCP preflight before publishing the MCP package.
+`publish:runtime-v1` runs `npm run ci:runtime-v1`, the staged MCP v1 local preflight, and the runtime preflight before invoking `npm publish`. `publish:mcp-v1` runs `npm run ci:full-v1` and the MCP preflight before publishing the MCP package.
 
 The runtime-first publish gate intentionally does not run `npm run smoke:mcp-installed-bin`, because the current MCP package remains pinned to the latest published compatible runtime until `@eventloom/runtime@1.0.0` is available from npm. The installed MCP bin smoke belongs to the MCP phase after the MCP dependency and lockfile move to `^1.0.0`.
 

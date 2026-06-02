@@ -1389,7 +1389,7 @@ describe("release contract", () => {
     expect(scripts["release:preflight:runtime-v1:local"]).toBe("node scripts/release-preflight.mjs --target 1.0.0 --phase runtime --no-git");
     expect(scripts["release:preflight:mcp-v1:local"]).toBe("node scripts/release-preflight.mjs --target 1.0.0 --phase mcp --no-git");
     expect(scripts["release:preflight:mcp-v1-staged:local"]).toBe("node scripts/release-preflight-mcp-v1-local-staged.mjs");
-    expect(scripts["publish:runtime-v1"]).toBe("npm run ci:runtime-v1 && npm run release:preflight:runtime-v1 && npm publish --access public");
+    expect(scripts["publish:runtime-v1"]).toBe("npm run ci:runtime-v1 && npm run release:preflight:mcp-v1-staged:local && npm run release:preflight:runtime-v1 && npm publish --access public");
     expect(scripts["publish:mcp-v1"]).toBe("npm run ci:full-v1 && npm run release:preflight:mcp-v1 && npm --prefix packages/mcp publish --access public");
     expect(scripts["ci"]).toBe(
       "npm run ci:runtime-v1",

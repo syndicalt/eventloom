@@ -1815,7 +1815,7 @@ function releaseGateScripts(): Record<string, string> {
     "release:preflight:mcp-v1": "node scripts/release-preflight.mjs --target 1.0.0 --phase mcp --check-published-runtime",
     "release:preflight:mcp-v1:local": "node scripts/release-preflight.mjs --target 1.0.0 --phase mcp --no-git",
     "release:preflight:mcp-v1-staged:local": "node scripts/release-preflight-mcp-v1-local-staged.mjs",
-    "publish:runtime-v1": "npm run ci:runtime-v1 && npm run release:preflight:runtime-v1 && npm publish --access public",
+    "publish:runtime-v1": "npm run ci:runtime-v1 && npm run release:preflight:mcp-v1-staged:local && npm run release:preflight:runtime-v1 && npm publish --access public",
     "publish:mcp-v1": "npm run ci:full-v1 && npm run release:preflight:mcp-v1 && npm --prefix packages/mcp publish --access public",
   };
 }

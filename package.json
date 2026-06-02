@@ -81,7 +81,7 @@
     "smoke:runtime-installed-cli": "node scripts/smoke-runtime-installed-cli.mjs",
     "release:preflight:v1": "node scripts/release-preflight.mjs --target 1.0.0",
     "release:preflight:v1:local": "node scripts/release-preflight.mjs --target 1.0.0 --no-git",
-    "publish:runtime-v1": "npm run ci:runtime-v1 && npm run release:preflight:runtime-v1 && npm publish --access public",
+    "publish:runtime-v1": "npm run ci:runtime-v1 && npm run release:preflight:mcp-v1-staged:local && npm run release:preflight:runtime-v1 && npm publish --access public",
     "publish:mcp-v1": "npm run ci:full-v1 && npm run release:preflight:mcp-v1 && npm --prefix packages/mcp publish --access public",
     "ci": "npm run ci:runtime-v1",
     "ci:runtime-v1": "npm run test:runtime && npm run fixtures:golden:check && npm run fixtures:check && npm run bench:smoke && npm run audit:runtime && npm run smoke:mcp-local-runtime && npm run smoke:mcp-v1-local-runtime-bin && npm run smoke:custom-workflow-package && npm run smoke:runtime-installed-cli && npm run pack:check && npm pack --dry-run",
