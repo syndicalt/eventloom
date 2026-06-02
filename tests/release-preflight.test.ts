@@ -882,6 +882,38 @@ describe("release preflight", () => {
     ]));
   });
 
+  it("requires CI release evidence commands to run inside the release-gates job", async () => {
+    const root = await tempReleaseTree({
+      runtimeVersion: "1.0.0",
+      mcpVersion: "1.0.0",
+      mcpVersionConstant: "1.0.0",
+      mcpRuntimeDependency: "^1.0.0",
+      workflow: dormantReleaseWorkflow(),
+    });
+
+    const report = await buildReleasePreflightReport({
+      root,
+      targetVersion: "1.0.0",
+      checkGit: false,
+    });
+
+    expect(report.ok).toBe(false);
+    expect(report.checks).toEqual(expect.arrayContaining([
+      {
+        name: "workflow writes benchmark smoke evidence",
+        ok: false,
+        expected: 'npm run --silent bench:smoke -- --out ".eventloom-ci/benchmark-smoke-node-${{ matrix.node-version }}.json" > /dev/null',
+        actual: "missing",
+      },
+      {
+        name: "workflow uploads staged MCP preflight evidence",
+        ok: false,
+        expected: "staged-mcp-v1-preflight-node-${{ matrix.node-version }}",
+        actual: "missing",
+      },
+    ]));
+  });
+
   it("requires release docs to describe executable CI evidence checks", async () => {
     const root = await tempReleaseTree({
       runtimeVersion: "1.0.0",
@@ -1986,6 +2018,68 @@ function releaseWorkflow(): string {
 
 jobs:
   release-gates:
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [20.x, 22.x, 24.x]
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: \${{ matrix.node-version }}
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            packages/mcp/package-lock.json
+      - run: npm ci
+      - run: npm --prefix packages/mcp ci
+      - name: Run release gates
+        run: npm run ci:runtime-v1
+      - name: Write runtime release evidence reports
+        run: |
+          mkdir -p .eventloom-ci
+          node scripts/check-golden-fixtures.mjs --json > ".eventloom-ci/golden-fixtures-node-\${{ matrix.node-version }}.json"
+          node scripts/check-export-fixtures.mjs --json > ".eventloom-ci/export-fixtures-node-\${{ matrix.node-version }}.json"
+          npm run --silent bench:smoke -- --out ".eventloom-ci/benchmark-smoke-node-\${{ matrix.node-version }}.json" > /dev/null
+          node scripts/check-pack-manifests.mjs --json > ".eventloom-ci/pack-manifests-node-\${{ matrix.node-version }}.json"
+          npm run --silent eventloom -- append .eventloom/agent-work.jsonl goal.created --actor ci --payload '{"title":"Run Eventloom v1 runtime release gate"}'
+          npm run --silent eventloom -- append .eventloom/agent-work.jsonl verification.completed --actor ci --payload '{"summary":"Runtime release gate passed","command":"npm run ci:runtime-v1","checks":["runtime v1 gate"],"assertions":["release gate completed"],"evidenceEventIds":[],"artifactIds":["github-actions:\${{ github.run_id }}"],"passCount":1,"failCount":0}'
+          npm run --silent eventloom -- artifacts .eventloom/agent-work.jsonl --out .eventloom/artifacts --title "Runtime Release Evidence"
+          npm run --silent eventloom -- artifacts verify .eventloom/artifacts/manifest.json > ".eventloom-ci/artifact-bundle-verify-node-\${{ matrix.node-version }}.json"
+      - name: Upload runtime release evidence reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: runtime-release-evidence-node-\${{ matrix.node-version }}
+          if-no-files-found: error
+          path: |
+            .eventloom-ci/golden-fixtures-node-\${{ matrix.node-version }}.json
+            .eventloom-ci/export-fixtures-node-\${{ matrix.node-version }}.json
+            .eventloom-ci/benchmark-smoke-node-\${{ matrix.node-version }}.json
+            .eventloom-ci/pack-manifests-node-\${{ matrix.node-version }}.json
+            .eventloom-ci/artifact-bundle-verify-node-\${{ matrix.node-version }}.json
+            .eventloom/agent-work.jsonl
+            .eventloom/artifacts/
+      - name: Run staged MCP v1 preflight
+        run: |
+          npm run --silent release:preflight:mcp-v1-staged:local -- --json \\
+            | tee ".eventloom-ci/staged-mcp-v1-preflight-node-\${{ matrix.node-version }}.json"
+      - name: Upload staged MCP v1 preflight report
+        uses: actions/upload-artifact@v4
+        with:
+          name: staged-mcp-v1-preflight-node-\${{ matrix.node-version }}
+          if-no-files-found: error
+          path: .eventloom-ci/staged-mcp-v1-preflight-node-\${{ matrix.node-version }}.json
+`;
+}
+
+function dormantReleaseWorkflow(): string {
+  return `name: CI
+
+jobs:
+  release-gates:
+    steps:
+      - run: npm run ci:runtime-v1
+
+  archived-release-gates-template:
     strategy:
       fail-fast: false
       matrix:

@@ -3,6 +3,7 @@ import { execFileSync } from "node:child_process";
 import { access, readFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { parse as parseYaml } from "yaml";
 
 const scriptPath = fileURLToPath(import.meta.url);
 const defaultRoot = resolve(dirname(scriptPath), "..");
@@ -506,37 +507,98 @@ function prepackScriptChecks(runtimeScripts, mcpScripts) {
 }
 
 function releaseWorkflowChecks(workflow) {
-  const requiredSnippets = [
-    ["workflow has matrix strategy", "strategy:"],
-    ["workflow keeps matrix fail-fast disabled", "fail-fast: false"],
-    ["workflow tests supported Node versions", "node-version: [20.x, 22.x, 24.x]"],
-    ["workflow uses matrix Node version", "node-version: ${{ matrix.node-version }}"],
-    ["workflow uses setup-node v4", "actions/setup-node@v4"],
-    ["workflow caches runtime lockfile", "package-lock.json"],
-    ["workflow caches MCP lockfile", "packages/mcp/package-lock.json"],
-    ["workflow installs runtime dependencies from lockfile", "npm ci"],
-    ["workflow installs MCP dependencies from lockfile", "npm --prefix packages/mcp ci"],
-    ["workflow uploads artifacts with upload-artifact v4", "actions/upload-artifact@v4"],
-    ["workflow runs runtime release gate", "npm run ci:runtime-v1"],
-    ["workflow writes golden fixture evidence", 'node scripts/check-golden-fixtures.mjs --json > ".eventloom-ci/golden-fixtures-node-${{ matrix.node-version }}.json"'],
-    ["workflow writes export fixture evidence", 'node scripts/check-export-fixtures.mjs --json > ".eventloom-ci/export-fixtures-node-${{ matrix.node-version }}.json"'],
-    ["workflow writes benchmark smoke evidence", 'npm run --silent bench:smoke -- --out ".eventloom-ci/benchmark-smoke-node-${{ matrix.node-version }}.json" > /dev/null'],
-    ["workflow writes package manifest evidence", 'node scripts/check-pack-manifests.mjs --json > ".eventloom-ci/pack-manifests-node-${{ matrix.node-version }}.json"'],
-    ["workflow writes agent release event log", "npm run --silent eventloom -- append .eventloom/agent-work.jsonl goal.created"],
-    ["workflow writes agent verification event", "npm run --silent eventloom -- append .eventloom/agent-work.jsonl verification.completed"],
-    ["workflow writes agent artifact bundle", "npm run --silent eventloom -- artifacts .eventloom/agent-work.jsonl --out .eventloom/artifacts"],
-    ["workflow verifies agent artifact bundle", "npm run --silent eventloom -- artifacts verify .eventloom/artifacts/manifest.json"],
-    ["workflow writes artifact verification evidence", ' > ".eventloom-ci/artifact-bundle-verify-node-${{ matrix.node-version }}.json"'],
-    ["workflow uploads runtime release evidence", "runtime-release-evidence-node-${{ matrix.node-version }}"],
-    ["workflow uploads benchmark smoke evidence", ".eventloom-ci/benchmark-smoke-node-${{ matrix.node-version }}.json"],
-    ["workflow uploads artifact verification evidence", ".eventloom-ci/artifact-bundle-verify-node-${{ matrix.node-version }}.json"],
-    ["workflow uploads agent event log", ".eventloom/agent-work.jsonl"],
-    ["workflow uploads agent artifact bundle", ".eventloom/artifacts/"],
-    ["workflow writes staged MCP preflight evidence", 'tee ".eventloom-ci/staged-mcp-v1-preflight-node-${{ matrix.node-version }}.json"'],
-    ["workflow uploads staged MCP preflight evidence", "staged-mcp-v1-preflight-node-${{ matrix.node-version }}"],
-    ["workflow fails on missing evidence files", "if-no-files-found: error"],
+  const workflowDoc = parseWorkflow(workflow);
+  const job = workflowDoc?.jobs?.["release-gates"];
+  const steps = Array.isArray(job?.steps) ? job.steps : [];
+  const jobText = workflowSearchText(job);
+  const setupNodeStep = steps.find((step) => step?.uses === "actions/setup-node@v4");
+  const setupNodeText = workflowSearchText(setupNodeStep);
+  const uploadSteps = steps.filter((step) => step?.uses === "actions/upload-artifact@v4");
+  const runtimeUploadStep = uploadSteps.find((step) => step?.with?.name === "runtime-release-evidence-node-${{ matrix.node-version }}");
+  const runtimeUploadText = workflowSearchText(runtimeUploadStep);
+  const stagedMcpUploadStep = uploadSteps.find((step) => step?.with?.name === "staged-mcp-v1-preflight-node-${{ matrix.node-version }}");
+  const stagedMcpUploadText = workflowSearchText(stagedMcpUploadStep);
+
+  return [
+    workflowStructuralCheck("workflow has matrix strategy", isRecord(job?.strategy), "strategy:"),
+    workflowStructuralCheck("workflow keeps matrix fail-fast disabled", job?.strategy?.["fail-fast"] === false, "fail-fast: false"),
+    workflowStructuralCheck("workflow tests supported Node versions", sameStringArray(job?.strategy?.matrix?.["node-version"], ["20.x", "22.x", "24.x"]), "node-version: [20.x, 22.x, 24.x]"),
+    workflowStructuralCheck("workflow uses matrix Node version", setupNodeStep?.with?.["node-version"] === "${{ matrix.node-version }}", "node-version: ${{ matrix.node-version }}"),
+    workflowStructuralCheck("workflow uses setup-node v4", Boolean(setupNodeStep), "actions/setup-node@v4"),
+    workflowStructuralCheck("workflow caches runtime lockfile", setupNodeText.includes("package-lock.json"), "package-lock.json"),
+    workflowStructuralCheck("workflow caches MCP lockfile", setupNodeText.includes("packages/mcp/package-lock.json"), "packages/mcp/package-lock.json"),
+    workflowStructuralCheck("workflow installs runtime dependencies from lockfile", jobText.includes("npm ci"), "npm ci"),
+    workflowStructuralCheck("workflow installs MCP dependencies from lockfile", jobText.includes("npm --prefix packages/mcp ci"), "npm --prefix packages/mcp ci"),
+    workflowStructuralCheck("workflow uploads artifacts with upload-artifact v4", uploadSteps.length > 0, "actions/upload-artifact@v4"),
+    workflowStructuralCheck("workflow runs runtime release gate", jobText.includes("npm run ci:runtime-v1"), "npm run ci:runtime-v1"),
+    workflowStructuralCheck("workflow writes golden fixture evidence", jobText.includes('node scripts/check-golden-fixtures.mjs --json > ".eventloom-ci/golden-fixtures-node-${{ matrix.node-version }}.json"'), 'node scripts/check-golden-fixtures.mjs --json > ".eventloom-ci/golden-fixtures-node-${{ matrix.node-version }}.json"'),
+    workflowStructuralCheck("workflow writes export fixture evidence", jobText.includes('node scripts/check-export-fixtures.mjs --json > ".eventloom-ci/export-fixtures-node-${{ matrix.node-version }}.json"'), 'node scripts/check-export-fixtures.mjs --json > ".eventloom-ci/export-fixtures-node-${{ matrix.node-version }}.json"'),
+    workflowStructuralCheck("workflow writes benchmark smoke evidence", jobText.includes('npm run --silent bench:smoke -- --out ".eventloom-ci/benchmark-smoke-node-${{ matrix.node-version }}.json" > /dev/null'), 'npm run --silent bench:smoke -- --out ".eventloom-ci/benchmark-smoke-node-${{ matrix.node-version }}.json" > /dev/null'),
+    workflowStructuralCheck("workflow writes package manifest evidence", jobText.includes('node scripts/check-pack-manifests.mjs --json > ".eventloom-ci/pack-manifests-node-${{ matrix.node-version }}.json"'), 'node scripts/check-pack-manifests.mjs --json > ".eventloom-ci/pack-manifests-node-${{ matrix.node-version }}.json"'),
+    workflowStructuralCheck("workflow writes agent release event log", jobText.includes("npm run --silent eventloom -- append .eventloom/agent-work.jsonl goal.created"), "npm run --silent eventloom -- append .eventloom/agent-work.jsonl goal.created"),
+    workflowStructuralCheck("workflow writes agent verification event", jobText.includes("npm run --silent eventloom -- append .eventloom/agent-work.jsonl verification.completed"), "npm run --silent eventloom -- append .eventloom/agent-work.jsonl verification.completed"),
+    workflowStructuralCheck("workflow writes agent artifact bundle", jobText.includes("npm run --silent eventloom -- artifacts .eventloom/agent-work.jsonl --out .eventloom/artifacts"), "npm run --silent eventloom -- artifacts .eventloom/agent-work.jsonl --out .eventloom/artifacts"),
+    workflowStructuralCheck("workflow verifies agent artifact bundle", jobText.includes("npm run --silent eventloom -- artifacts verify .eventloom/artifacts/manifest.json"), "npm run --silent eventloom -- artifacts verify .eventloom/artifacts/manifest.json"),
+    workflowStructuralCheck("workflow writes artifact verification evidence", jobText.includes('> ".eventloom-ci/artifact-bundle-verify-node-${{ matrix.node-version }}.json"'), ' > ".eventloom-ci/artifact-bundle-verify-node-${{ matrix.node-version }}.json"'),
+    workflowStructuralCheck("workflow uploads runtime release evidence", Boolean(runtimeUploadStep), "runtime-release-evidence-node-${{ matrix.node-version }}"),
+    workflowStructuralCheck("workflow uploads benchmark smoke evidence", runtimeUploadText.includes(".eventloom-ci/benchmark-smoke-node-${{ matrix.node-version }}.json"), ".eventloom-ci/benchmark-smoke-node-${{ matrix.node-version }}.json"),
+    workflowStructuralCheck("workflow uploads artifact verification evidence", runtimeUploadText.includes(".eventloom-ci/artifact-bundle-verify-node-${{ matrix.node-version }}.json"), ".eventloom-ci/artifact-bundle-verify-node-${{ matrix.node-version }}.json"),
+    workflowStructuralCheck("workflow uploads agent event log", runtimeUploadText.includes(".eventloom/agent-work.jsonl"), ".eventloom/agent-work.jsonl"),
+    workflowStructuralCheck("workflow uploads agent artifact bundle", runtimeUploadText.includes(".eventloom/artifacts/"), ".eventloom/artifacts/"),
+    workflowStructuralCheck("workflow writes staged MCP preflight evidence", jobText.includes('tee ".eventloom-ci/staged-mcp-v1-preflight-node-${{ matrix.node-version }}.json"'), 'tee ".eventloom-ci/staged-mcp-v1-preflight-node-${{ matrix.node-version }}.json"'),
+    workflowStructuralCheck("workflow uploads staged MCP preflight evidence", Boolean(stagedMcpUploadStep), "staged-mcp-v1-preflight-node-${{ matrix.node-version }}"),
+    workflowStructuralCheck("workflow fails on missing evidence files", uploadSteps.length > 0 && uploadSteps.every((step) => step?.with?.["if-no-files-found"] === "error"), "if-no-files-found: error"),
   ];
-  return requiredSnippets.map(([name, expected]) => containsCheck(name, workflow, expected));
+}
+
+function parseWorkflow(workflow) {
+  try {
+    return parseYaml(workflow);
+  } catch {
+    return null;
+  }
+}
+
+function workflowStructuralCheck(name, ok, expected) {
+  return {
+    name,
+    ok,
+    expected,
+    actual: ok ? expected : "missing",
+  };
+}
+
+function isRecord(value) {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function sameStringArray(actual, expected) {
+  return Array.isArray(actual)
+    && actual.length === expected.length
+    && actual.every((value, index) => value === expected[index]);
+}
+
+function workflowSearchText(value) {
+  const parts = [];
+  collectWorkflowSearchText(value, parts);
+  return parts.join("\n");
+}
+
+function collectWorkflowSearchText(value, parts) {
+  if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
+    parts.push(String(value));
+    return;
+  }
+  if (Array.isArray(value)) {
+    for (const item of value) collectWorkflowSearchText(item, parts);
+    return;
+  }
+  if (isRecord(value)) {
+    for (const [key, item] of Object.entries(value)) {
+      parts.push(key);
+      collectWorkflowSearchText(item, parts);
+    }
+  }
 }
 
 function requiredReleaseScripts() {
