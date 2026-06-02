@@ -51,6 +51,8 @@ describe("release contract", () => {
     expect(release).toContain("eventloom.release-preflight.v1");
     expect(release).toContain("npm run smoke:custom-workflow-package");
     expect(release).toContain("eventloom-runtime-1.0.0.tgz");
+    expect(release).toContain("node scripts/release-preflight.mjs --target 1.0.0 --phase mcp --check-published-runtime");
+    expect(release).not.toContain("node scripts/release-preflight.mjs --target 1.0.0 --check-published-runtime");
     expect(migration).toContain("# Migrating To Eventloom v1.0.0");
     expect(migration).toContain("No log migration is required");
     expect(migration).toContain("Public API freeze");

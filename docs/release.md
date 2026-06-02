@@ -227,14 +227,14 @@ git add packages/mcp/package.json packages/mcp/package-lock.json packages/mcp/sr
 git commit -m "Release MCP v1.0.0"
 git tag mcp-v1.0.0
 npm run ci:full-v1
-node scripts/release-preflight.mjs --target 1.0.0 --check-published-runtime
+node scripts/release-preflight.mjs --target 1.0.0 --phase mcp --check-published-runtime
 npm run publish:mcp-v1
 ```
 
 Before publishing the MCP v1 package, also verify that npm can resolve the target runtime package:
 
 ```bash
-node scripts/release-preflight.mjs --target 1.0.0 --check-published-runtime
+node scripts/release-preflight.mjs --target 1.0.0 --phase mcp --check-published-runtime
 ```
 
 For the first public scoped publish:
