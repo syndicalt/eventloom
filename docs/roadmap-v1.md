@@ -135,7 +135,7 @@ Implemented baseline:
 - `npm run fixtures:golden` regenerates deterministic golden logs and `npm run fixtures:golden:check` fails CI when committed golden fixtures drift from generated output.
 - Golden and export fixture freshness checks produce versioned `eventloom.fixture-check.v1` release evidence for CI-uploaded fixture reports.
 - Property-based replay tests generate task lifecycles and verify sealed JSONL replay matches in-memory replay and visualizer replay hashes.
-- `scripts/benchmarks/large-log.ts` and `docs/benchmarks.md` provide reproducible append/read/verify/replay/visualize/export benchmarks, with `bench:smoke` wired into CI, versioned `eventloom.benchmark.v1` `.eventloom-ci/benchmark-smoke-node-<node-version>.json` reports uploaded as release evidence, and larger full/export runs available locally.
+- `scripts/benchmarks/large-log.ts` and `docs/benchmarks.md` provide reproducible append/read/verify/replay/visualize/export benchmarks, with `bench:smoke` wired into CI, versioned `eventloom.benchmark.v1` `.eventloom-ci/benchmark-smoke-node-<node-version>.json` reports uploaded as release evidence, and larger full/export runs checked locally with `npm run bench:evidence:check` as versioned `eventloom.benchmark-evidence.v1` release-candidate evidence.
 - Runtime projection snapshots are available as cache-only sidecar artifacts. `createProjectionSnapshot()`, `replayFromProjectionSnapshot()`, `JsonlEventStore.readVerifiedTail()`, and `runtime.replayCached()` verify anchors and prove snapshot-plus-tail replay matches full replay without changing canonical replay semantics.
 - Runtime, CLI, and MCP expose structured projection diff tooling.
 - Runtime, CLI, and MCP expose stable stats/query/inspect filtering helpers.

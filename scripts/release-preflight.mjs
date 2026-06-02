@@ -128,6 +128,8 @@ export async function buildReleasePreflightReport(options = {}) {
   checks.push(containsCheck("release doc references benchmark evidence report", releaseDoc, ".eventloom-ci/benchmark-smoke-node-<node-version>.json"));
   checks.push(containsCheck("release doc references full benchmark evidence report", releaseDoc, ".eventloom-ci/benchmark-full-node-20.json"));
   checks.push(containsCheck("release doc references export benchmark evidence report", releaseDoc, ".eventloom-ci/benchmark-export-node-20.json"));
+  checks.push(containsCheck("release doc references benchmark evidence checker", releaseDoc, "npm run bench:evidence:check"));
+  checks.push(containsCheck("release doc references benchmark evidence check report version", releaseDoc, "eventloom.benchmark-evidence.v1"));
   checks.push(containsCheck("release doc references benchmark hardware note", releaseDoc, "EVENTLOOM_BENCH_HARDWARE"));
   checks.push(containsCheck("release doc references artifact verification evidence report", releaseDoc, ".eventloom-ci/artifact-bundle-verify-node-<node-version>.json"));
   checks.push(containsCheck("release doc references artifact verification report version", releaseDoc, "eventloom.artifact-bundle-verification.v1"));

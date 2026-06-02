@@ -129,9 +129,10 @@ The MCP package currently ships only:
 ```bash
 EVENTLOOM_BENCH_HARDWARE="<CPU, disk, memory>" npm run bench -- --out .eventloom-ci/benchmark-full-node-20.json
 EVENTLOOM_BENCH_HARDWARE="<CPU, disk, memory>" npm run bench:export -- --out .eventloom-ci/benchmark-export-node-20.json
+npm run bench:evidence:check -- --full .eventloom-ci/benchmark-full-node-20.json --export .eventloom-ci/benchmark-export-node-20.json
 ```
 
-Upload the `.eventloom-ci/benchmark-*.json` reports with the release-candidate evidence packet. Each report is versioned as `eventloom.benchmark.v1`; record the command, Node version, hardware note, event counts, `durationMs`, and `throughputPerSecond` values in the release notes. See [Benchmarks](benchmarks.md) and `docs/benchmarks.md` for the benchmark output schema and baseline policy.
+Upload the `.eventloom-ci/benchmark-*.json` reports with the release-candidate evidence packet after `npm run bench:evidence:check` passes. Each benchmark report is versioned as `eventloom.benchmark.v1`, and the checker report is versioned as `eventloom.benchmark-evidence.v1`; record the command, Node version, hardware note, event counts, `durationMs`, and `throughputPerSecond` values in the release notes. See [Benchmarks](benchmarks.md) and `docs/benchmarks.md` for the benchmark output schema and baseline policy.
 
 ## Local Readiness Audit
 

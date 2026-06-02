@@ -30,6 +30,14 @@ npm run bench:export
 
 The smoke benchmark uses 1,000 events and is wired into CI. The full benchmark uses 100,000 events by default, and the export benchmark uses 50,000 events by default. Override with `-- --events <n>` when collecting release evidence for a specific scale.
 
+Validate full and export release-candidate reports before attaching them to a release packet:
+
+```bash
+npm run bench:evidence:check -- --full .eventloom-ci/benchmark-full-node-20.json --export .eventloom-ci/benchmark-export-node-20.json
+```
+
+The checker prints a versioned `eventloom.benchmark-evidence.v1` report in `--json` mode. It validates the benchmark report schema, `full` and `export` modes, positive event counts, environment metadata, a non-`unspecified` hardware note, required operation coverage, and export span fields. It deliberately does not enforce throughput thresholds because benchmark numbers are hardware-sensitive release evidence, not a portable correctness gate.
+
 ## Output
 
 Both commands print versioned `eventloom.benchmark.v1` JSON with:

@@ -68,6 +68,7 @@
     "bench": "tsx scripts/benchmarks/large-log.ts --mode full",
     "bench:smoke": "tsx scripts/benchmarks/large-log.ts --mode smoke",
     "bench:export": "tsx scripts/benchmarks/large-log.ts --mode export",
+    "bench:evidence:check": "node scripts/check-benchmark-evidence.mjs",
     "fixtures:golden": "tsx scripts/generate-golden-fixtures.ts",
     "fixtures:golden:check": "node scripts/check-golden-fixtures.mjs",
     "fixtures:export": "tsx scripts/generate-export-fixtures.ts",

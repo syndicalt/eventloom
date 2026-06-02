@@ -956,6 +956,18 @@ describe("release preflight", () => {
         actual: "missing",
       },
       {
+        name: "release doc references benchmark evidence checker",
+        ok: false,
+        expected: "npm run bench:evidence:check",
+        actual: "missing",
+      },
+      {
+        name: "release doc references benchmark evidence check report version",
+        ok: false,
+        expected: "eventloom.benchmark-evidence.v1",
+        actual: "missing",
+      },
+      {
         name: "release doc references benchmark hardware note",
         ok: false,
         expected: "EVENTLOOM_BENCH_HARDWARE",
@@ -1832,6 +1844,8 @@ The repository CI workflow at .github/workflows/ci.yml runs the runtime-first re
 Runtime release evidence includes .eventloom-ci/benchmark-smoke-node-<node-version>.json.
 
 Release-candidate benchmark evidence includes .eventloom-ci/benchmark-full-node-20.json and .eventloom-ci/benchmark-export-node-20.json with EVENTLOOM_BENCH_HARDWARE.
+
+npm run bench:evidence:check validates release-candidate benchmark evidence and emits eventloom.benchmark-evidence.v1.
 
 Runtime release evidence includes .eventloom-ci/artifact-bundle-verify-node-<node-version>.json.
 

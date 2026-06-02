@@ -120,6 +120,8 @@ describe("benchmark contract", () => {
     expect(text).toContain("durationMs");
     expect(text).toContain("throughputPerSecond");
     expect(text).toContain("--out .eventloom-ci/benchmark-smoke-node-20.json");
+    expect(text).toContain("npm run bench:evidence:check");
+    expect(text).toContain("eventloom.benchmark-evidence.v1");
     expect(text).toContain("OTLP export");
     expect(text).toContain("measurements[].spanCount` for HALO, OTLP, and Pathlight export measurements");
     expect(text).toContain("Node");
