@@ -742,7 +742,7 @@ describe("release preflight", () => {
       {
         name: "runtime prepack script",
         ok: false,
-        expected: "npm run test:runtime && npm run build:runtime",
+        expected: "npm run test:runtime",
         actual: "npm run build:runtime",
       },
       {
@@ -1803,9 +1803,9 @@ async function tempGitReleaseTree(options: Parameters<typeof tempReleaseTree>[0]
 
 function releaseGateScripts(): Record<string, string> {
   return {
-    prepack: "npm run test:runtime && npm run build:runtime",
+    prepack: "npm run test:runtime",
     ci: "npm run ci:runtime-v1",
-    "ci:runtime-v1": "npm run test:runtime && npm run build:runtime && npm run fixtures:golden:check && npm run fixtures:check && npm run bench:smoke && npm run audit:runtime && npm run smoke:mcp-local-runtime && npm run smoke:mcp-v1-local-runtime-bin && npm run smoke:custom-workflow-package && npm run smoke:runtime-installed-cli && npm run pack:check && npm pack --dry-run",
+    "ci:runtime-v1": "npm run test:runtime && npm run fixtures:golden:check && npm run fixtures:check && npm run bench:smoke && npm run audit:runtime && npm run smoke:mcp-local-runtime && npm run smoke:mcp-v1-local-runtime-bin && npm run smoke:custom-workflow-package && npm run smoke:runtime-installed-cli && npm run pack:check && npm pack --dry-run",
     "ci:mcp-v1": "npm run test:mcp && npm run build:mcp && npm run audit:mcp && npm run smoke:mcp-installed-bin && npm run pack:check && npm pack --dry-run ./packages/mcp",
     "ci:full-v1": "npm run ci:runtime-v1 && npm run ci:mcp-v1",
     "release:preflight:v1": "node scripts/release-preflight.mjs --target 1.0.0",

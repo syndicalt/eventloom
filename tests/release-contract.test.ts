@@ -1355,10 +1355,10 @@ describe("release contract", () => {
     const scripts = packageJson.scripts as Record<string, string>;
     const mcpScripts = mcpPackageJson.scripts as Record<string, string>;
 
-    expect(scripts["test:runtime"]).toBe("vitest run");
+    expect(scripts["test:runtime"]).toBe("npm run build:runtime && vitest run");
     expect(scripts["build:runtime"]).toBe("node scripts/clean-dist.mjs dist && tsc && node scripts/chmod-cli-bins.mjs dist/cli.js");
     expect(mcpScripts["build"]).toBe("node -e \"import('node:fs/promises').then(({ rm }) => rm('dist', { recursive: true, force: true }))\" && tsc && node ../../scripts/chmod-cli-bins.mjs dist/cli.js");
-    expect(scripts.prepack).toBe("npm run test:runtime && npm run build:runtime");
+    expect(scripts.prepack).toBe("npm run test:runtime");
     expect(mcpScripts.prepack).toBe("npm test && npm run build");
     expect(scripts["audit:runtime"]).toBe("npm audit --omit=dev");
     expect(scripts["audit:mcp"]).toBe("npm --prefix packages/mcp audit --omit=dev");
@@ -1376,7 +1376,7 @@ describe("release contract", () => {
     expect(readFileSync(join(root, "scripts", "check-pack-manifests.mjs"), "utf8"))
       .toContain('version: "eventloom.pack-manifests.v1"');
     expect(scripts["ci:runtime-v1"]).toBe(
-      "npm run test:runtime && npm run build:runtime && npm run fixtures:golden:check && npm run fixtures:check && npm run bench:smoke && npm run audit:runtime && npm run smoke:mcp-local-runtime && npm run smoke:mcp-v1-local-runtime-bin && npm run smoke:custom-workflow-package && npm run smoke:runtime-installed-cli && npm run pack:check && npm pack --dry-run",
+      "npm run test:runtime && npm run fixtures:golden:check && npm run fixtures:check && npm run bench:smoke && npm run audit:runtime && npm run smoke:mcp-local-runtime && npm run smoke:mcp-v1-local-runtime-bin && npm run smoke:custom-workflow-package && npm run smoke:runtime-installed-cli && npm run pack:check && npm pack --dry-run",
     );
     expect(scripts["ci:mcp-v1"]).toBe(
       "npm run test:mcp && npm run build:mcp && npm run audit:mcp && npm run smoke:mcp-installed-bin && npm run pack:check && npm pack --dry-run ./packages/mcp",

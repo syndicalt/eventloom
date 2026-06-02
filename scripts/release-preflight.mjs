@@ -497,7 +497,7 @@ function prepackScriptChecks(runtimeScripts, mcpScripts) {
   return [
     equalsCheck(
       "runtime prepack script",
-      "npm run test:runtime && npm run build:runtime",
+      "npm run test:runtime",
       typeof runtimeScripts.prepack === "string" ? runtimeScripts.prepack : "missing",
     ),
     equalsCheck(
@@ -606,7 +606,7 @@ function collectWorkflowSearchText(value, parts) {
 function requiredReleaseScripts() {
   return {
     ci: "npm run ci:runtime-v1",
-    "ci:runtime-v1": "npm run test:runtime && npm run build:runtime && npm run fixtures:golden:check && npm run fixtures:check && npm run bench:smoke && npm run audit:runtime && npm run smoke:mcp-local-runtime && npm run smoke:mcp-v1-local-runtime-bin && npm run smoke:custom-workflow-package && npm run smoke:runtime-installed-cli && npm run pack:check && npm pack --dry-run",
+    "ci:runtime-v1": "npm run test:runtime && npm run fixtures:golden:check && npm run fixtures:check && npm run bench:smoke && npm run audit:runtime && npm run smoke:mcp-local-runtime && npm run smoke:mcp-v1-local-runtime-bin && npm run smoke:custom-workflow-package && npm run smoke:runtime-installed-cli && npm run pack:check && npm pack --dry-run",
     "ci:mcp-v1": "npm run test:mcp && npm run build:mcp && npm run audit:mcp && npm run smoke:mcp-installed-bin && npm run pack:check && npm pack --dry-run ./packages/mcp",
     "ci:full-v1": "npm run ci:runtime-v1 && npm run ci:mcp-v1",
     "release:preflight:v1": "node scripts/release-preflight.mjs --target 1.0.0",

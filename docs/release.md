@@ -61,7 +61,6 @@ The runtime-first release gate runs:
 
 ```bash
 npm run test:runtime
-npm run build:runtime
 npm run fixtures:golden:check
 npm run fixtures:check
 npm run bench:smoke
@@ -73,6 +72,8 @@ npm run smoke:runtime-installed-cli
 npm run pack:check
 npm pack --dry-run
 ```
+
+`npm run test:runtime` builds the runtime before running Vitest so package-facing tests and pack-manifest checks work from a clean checkout.
 
 No high or critical production dependency vulnerabilities are allowed. Treat any `npm run audit:runtime` or `npm run audit:mcp` high/critical production finding as release-blocking until the dependency graph is fixed or the release checklist documents an explicit reviewed exception.
 
