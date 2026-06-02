@@ -90,7 +90,7 @@
     "test:mcp": "npm --prefix packages/mcp test",
     "prepack": "npm run test:runtime",
     "test": "npm run test:runtime",
-    "test:runtime": "npm run build:runtime && vitest run",
+    "test:runtime": "npm run build:mcp && vitest run",
     "eventloom": "tsx src/cli.ts",
     "fixtures:check": "node scripts/check-export-fixtures.mjs",
     "pack:check": "node scripts/check-pack-manifests.mjs",

@@ -73,7 +73,7 @@ npm run pack:check
 npm pack --dry-run
 ```
 
-`npm run test:runtime` builds the runtime before running Vitest so package-facing tests and pack-manifest checks work from a clean checkout.
+`npm run test:runtime` builds runtime and MCP package artifacts before running Vitest so package-facing tests and pack-manifest checks work from a clean checkout.
 
 No high or critical production dependency vulnerabilities are allowed. Treat any `npm run audit:runtime` or `npm run audit:mcp` high/critical production finding as release-blocking until the dependency graph is fixed or the release checklist documents an explicit reviewed exception.
 

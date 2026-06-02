@@ -1355,7 +1355,7 @@ describe("release contract", () => {
     const scripts = packageJson.scripts as Record<string, string>;
     const mcpScripts = mcpPackageJson.scripts as Record<string, string>;
 
-    expect(scripts["test:runtime"]).toBe("npm run build:runtime && vitest run");
+    expect(scripts["test:runtime"]).toBe("npm run build:mcp && vitest run");
     expect(scripts["build:runtime"]).toBe("node scripts/clean-dist.mjs dist && tsc && node scripts/chmod-cli-bins.mjs dist/cli.js");
     expect(mcpScripts["build"]).toBe("node -e \"import('node:fs/promises').then(({ rm }) => rm('dist', { recursive: true, force: true }))\" && tsc && node ../../scripts/chmod-cli-bins.mjs dist/cli.js");
     expect(scripts.prepack).toBe("npm run test:runtime");
